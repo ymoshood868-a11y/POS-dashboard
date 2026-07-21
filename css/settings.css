@@ -1,0 +1,681 @@
+/* ============================================================
+   settings.css — Settings Page Styles (Team Member 5)
+   POS Transaction Dashboard
+
+   Uses ONLY variables and patterns already defined in:
+     css/style.css   → tokens, resets, toast, buttons
+     css/layout.css  → .btn, .form-control, .form-group, .page-header
+   No new colors, no new fonts.
+   ============================================================ */
+
+/* ══════════════════════════════════════════════════════════
+   1. SETTINGS LAYOUT  (left tab-bar + right panels)
+══════════════════════════════════════════════════════════ */
+.settings-wrapper {
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    gap: var(--space-xl);
+    align-items: start;
+}
+
+/* ══════════════════════════════════════════════════════════
+   2. SETTINGS TAB SIDEBAR
+══════════════════════════════════════════════════════════ */
+.settings-tabs {
+    background: var(--color-bg-card);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: var(--space-sm);
+    position: sticky;
+    top: calc(var(--navbar-height) + var(--space-lg));
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    /* gold top-accent — same pattern as summary-card::before */
+    overflow: hidden;
+}
+
+.settings-tabs::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 3px;
+    background: linear-gradient(90deg, var(--color-gold-dark), var(--color-gold), var(--color-gold-light));
+}
+
+.settings-tabs-title {
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+    padding: var(--space-sm) var(--space-sm);
+    margin-top: var(--space-xs);
+}
+
+.settings-tab {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    padding: 10px var(--space-sm);
+    border-radius: var(--radius-md);
+    border: none;
+    background: none;
+    color: var(--color-text-secondary);
+    font-family: "Poppins", sans-serif;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: var(--transition-fast);
+    text-align: left;
+    width: 100%;
+    position: relative;
+    white-space: nowrap;
+}
+
+.settings-tab i {
+    width: 20px;
+    text-align: center;
+    font-size: 0.95rem;
+    flex-shrink: 0;
+    transition: var(--transition-fast);
+}
+
+.settings-tab:hover {
+    background: rgba(201, 168, 76, 0.08);
+    color: var(--color-gold-light);
+}
+.settings-tab:hover i { color: var(--color-gold); }
+
+.settings-tab.active {
+    background: rgba(201, 168, 76, 0.14);
+    color: var(--color-gold);
+    font-weight: 600;
+    border-left: 3px solid var(--color-gold);
+}
+.settings-tab.active i {
+    color: var(--color-gold);
+    filter: drop-shadow(0 0 4px rgba(201, 168, 76, 0.4));
+}
+
+.settings-tabs-divider {
+    height: 1px;
+    background: var(--color-border);
+    margin: var(--space-xs) 0;
+}
+
+/* ══════════════════════════════════════════════════════════
+   3. SETTINGS PANELS
+══════════════════════════════════════════════════════════ */
+.settings-panels {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xl);
+    min-width: 0;
+}
+
+.settings-panel         { display: none; }
+.settings-panel.active  {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xl);
+}
+
+/* ══════════════════════════════════════════════════════════
+   4. SETTINGS CARD  (same look as summary-card)
+══════════════════════════════════════════════════════════ */
+.settings-card {
+    background: var(--color-bg-card);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: var(--space-xl);
+    position: relative;
+    overflow: hidden;
+    transition: var(--transition-fast);
+}
+
+/* Gold top-accent bar */
+.settings-card::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 3px;
+    background: linear-gradient(90deg, var(--color-gold-dark), var(--color-gold), var(--color-gold-light));
+}
+
+.settings-card-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: var(--space-md);
+    margin-bottom: var(--space-xl);
+}
+
+.settings-card-title {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--color-text-primary);
+}
+.settings-card-title i { color: var(--color-gold); }
+
+.settings-card-subtitle {
+    font-size: 0.78rem;
+    color: var(--color-text-muted);
+    margin-top: 3px;
+}
+
+/* ══════════════════════════════════════════════════════════
+   5. PROFILE SUMMARY ROW (avatar + name + badges)
+══════════════════════════════════════════════════════════ */
+.profile-summary {
+    display: flex;
+    align-items: center;
+    gap: var(--space-xl);
+    flex-wrap: wrap;
+    margin-bottom: var(--space-md);
+}
+
+/* Avatar circle */
+.profile-avatar-wrap {
+    position: relative;
+    flex-shrink: 0;
+}
+
+.profile-avatar-img {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid var(--color-gold);
+    display: block;
+    background: var(--color-bg-elevated);
+}
+
+/* Camera button */
+.avatar-change-btn {
+    position: absolute;
+    bottom: 3px;
+    right: 3px;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: var(--color-gold);
+    border: 2px solid var(--color-bg-card);
+    color: #0d0d0d;
+    font-size: 0.65rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: var(--transition-fast);
+}
+.avatar-change-btn:hover {
+    background: var(--color-gold-light);
+    transform: scale(1.1);
+}
+
+/* Glow ring behind avatar */
+.avatar-glow {
+    position: absolute;
+    inset: -8px;
+    border-radius: 50%;
+    background: radial-gradient(rgba(201,168,76,0.18), transparent 70%);
+    filter: blur(10px);
+    z-index: -1;
+    pointer-events: none;
+}
+
+.profile-summary-info { flex: 1; min-width: 0; }
+
+.profile-summary-name {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--color-text-primary);
+    margin-bottom: 2px;
+}
+
+.profile-summary-username {
+    font-size: 0.82rem;
+    color: var(--color-text-muted);
+    margin-bottom: var(--space-sm);
+}
+.profile-summary-username span { color: var(--color-gold); }
+
+.profile-summary-badges {
+    display: flex;
+    gap: var(--space-sm);
+    flex-wrap: wrap;
+}
+
+/* Inline badges (reuse style.css patterns) */
+.badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 0.72rem;
+    font-weight: 600;
+}
+.badge-gold    { background: rgba(201,168,76,0.15); color: var(--color-gold); }
+.badge-success { background: rgba(39,174,96,0.12);  color: var(--color-success); }
+.badge-warning { background: rgba(243,156,18,0.12); color: var(--color-warning); }
+
+/* ══════════════════════════════════════════════════════════
+   6. INFO GRID  (account details view)
+══════════════════════════════════════════════════════════ */
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-lg);
+}
+
+.info-row {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding-bottom: var(--space-md);
+    border-bottom: 1px solid var(--color-border);
+}
+
+.info-row-label {
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+.info-row-label i { color: var(--color-gold); width: 14px; text-align: center; }
+
+.info-row-value {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--color-text-primary);
+}
+
+/* ══════════════════════════════════════════════════════════
+   7. EDIT FORM GRID
+══════════════════════════════════════════════════════════ */
+.edit-form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-lg) var(--space-xl);
+}
+
+/* Full-width field inside the 2-col grid */
+.form-group-full { grid-column: 1 / -1; }
+
+/* Form action buttons row */
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--space-md);
+    flex-wrap: wrap;
+    padding-top: var(--space-lg);
+    border-top: 1px solid var(--color-border);
+    margin-top: var(--space-lg);
+}
+
+/* Password toggle button inside input */
+.password-wrap {
+    position: relative;
+}
+.password-wrap .form-control { padding-right: 2.8rem; }
+
+.password-toggle {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: var(--color-text-muted);
+    font-size: 0.9rem;
+    cursor: pointer;
+    padding: 0;
+    transition: var(--transition-fast);
+}
+.password-toggle:hover { color: var(--color-gold); }
+
+/* ══════════════════════════════════════════════════════════
+   8. PREFERENCE TOGGLE ROWS
+══════════════════════════════════════════════════════════ */
+.pref-list {
+    display: flex;
+    flex-direction: column;
+}
+
+.pref-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--space-md) 0;
+    border-bottom: 1px solid var(--color-border);
+    gap: var(--space-md);
+}
+.pref-item:last-child { border-bottom: none; }
+
+.pref-info {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    min-width: 0;
+}
+
+.pref-icon {
+    width: 38px;
+    height: 38px;
+    border-radius: var(--radius-md);
+    background: rgba(201, 168, 76, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-gold);
+    font-size: 0.95rem;
+    flex-shrink: 0;
+}
+
+.pref-name {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--color-text-primary);
+    margin-bottom: 2px;
+}
+.pref-desc {
+    font-size: 0.78rem;
+    color: var(--color-text-muted);
+}
+
+/* Toggle Switch */
+.toggle-switch {
+    position: relative;
+    width: 44px;
+    height: 24px;
+    flex-shrink: 0;
+    cursor: pointer;
+}
+.toggle-switch input { opacity: 0; width: 0; height: 0; position: absolute; }
+
+.toggle-slider {
+    position: absolute;
+    inset: 0;
+    background: var(--color-bg-elevated);
+    border: 1px solid var(--color-border);
+    border-radius: 24px;
+    transition: var(--transition-fast);
+    cursor: pointer;
+}
+.toggle-slider::before {
+    content: "";
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    left: 3px;
+    top: 3px;
+    background: var(--color-text-muted);
+    border-radius: 50%;
+    transition: var(--transition-fast);
+}
+.toggle-switch input:checked + .toggle-slider {
+    background: rgba(201, 168, 76, 0.18);
+    border-color: var(--color-gold);
+}
+.toggle-switch input:checked + .toggle-slider::before {
+    transform: translateX(20px);
+    background: var(--color-gold);
+}
+
+/* ══════════════════════════════════════════════════════════
+   9. SECURITY LIST
+══════════════════════════════════════════════════════════ */
+.security-list { display: flex; flex-direction: column; }
+
+.security-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--space-md) 0;
+    border-bottom: 1px solid var(--color-border);
+    gap: var(--space-md);
+    flex-wrap: wrap;
+}
+.security-item:last-child { border-bottom: none; }
+
+.security-info {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+}
+
+.security-icon {
+    width: 38px;
+    height: 38px;
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.95rem;
+    flex-shrink: 0;
+}
+.security-icon.icon-success { background: rgba(39,174,96,0.12);  color: var(--color-success); }
+.security-icon.icon-warning { background: rgba(243,156,18,0.12); color: var(--color-warning); }
+.security-icon.icon-gold    { background: rgba(201,168,76,0.12); color: var(--color-gold);    }
+
+.security-name {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--color-text-primary);
+    margin-bottom: 2px;
+}
+.security-desc { font-size: 0.78rem; color: var(--color-text-muted); }
+
+/* ══════════════════════════════════════════════════════════
+   10. DANGER ZONE CARD  (red accent override)
+══════════════════════════════════════════════════════════ */
+.settings-card.danger-zone {
+    border-color: rgba(231, 76, 60, 0.25);
+}
+.settings-card.danger-zone::before {
+    background: linear-gradient(90deg, var(--color-danger), rgba(231,76,60,0.4));
+}
+.settings-card.danger-zone .settings-card-title i {
+    color: var(--color-danger) !important;
+}
+
+/* ══════════════════════════════════════════════════════════
+   11. AVATAR MODAL
+══════════════════════════════════════════════════════════ */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.65);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: var(--transition-normal);
+    z-index: 9999;
+}
+.modal-overlay.active { opacity: 1; visibility: visible; }
+
+.modal-box {
+    width: 460px;
+    max-width: 95%;
+    background: var(--color-bg-elevated);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: var(--space-xl);
+    position: relative;
+    box-shadow: var(--shadow-hover);
+    animation: modalIn 0.25s ease;
+    overflow: hidden;
+}
+.modal-box::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 3px;
+    background: linear-gradient(90deg, var(--color-gold-dark), var(--color-gold), var(--color-gold-light));
+}
+
+@keyframes modalIn {
+    from { opacity: 0; transform: scale(0.93) translateY(16px); }
+    to   { opacity: 1; transform: scale(1)    translateY(0); }
+}
+
+.modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--space-xl);
+}
+
+.modal-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--color-text-primary);
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+}
+.modal-title i { color: var(--color-gold); }
+
+.modal-close {
+    width: 30px;
+    height: 30px;
+    border-radius: var(--radius-sm);
+    background: none;
+    border: none;
+    color: var(--color-text-secondary);
+    font-size: 1.25rem;
+    line-height: 1;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--transition-fast);
+}
+.modal-close:hover { color: var(--color-gold); background: rgba(201,168,76,0.08); }
+
+/* Avatar preview inside modal */
+.avatar-preview-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-sm);
+    margin-bottom: var(--space-lg);
+}
+.avatar-preview-img {
+    width: 76px;
+    height: 76px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid var(--color-gold);
+    background: var(--color-bg-card);
+}
+
+/* Divider line in modal */
+.modal-divider {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    margin: var(--space-md) 0;
+}
+.modal-divider-line {
+    flex: 1;
+    height: 1px;
+    background: var(--color-border);
+}
+.modal-divider-text {
+    font-size: 0.72rem;
+    color: var(--color-text-muted);
+}
+
+/* Hide the file input (triggered via button) */
+#avatar-file-input { display: none; }
+
+/* ══════════════════════════════════════════════════════════
+   12. RESPONSIVE OVERRIDES
+══════════════════════════════════════════════════════════ */
+
+/* Tablet: 991px and below — already handled by responsive.css
+   for sidebar/navbar. Settings-specific adjustments: */
+@media (max-width: 991px) {
+    .settings-wrapper {
+        grid-template-columns: 1fr;
+    }
+
+    .settings-tabs {
+        position: static;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        padding: var(--space-sm);
+        gap: 4px;
+    }
+
+    .settings-tabs-title,
+    .settings-tabs-divider { display: none; }
+
+    .settings-tab {
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 3px;
+        padding: var(--space-sm) var(--space-md);
+        flex-shrink: 0;
+        font-size: 0.72rem;
+        border-left: none !important;  /* override active border-left */
+        border-bottom: 3px solid transparent;
+    }
+    .settings-tab.active {
+        background: rgba(201, 168, 76, 0.12);
+        border-left: none !important;
+        border-bottom-color: var(--color-gold);
+    }
+    .settings-tab i { font-size: 1rem; }
+}
+
+@media (max-width: 767px) {
+    .info-grid          { grid-template-columns: 1fr; }
+    .edit-form-grid     { grid-template-columns: 1fr; }
+    .form-group-full    { grid-column: 1; }
+
+    .profile-summary {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .form-actions {
+        flex-direction: column;
+    }
+    .form-actions .btn { width: 100%; justify-content: center; }
+
+    .settings-card-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .settings-card-header .btn { width: 100%; justify-content: center; }
+}
+
+@media (max-width: 480px) {
+    .settings-card { padding: var(--space-lg) var(--space-md); }
+    .modal-box      { padding: var(--space-lg) var(--space-md); }
+
+    .security-item {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .security-item .btn { width: 100%; justify-content: center; }
+}

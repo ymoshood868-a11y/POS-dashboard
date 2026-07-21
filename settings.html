@@ -1,69 +1,751 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Settings — POSDash</title>
-    <link rel="icon"
-        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💰</text></svg>" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
-        rel="stylesheet" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
-    <!-- Shared layout styles — DO NOT REMOVE -->
-    <link rel="stylesheet" href="css/style.css" />
-    <link rel="stylesheet" href="css/layout.css" />
-    <link rel="stylesheet" href="css/responsive.css" />
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚙️</text></svg>">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/layout.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    <link rel="stylesheet" href="css/settings.css">
 </head>
-
 <body>
 
-    <div id="sidebar-overlay" class="sidebar-overlay" aria-hidden="true"></div>
+<div id="sidebar-overlay" class="sidebar-overlay" aria-hidden="true"></div>
 
-    <div class="app-wrapper">
+<div class="app-wrapper">
 
-        <div id="sidebar-placeholder"></div>
-
-        <div class="main-wrapper">
-
-            <div id="navbar-placeholder"></div>
-
-            <!-- =====================================================
-         PAGE CONTENT — Module 5: Settings
+    <!-- =====================================================
+         SIDEBAR — identical structure to dashboard.html
     ====================================================== -->
-            <main class="page-content" aria-label="Settings">
+    <aside id="sidebar" class="sidebar" aria-label="Main navigation">
 
-                <div class="page-header">
-                    <h1>App <span>Settings</span></h1>
-                    <p>Manage your account, preferences, and application settings.</p>
+        <a href="dashboard.html" class="sidebar-brand">
+            <div class="brand-icon"><i class="fa-solid fa-coins"></i></div>
+            <div class="brand-text">
+                <span class="brand-name"><span>POS</span>Dash</span>
+                <span class="brand-tagline">Transaction Manager</span>
+            </div>
+        </a>
+
+        <nav class="sidebar-nav" aria-label="Sidebar navigation">
+
+            <p class="sidebar-section-title">Main</p>
+            <ul>
+                <li class="nav-item">
+                    <a href="dashboard.html" class="nav-link" data-tooltip="Dashboard" data-page="dashboard.html">
+                        <span class="nav-icon"><i class="fa-solid fa-gauge-high"></i></span>
+                        <span class="nav-label">Dashboard</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="new-transaction.html" class="nav-link" data-tooltip="New Transaction" data-page="new-transaction.html">
+                        <span class="nav-icon"><i class="fa-solid fa-plus-circle"></i></span>
+                        <span class="nav-label">New Transaction</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="transactions.html" class="nav-link" data-tooltip="Transactions" data-page="transactions.html">
+                        <span class="nav-icon"><i class="fa-solid fa-list"></i></span>
+                        <span class="nav-label">Transactions</span>
+                        <span class="nav-badge" id="txn-count-badge">—</span>
+                    </a>
+                </li>
+            </ul>
+
+            <div class="sidebar-divider"></div>
+            <p class="sidebar-section-title">Analytics</p>
+            <ul>
+                <li class="nav-item">
+                    <a href="reports.html" class="nav-link" data-tooltip="Reports" data-page="reports.html">
+                        <span class="nav-icon"><i class="fa-solid fa-chart-bar"></i></span>
+                        <span class="nav-label">Reports</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="analytics.html" class="nav-link" data-tooltip="Analytics" data-page="analytics.html">
+                        <span class="nav-icon"><i class="fa-solid fa-chart-line"></i></span>
+                        <span class="nav-label">Analytics</span>
+                    </a>
+                </li>
+            </ul>
+
+            <div class="sidebar-divider"></div>
+            <p class="sidebar-section-title">System</p>
+            <ul>
+                <li class="nav-item">
+                    <a href="settings.html" class="nav-link" data-tooltip="Settings" data-page="settings.html">
+                        <span class="nav-icon"><i class="fa-solid fa-gear"></i></span>
+                        <span class="nav-label">Settings</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link" data-tooltip="Logout" data-action="logout">
+                        <span class="nav-icon"><i class="fa-solid fa-right-from-bracket"></i></span>
+                        <span class="nav-label">Logout</span>
+                    </a>
+                </li>
+            </ul>
+
+        </nav>
+
+        <div class="sidebar-footer">
+            <div class="sidebar-user">
+                <div class="user-avatar" id="sidebar-user-avatar">AU</div>
+                <div class="sidebar-user-info">
+                    <div class="user-name" id="sidebar-user-name">Loading…</div>
+                    <div class="user-role" id="sidebar-user-role">Admin</div>
                 </div>
+            </div>
+        </div>
 
-                <!-- ⬇⬇ TEAM MEMBER 5: build your content here ⬇⬇ -->
-                <div class="table-empty-state" style="margin-top: var(--space-xl)">
-                    <div class="empty-icon"><i class="fa-solid fa-gear"></i></div>
-                    <p class="empty-title">Settings</p>
-                    <p class="empty-sub">This page is being built by Team Member 5.</p>
+    </aside>
+
+    <!-- =====================================================
+         MAIN WRAPPER
+    ====================================================== -->
+    <div class="main-wrapper">
+
+        <!-- NAVBAR -->
+        <header class="navbar" role="banner">
+            <div class="navbar-left">
+                <button id="btn-sidebar-toggle" class="btn-sidebar-toggle" aria-label="Toggle sidebar">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+                <button id="btn-mobile-toggle" class="btn-sidebar-toggle" aria-label="Open menu" style="display:none">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+                <div>
+                    <div class="navbar-title" id="navbar-page-title">Settings</div>
+                    <div class="navbar-breadcrumb">
+                        <span>Home</span>
+                        <i class="fa-solid fa-chevron-right" style="font-size:.6rem"></i>
+                        <span id="navbar-breadcrumb-label">System</span>
+                    </div>
                 </div>
-                <!-- ⬆⬆ END team content ⬆⬆ -->
+            </div>
 
-            </main>
+            <div class="navbar-search">
+                <div class="search-wrapper">
+                    <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                    <input type="search" placeholder="Search transactions…" aria-label="Search">
+                </div>
+            </div>
 
-            <div id="footer-placeholder"></div>
+            <div class="navbar-right">
+                <button class="btn-navbar-action" aria-label="Notifications">
+                    <i class="fa-solid fa-bell"></i>
+                    <span class="notification-dot" aria-hidden="true"></span>
+                </button>
+                <button class="btn-navbar-action" aria-label="Fullscreen"
+                    onclick="document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen()">
+                    <i class="fa-solid fa-expand"></i>
+                </button>
 
+                <div class="navbar-user" id="navbar-user-btn" role="button"
+                     aria-haspopup="true" aria-expanded="false" tabindex="0">
+                    <div class="user-avatar" id="nav-user-avatar">AU</div>
+                    <span class="user-name" id="nav-user-name">Admin User</span>
+                    <i class="fa-solid fa-chevron-down user-chevron"></i>
+
+                    <div id="user-dropdown" class="user-dropdown" role="menu">
+                        <div class="dropdown-user-header">
+                            <div class="dropdown-avatar" id="dropdown-avatar">AU</div>
+                            <div>
+                                <div class="dropdown-user-name" id="dropdown-user-name">Admin User</div>
+                                <div class="dropdown-user-email" id="dropdown-user-email">admin@posdash.com</div>
+                            </div>
+                        </div>
+                        <div class="dropdown-divider"></div>
+                        <a href="profile.html" class="dropdown-item" role="menuitem">
+                            <i class="fa-solid fa-user"></i> My Profile
+                        </a>
+                        <a href="settings.html" class="dropdown-item" role="menuitem">
+                            <i class="fa-solid fa-gear"></i> Settings
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        <a href="#" class="dropdown-item logout-item" data-action="logout" role="menuitem">
+                            <i class="fa-solid fa-right-from-bracket"></i> Logout
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- PAGE CONTENT -->
+        <main class="page-content" aria-label="Settings content">
+
+            <!-- Page Header -->
+            <div class="page-header">
+                <h1><span><i class="fa-solid fa-gear"></i></span> Settings</h1>
+                <p>Manage your account, security, and notification preferences.</p>
+            </div>
+
+            <!-- Settings layout: tab sidebar + panels -->
+            <div class="settings-wrapper">
+
+                <!-- LEFT: Tab Navigation -->
+                <nav class="settings-tabs" role="tablist" aria-label="Settings sections">
+                    <span class="settings-tabs-title">Menu</span>
+
+                    <button class="settings-tab" data-tab="profile" role="tab" aria-selected="true">
+                        <i class="fa-solid fa-user"></i><span>Profile</span>
+                    </button>
+                    <button class="settings-tab" data-tab="edit-profile" role="tab" aria-selected="false">
+                        <i class="fa-solid fa-pen-to-square"></i><span>Edit Profile</span>
+                    </button>
+
+                    <div class="settings-tabs-divider"></div>
+
+                    <button class="settings-tab" data-tab="security" role="tab" aria-selected="false">
+                        <i class="fa-solid fa-shield-halved"></i><span>Security</span>
+                    </button>
+                    <button class="settings-tab" data-tab="preferences" role="tab" aria-selected="false">
+                        <i class="fa-solid fa-sliders"></i><span>Preferences</span>
+                    </button>
+
+                    <div class="settings-tabs-divider"></div>
+
+                    <button class="settings-tab" data-tab="danger" role="tab" aria-selected="false">
+                        <i class="fa-solid fa-triangle-exclamation"></i><span>Danger Zone</span>
+                    </button>
+                </nav>
+
+                <!-- RIGHT: Panels -->
+                <div class="settings-panels">
+
+                    <!-- ═══════════════════════════════════
+                         PANEL: Profile (view)
+                    ════════════════════════════════════ -->
+                    <section class="settings-panel active" data-panel="profile" role="tabpanel">
+
+                        <!-- Summary card -->
+                        <div class="settings-card">
+                            <div class="settings-card-header">
+                                <div>
+                                    <div class="settings-card-title">
+                                        <i class="fa-solid fa-id-card"></i> Profile Overview
+                                    </div>
+                                    <div class="settings-card-subtitle">Your public account information</div>
+                                </div>
+                                <button class="btn btn-primary" data-tab-goto="edit-profile">
+                                    <i class="fa-solid fa-pen"></i> Edit Profile
+                                </button>
+                            </div>
+
+                            <div class="profile-summary">
+                                <div class="profile-avatar-wrap">
+                                    <span class="avatar-glow"></span>
+                                    <img class="profile-avatar-img" data-settings-avatar
+                                         src="assets/images/POS IMG.jpg" alt="Profile avatar"
+                                         onerror="this.src='https://ui-avatars.com/api/?name=AU&background=a8872e&color=fff&size=128&bold=true'">
+                                    <button class="avatar-change-btn" data-open-avatar-modal
+                                            title="Change avatar" aria-label="Change avatar">
+                                        <i class="fa-solid fa-camera"></i>
+                                    </button>
+                                </div>
+                                <div class="profile-summary-info">
+                                    <div class="profile-summary-name" id="settings-full-name">Loading…</div>
+                                    <div class="profile-summary-username">
+                                        <span id="settings-username">@username</span>
+                                    </div>
+                                    <div class="profile-summary-badges">
+                                        <span class="badge badge-gold">
+                                            <i class="fa-solid fa-star"></i>
+                                            <span id="settings-role">Admin</span>
+                                        </span>
+                                        <span class="badge badge-success">
+                                            <i class="fa-solid fa-circle"></i> Active
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Account details card -->
+                        <div class="settings-card">
+                            <div class="settings-card-header">
+                                <div class="settings-card-title">
+                                    <i class="fa-solid fa-circle-info"></i> Account Details
+                                </div>
+                            </div>
+                            <div class="info-grid">
+                                <div class="info-row">
+                                    <span class="info-row-label"><i class="fa-solid fa-user"></i> Full Name</span>
+                                    <span class="info-row-value" id="settings-full-name-detail">—</span>
+                                </div>
+                                <div class="info-row">
+                                    <span class="info-row-label"><i class="fa-solid fa-at"></i> Username</span>
+                                    <span class="info-row-value" id="settings-username-detail">—</span>
+                                </div>
+                                <div class="info-row">
+                                    <span class="info-row-label"><i class="fa-solid fa-envelope"></i> Email</span>
+                                    <span class="info-row-value" id="settings-email">—</span>
+                                </div>
+                                <div class="info-row">
+                                    <span class="info-row-label"><i class="fa-solid fa-phone"></i> Phone</span>
+                                    <span class="info-row-value" id="settings-phone">—</span>
+                                </div>
+                                <div class="info-row">
+                                    <span class="info-row-label"><i class="fa-solid fa-user-shield"></i> Role</span>
+                                    <span class="info-row-value" id="settings-role-detail">—</span>
+                                </div>
+                                <div class="info-row">
+                                    <span class="info-row-label"><i class="fa-solid fa-building"></i> Department</span>
+                                    <span class="info-row-value" id="settings-department">—</span>
+                                </div>
+                            </div>
+                        </div>
+
+                    </section>
+
+                    <!-- ═══════════════════════════════════
+                         PANEL: Edit Profile
+                    ════════════════════════════════════ -->
+                    <section class="settings-panel" data-panel="edit-profile" role="tabpanel">
+
+                        <div class="settings-card">
+                            <div class="settings-card-header">
+                                <div>
+                                    <div class="settings-card-title">
+                                        <i class="fa-solid fa-pen-to-square"></i> Edit Profile
+                                    </div>
+                                    <div class="settings-card-subtitle">Update your personal information</div>
+                                </div>
+                            </div>
+
+                            <form id="edit-profile-form" novalidate autocomplete="off">
+
+                                <!-- Avatar row -->
+                                <div style="display:flex;align-items:center;gap:1.5rem;margin-bottom:var(--space-xl);flex-wrap:wrap;">
+                                    <div class="profile-avatar-wrap" style="flex-shrink:0;">
+                                        <span class="avatar-glow"></span>
+                                        <img class="profile-avatar-img" data-settings-avatar
+                                             src="assets/images/POS IMG.jpg" alt="Profile avatar"
+                                             onerror="this.src='https://ui-avatars.com/api/?name=AU&background=a8872e&color=fff&size=128&bold=true'">
+                                        <button type="button" class="avatar-change-btn"
+                                                data-open-avatar-modal aria-label="Change avatar">
+                                            <i class="fa-solid fa-camera"></i>
+                                        </button>
+                                    </div>
+                                    <div>
+                                        <p style="font-size:.82rem;color:var(--color-text-secondary);margin-bottom:var(--space-sm);">Profile Picture</p>
+                                        <button type="button" class="btn btn-secondary" data-open-avatar-modal>
+                                            <i class="fa-solid fa-upload"></i> Change Avatar
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div class="edit-form-grid">
+                                    <div class="form-group">
+                                        <label for="edit-full-name">Full Name</label>
+                                        <input type="text" id="edit-full-name" class="form-control"
+                                               placeholder="Enter full name" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="edit-username">Username</label>
+                                        <input type="text" id="edit-username" class="form-control"
+                                               placeholder="Enter username">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="edit-email">Email Address</label>
+                                        <input type="email" id="edit-email" class="form-control"
+                                               placeholder="Enter email" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="edit-phone">Phone Number</label>
+                                        <input type="tel" id="edit-phone" class="form-control"
+                                               placeholder="+234 800 000 0000">
+                                    </div>
+                                    <div class="form-group form-group-full">
+                                        <label for="edit-department">
+                                            Department <span style="color:var(--color-text-muted)">(optional)</span>
+                                        </label>
+                                        <input type="text" id="edit-department" class="form-control"
+                                               placeholder="e.g. Operations, Finance">
+                                    </div>
+                                </div>
+
+                                <div class="form-actions">
+                                    <button type="button" id="cancel-edit-btn" class="btn btn-secondary">
+                                        <i class="fa-solid fa-xmark"></i> Cancel
+                                    </button>
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fa-solid fa-floppy-disk"></i> Save Changes
+                                    </button>
+                                </div>
+
+                            </form>
+                        </div>
+
+                    </section>
+
+                    <!-- ═══════════════════════════════════
+                         PANEL: Security
+                    ════════════════════════════════════ -->
+                    <section class="settings-panel" data-panel="security" role="tabpanel">
+
+                        <!-- Change Password -->
+                        <div class="settings-card">
+                            <div class="settings-card-header">
+                                <div>
+                                    <div class="settings-card-title">
+                                        <i class="fa-solid fa-lock"></i> Change Password
+                                    </div>
+                                    <div class="settings-card-subtitle">Keep your account secure</div>
+                                </div>
+                            </div>
+                            <form id="change-password-form" novalidate autocomplete="off">
+                                <div class="edit-form-grid">
+                                    <div class="form-group form-group-full">
+                                        <label for="current-password">Current Password</label>
+                                        <div class="password-wrap">
+                                            <input type="password" id="current-password" class="form-control"
+                                                   placeholder="Enter current password">
+                                            <button type="button" class="password-toggle" aria-label="Toggle">
+                                                <i class="fa-solid fa-eye"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="new-password">New Password</label>
+                                        <div class="password-wrap">
+                                            <input type="password" id="new-password" class="form-control"
+                                                   placeholder="Min. 8 characters">
+                                            <button type="button" class="password-toggle" aria-label="Toggle">
+                                                <i class="fa-solid fa-eye"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="confirm-password">Confirm Password</label>
+                                        <div class="password-wrap">
+                                            <input type="password" id="confirm-password" class="form-control"
+                                                   placeholder="Repeat new password">
+                                            <button type="button" class="password-toggle" aria-label="Toggle">
+                                                <i class="fa-solid fa-eye"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-actions">
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fa-solid fa-shield-halved"></i> Update Password
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+
+                        <!-- Security Status -->
+                        <div class="settings-card">
+                            <div class="settings-card-header">
+                                <div class="settings-card-title">
+                                    <i class="fa-solid fa-shield-check"></i> Security Status
+                                </div>
+                            </div>
+                            <div class="security-list">
+                                <div class="security-item">
+                                    <div class="security-info">
+                                        <div class="security-icon icon-success">
+                                            <i class="fa-solid fa-circle-check"></i>
+                                        </div>
+                                        <div>
+                                            <div class="security-name">Password Protection</div>
+                                            <div class="security-desc">Your account is password protected</div>
+                                        </div>
+                                    </div>
+                                    <span class="badge badge-success">Active</span>
+                                </div>
+                                <div class="security-item">
+                                    <div class="security-info">
+                                        <div class="security-icon icon-warning">
+                                            <i class="fa-solid fa-triangle-exclamation"></i>
+                                        </div>
+                                        <div>
+                                            <div class="security-name">Two-Factor Authentication</div>
+                                            <div class="security-desc">Add an extra layer of security</div>
+                                        </div>
+                                    </div>
+                                    <span class="badge badge-warning">Disabled</span>
+                                </div>
+                                <div class="security-item">
+                                    <div class="security-info">
+                                        <div class="security-icon icon-gold">
+                                            <i class="fa-solid fa-clock-rotate-left"></i>
+                                        </div>
+                                        <div>
+                                            <div class="security-name">Session Management</div>
+                                            <div class="security-desc">Last login: Today</div>
+                                        </div>
+                                    </div>
+                                    <button class="btn btn-secondary" style="padding:6px 14px;font-size:.8rem;">
+                                        <i class="fa-solid fa-right-from-bracket"></i> Sign Out All
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                    </section>
+
+                    <!-- ═══════════════════════════════════
+                         PANEL: Preferences
+                    ════════════════════════════════════ -->
+                    <section class="settings-panel" data-panel="preferences" role="tabpanel">
+
+                        <!-- Notifications -->
+                        <div class="settings-card">
+                            <div class="settings-card-header">
+                                <div>
+                                    <div class="settings-card-title">
+                                        <i class="fa-solid fa-bell"></i> Notifications
+                                    </div>
+                                    <div class="settings-card-subtitle">Choose how you receive alerts</div>
+                                </div>
+                            </div>
+                            <div class="pref-list">
+                                <div class="pref-item">
+                                    <div class="pref-info">
+                                        <div class="pref-icon"><i class="fa-solid fa-envelope"></i></div>
+                                        <div>
+                                            <div class="pref-name">Email Notifications</div>
+                                            <div class="pref-desc">Receive updates and alerts via email</div>
+                                        </div>
+                                    </div>
+                                    <label class="toggle-switch" aria-label="Email notifications">
+                                        <input type="checkbox" id="pref-email-notifications">
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+                                <div class="pref-item">
+                                    <div class="pref-info">
+                                        <div class="pref-icon"><i class="fa-solid fa-mobile-screen"></i></div>
+                                        <div>
+                                            <div class="pref-name">SMS Notifications</div>
+                                            <div class="pref-desc">Receive alerts via SMS to your phone</div>
+                                        </div>
+                                    </div>
+                                    <label class="toggle-switch" aria-label="SMS notifications">
+                                        <input type="checkbox" id="pref-sms-notifications">
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+                                <div class="pref-item">
+                                    <div class="pref-info">
+                                        <div class="pref-icon"><i class="fa-solid fa-credit-card"></i></div>
+                                        <div>
+                                            <div class="pref-name">Transaction Alerts</div>
+                                            <div class="pref-desc">Get notified on every transaction</div>
+                                        </div>
+                                    </div>
+                                    <label class="toggle-switch" aria-label="Transaction alerts">
+                                        <input type="checkbox" id="pref-transaction-alerts">
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+                                <div class="pref-item">
+                                    <div class="pref-info">
+                                        <div class="pref-icon"><i class="fa-solid fa-right-to-bracket"></i></div>
+                                        <div>
+                                            <div class="pref-name">Login Alerts</div>
+                                            <div class="pref-desc">Notify me when a new login is detected</div>
+                                        </div>
+                                    </div>
+                                    <label class="toggle-switch" aria-label="Login alerts">
+                                        <input type="checkbox" id="pref-login-alerts">
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+                                <div class="pref-item">
+                                    <div class="pref-info">
+                                        <div class="pref-icon"><i class="fa-solid fa-chart-bar"></i></div>
+                                        <div>
+                                            <div class="pref-name">Weekly Report Digest</div>
+                                            <div class="pref-desc">Receive a summary of activity every week</div>
+                                        </div>
+                                    </div>
+                                    <label class="toggle-switch" aria-label="Report digest">
+                                        <input type="checkbox" id="pref-report-digest">
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Display -->
+                        <div class="settings-card">
+                            <div class="settings-card-header">
+                                <div>
+                                    <div class="settings-card-title">
+                                        <i class="fa-solid fa-display"></i> Display
+                                    </div>
+                                    <div class="settings-card-subtitle">Customize your interface</div>
+                                </div>
+                            </div>
+                            <div class="pref-list">
+                                <div class="pref-item">
+                                    <div class="pref-info">
+                                        <div class="pref-icon"><i class="fa-solid fa-compress"></i></div>
+                                        <div>
+                                            <div class="pref-name">Compact View</div>
+                                            <div class="pref-desc">Show more data with reduced spacing</div>
+                                        </div>
+                                    </div>
+                                    <label class="toggle-switch" aria-label="Compact view">
+                                        <input type="checkbox" id="pref-compact-view">
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                    </section>
+
+                    <!-- ═══════════════════════════════════
+                         PANEL: Danger Zone
+                    ════════════════════════════════════ -->
+                    <section class="settings-panel" data-panel="danger" role="tabpanel">
+                        <div class="settings-card danger-zone">
+                            <div class="settings-card-header">
+                                <div>
+                                    <div class="settings-card-title">
+                                        <i class="fa-solid fa-triangle-exclamation" style="color:var(--color-danger)"></i>
+                                        Danger Zone
+                                    </div>
+                                    <div class="settings-card-subtitle">These actions cannot be undone</div>
+                                </div>
+                            </div>
+                            <div class="security-list">
+                                <div class="security-item">
+                                    <div class="security-info">
+                                        <div class="security-icon" style="background:rgba(243,156,18,.12);color:var(--color-warning)">
+                                            <i class="fa-solid fa-rotate-left"></i>
+                                        </div>
+                                        <div>
+                                            <div class="security-name">Reset Profile</div>
+                                            <div class="security-desc">Restore profile to defaults. Transactions are not affected.</div>
+                                        </div>
+                                    </div>
+                                    <button id="reset-profile-btn" class="btn btn-secondary"
+                                            style="border-color:rgba(243,156,18,.4);color:var(--color-warning)">
+                                        <i class="fa-solid fa-rotate-left"></i> Reset
+                                    </button>
+                                </div>
+                                <div class="security-item">
+                                    <div class="security-info">
+                                        <div class="security-icon" style="background:rgba(231,76,60,.12);color:var(--color-danger)">
+                                            <i class="fa-solid fa-trash-can"></i>
+                                        </div>
+                                        <div>
+                                            <div class="security-name">Clear All Saved Data</div>
+                                            <div class="security-desc">Delete all locally stored profile and preferences data.</div>
+                                        </div>
+                                    </div>
+                                    <button id="clear-data-btn" class="btn btn-danger">
+                                        <i class="fa-solid fa-trash-can"></i> Clear All
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                </div><!-- /settings-panels -->
+            </div><!-- /settings-wrapper -->
+
+        </main>
+
+        <!-- FOOTER -->
+        <footer class="dashboard-footer">
+            <span>POSDash &copy; 2026</span>
+            <span class="footer-divider">|</span>
+            <span>Version 1.0</span>
+            <span class="footer-divider">|</span>
+            <span>Built with <i class="fa-solid fa-heart" style="color:var(--color-gold);font-size:.75rem"></i> for your team</span>
+        </footer>
+
+    </div><!-- /main-wrapper -->
+</div><!-- /app-wrapper -->
+
+<!-- ═══════════════════════════════════════════════════════
+     AVATAR CHANGE MODAL
+════════════════════════════════════════════════════════ -->
+<div class="modal-overlay" id="avatar-modal" role="dialog"
+     aria-modal="true" aria-labelledby="avatar-modal-title">
+    <div class="modal-box">
+        <div class="modal-header">
+            <h2 class="modal-title" id="avatar-modal-title">
+                <i class="fa-solid fa-image"></i> Change Avatar
+            </h2>
+            <button class="modal-close" id="avatar-modal-close" aria-label="Close">&times;</button>
+        </div>
+
+        <div class="avatar-preview-wrap">
+            <img id="avatar-preview" class="avatar-preview-img"
+                 src="assets/images/POS IMG.jpg" alt="Preview"
+                 onerror="this.src='https://ui-avatars.com/api/?name=AU&background=a8872e&color=fff&size=128&bold=true'">
+            <span style="font-size:.72rem;color:var(--color-text-muted)">Preview</span>
+        </div>
+
+        <div class="form-group">
+            <label for="avatar-url-input">Image URL</label>
+            <input type="url" id="avatar-url-input" class="form-control"
+                   placeholder="https://example.com/photo.jpg">
+        </div>
+
+        <div class="modal-divider">
+            <div class="modal-divider-line"></div>
+            <span class="modal-divider-text">or</span>
+            <div class="modal-divider-line"></div>
+        </div>
+
+        <input type="file" id="avatar-file-input" accept="image/*" aria-hidden="true">
+        <button type="button" id="avatar-file-btn" class="btn btn-secondary"
+                style="width:100%;justify-content:center;margin-bottom:var(--space-lg)">
+            <i class="fa-solid fa-upload"></i> Upload from Device
+        </button>
+
+        <div style="display:flex;justify-content:flex-end;gap:var(--space-md)">
+            <button type="button" id="avatar-modal-cancel" class="btn btn-secondary">Cancel</button>
+            <button type="button" id="avatar-modal-save" class="btn btn-primary">
+                <i class="fa-solid fa-floppy-disk"></i> Save Avatar
+            </button>
         </div>
     </div>
+</div>
 
-    <script type="module">
-        import Layout from './js/layout.js';
+<!-- ═══════════════════════════════════════════════════════
+     SCRIPTS
+════════════════════════════════════════════════════════ -->
 
-        document.addEventListener('DOMContentLoaded', () => {
-            Layout.init({ pageTitle: 'Settings', breadcrumb: 'App Settings' });
-            // TODO: add your settings form logic here
-        });
-    </script>
+<!-- Layout: sidebar toggle, active nav, user profile, dropdown, clock -->
+<script type="module">
+    import Layout from './js/layout.js';
+    document.addEventListener('DOMContentLoaded', () => {
+        Layout.init({ pageTitle: 'Settings', breadcrumb: 'System' });
+    });
+</script>
+
+<!-- Settings module logic -->
+<script type="module" src="js/settings.js"></script>
+
+<!-- Responsive toggle (same inline script as dashboard.html) -->
+<script>
+    (function () {
+        const mobileBtn  = document.getElementById('btn-mobile-toggle');
+        const desktopBtn = document.getElementById('btn-sidebar-toggle');
+        function check() {
+            const isMobile = window.innerWidth <= 991;
+            if (mobileBtn)  mobileBtn.style.display  = isMobile ? 'flex' : 'none';
+            if (desktopBtn) desktopBtn.style.display = isMobile ? 'none' : 'flex';
+        }
+        check();
+        window.addEventListener('resize', check);
+    })();
+</script>
 
 </body>
-
 </html>
