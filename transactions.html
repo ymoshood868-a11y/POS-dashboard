@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Transactions — POSDash</title>
+    <link rel="icon"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💰</text></svg>" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <!-- Shared layout styles — DO NOT REMOVE -->
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/layout.css" />
+    <link rel="stylesheet" href="css/responsive.css" />
+    <!-- Page-specific styles go here -->
+</head>
+
+<body>
+
+    <div id="sidebar-overlay" class="sidebar-overlay" aria-hidden="true"></div>
+
+    <div class="app-wrapper">
+
+        <!--
+    SIDEBAR — injected by Layout.init() from components/sidebar.html
+    OR paste components/sidebar.html content here directly.
+  -->
+        <div id="sidebar-placeholder"></div>
+
+        <div class="main-wrapper">
+
+            <!-- NAVBAR — injected by Layout.init() from components/navbar.html -->
+            <div id="navbar-placeholder"></div>
+
+            <!-- =====================================================
+         PAGE CONTENT — Module 3: Transaction History
+         =====================================================
+         Replace everything inside <main> with your own content.
+         Keep the <main class="page-content"> wrapper.
+    ====================================================== -->
+            <main class="page-content" aria-label="Transactions">
+
+                <div class="page-header">
+                    <h1>Transaction <span>History</span></h1>
+                    <p>Browse, filter, and manage all transactions.</p>
+                </div>
+
+                <!-- ⬇⬇ TEAM MEMBER 3: build your content here ⬇⬇ -->
+                <div class="table-empty-state" style="margin-top: var(--space-xl)">
+                    <div class="empty-icon"><i class="fa-solid fa-list"></i></div>
+                    <p class="empty-title">Transaction History</p>
+                    <p class="empty-sub">This page is being built by Team Member 3.</p>
+                </div>
+                <!-- ⬆⬆ END team content ⬆⬆ -->
+
+            </main>
+
+            <!-- FOOTER — injected by Layout.init() from components/footer.html -->
+            <div id="footer-placeholder"></div>
+
+        </div>
+    </div>
+
+    <script type="module">
+        /**
+         * Page bootstrap for transactions.html
+         * Team Member 3: replace the import and page-specific logic below.
+         */
+        import Layout from './js/layout.js';
+
+        document.addEventListener('DOMContentLoaded', () => {
+            Layout.init({ pageTitle: 'Transactions', breadcrumb: 'Transaction History' });
+            // TODO: add your transaction table logic here
+        });
+    </script>
+
+</body>
+
+</html>

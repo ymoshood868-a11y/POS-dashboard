@@ -1,0 +1,84 @@
+<!--
+  components/navbar.html
+  =======================
+  Reusable top navbar — shared across ALL pages.
+
+  HOW TO USE:
+    Call Layout.loadComponent('navbar', '#navbar-placeholder')
+    then call Layout.initNavbar({ title: 'Page Title', breadcrumb: 'Section' })
+    from your page script.
+-->
+<header class="navbar" role="banner">
+
+    <!-- Left: toggle + page title -->
+    <div class="navbar-left">
+        <button id="btn-sidebar-toggle" class="btn-sidebar-toggle" aria-label="Toggle sidebar">
+            <i class="fa-solid fa-bars"></i>
+        </button>
+        <!-- Mobile toggle (shown by JS at ≤991px) -->
+        <button id="btn-mobile-toggle" class="btn-sidebar-toggle" aria-label="Open menu" style="display:none">
+            <i class="fa-solid fa-bars"></i>
+        </button>
+        <div>
+            <div class="navbar-title" id="navbar-page-title">Dashboard</div>
+            <div class="navbar-breadcrumb">
+                <span>Home</span>
+                <i class="fa-solid fa-chevron-right" style="font-size:0.6rem"></i>
+                <span id="navbar-breadcrumb-label">Overview</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Center: search -->
+    <div class="navbar-search">
+        <div class="search-wrapper">
+            <i class="fa-solid fa-magnifying-glass search-icon"></i>
+            <input type="search" id="global-search" placeholder="Search transactions…" aria-label="Search" />
+        </div>
+    </div>
+
+    <!-- Right: actions + user -->
+    <div class="navbar-right">
+
+        <button class="btn-navbar-action" aria-label="Notifications" title="Notifications">
+            <i class="fa-solid fa-bell"></i>
+            <span class="notification-dot" aria-hidden="true"></span>
+        </button>
+
+        <button class="btn-navbar-action" id="btn-fullscreen" aria-label="Fullscreen" title="Fullscreen"
+            onclick="document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen()">
+            <i class="fa-solid fa-expand"></i>
+        </button>
+
+        <!-- User dropdown -->
+        <div class="navbar-user" id="navbar-user-btn" role="button" aria-haspopup="true" aria-expanded="false"
+            tabindex="0">
+            <div class="user-avatar" id="nav-user-avatar">AU</div>
+            <span class="user-name" id="nav-user-name">Admin User</span>
+            <i class="fa-solid fa-chevron-down user-chevron"></i>
+
+            <div id="user-dropdown" class="user-dropdown" role="menu">
+                <!-- User info header -->
+                <div class="dropdown-user-header">
+                    <div class="dropdown-avatar" id="dropdown-avatar">AU</div>
+                    <div>
+                        <div class="dropdown-user-name" id="dropdown-user-name">Admin User</div>
+                        <div class="dropdown-user-email" id="dropdown-user-email">admin@posdash.com</div>
+                    </div>
+                </div>
+                <div class="dropdown-divider"></div>
+                <a href="settings.html" class="dropdown-item" role="menuitem">
+                    <i class="fa-solid fa-user"></i> My Profile
+                </a>
+                <a href="settings.html" class="dropdown-item" role="menuitem">
+                    <i class="fa-solid fa-gear"></i> Settings
+                </a>
+                <div class="dropdown-divider"></div>
+                <a href="#" class="dropdown-item logout-item" data-action="logout" role="menuitem">
+                    <i class="fa-solid fa-right-from-bracket"></i> Logout
+                </a>
+            </div>
+        </div>
+
+    </div>
+</header>

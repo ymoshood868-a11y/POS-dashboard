@@ -1,0 +1,248 @@
+/* ============================================================
+   responsive.css — Responsive breakpoints
+   POS Dashboard | Module 1: Authentication & Dashboard
+   ============================================================ */
+
+/* ---- Large Desktop: 1400px+ ---- */
+@media (min-width: 1400px) {
+  .cards-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* ---- Standard Desktop: 1200px - 1399px ---- */
+@media (max-width: 1299px) {
+  .navbar-search {
+    max-width: 260px;
+  }
+}
+
+/* ---- Small desktop / Tablet landscape: up to 1199px ---- */
+@media (max-width: 1199px) {
+  .cards-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  /* Stack chart above table */
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .navbar-search {
+    max-width: 200px;
+  }
+}
+
+/* ---- Tablet portrait: up to 991px ---- */
+@media (max-width: 991px) {
+  /* Sidebar becomes off-canvas overlay */
+  .sidebar {
+    transform: translateX(-100%);
+    width: var(--sidebar-width) !important;
+    box-shadow: 4px 0 24px rgba(0, 0, 0, 0.5);
+  }
+  .sidebar.mobile-open {
+    transform: translateX(0);
+  }
+
+  /* Main content fills full width */
+  .main-wrapper {
+    margin-left: 0 !important;
+  }
+  .navbar {
+    left: 0 !important;
+  }
+  .sidebar.collapsed ~ .main-wrapper {
+    margin-left: 0;
+  }
+
+  /* Hide search bar on tablet */
+  .navbar-search {
+    display: none;
+  }
+
+  .page-content {
+    padding: calc(var(--navbar-height) + var(--space-md)) var(--space-md)
+      var(--space-md);
+  }
+
+  /* Welcome banner stacks vertically */
+  .welcome-banner {
+    flex-direction: column;
+    gap: var(--space-md);
+  }
+
+  .welcome-right {
+    text-align: left;
+  }
+
+  .welcome-date-block {
+    text-align: left;
+  }
+
+  /* Quick actions wrap */
+  .quick-actions {
+    gap: var(--space-sm);
+  }
+
+  /* Login: keep side-by-side but shrink illustration */
+  .login-illustration {
+    padding: 36px 28px 44px;
+  }
+
+  .illustration-title {
+    font-size: 2.1rem; /* fallback only — actual size on .title-line */
+  }
+
+  .title-line {
+    font-size: 2.1rem;
+  }
+  .title-line--lg {
+    font-size: 2.4rem;
+  }
+
+  /* Footer stacks */
+  .dashboard-footer {
+    flex-wrap: wrap;
+    gap: var(--space-xs);
+    padding: var(--space-sm) var(--space-md);
+  }
+}
+
+/* ---- Mobile: up to 767px ---- */
+@media (max-width: 767px) {
+  /* 2-column cards */
+  .cards-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-md);
+  }
+
+  /* Hide username text in navbar */
+  .navbar-right .user-name {
+    display: none;
+  }
+
+  /* Section header stacks */
+  .section-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-sm);
+  }
+
+  /* Quick actions full-width on mobile */
+  .quick-actions {
+    flex-direction: column;
+  }
+
+  .quick-action-btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* Welcome stats stack */
+  .welcome-stats {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-sm);
+  }
+
+  /* Login: stack vertically — illustration becomes compact top banner */
+  .login-page {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr;
+  }
+
+  .login-illustration {
+    padding: 32px var(--space-lg) 28px;
+    min-height: 260px;
+    justify-content: center;
+  }
+
+  /* Hide the machine image on mobile — too crowded */
+  .illus-image-wrapper {
+    display: none;
+  }
+
+  /* Text content — centered on mobile too */
+  .illustration-content {
+    position: relative;
+    padding: 0;
+    max-width: 100%;
+    text-align: center;
+  }
+
+  .illustration-title {
+    font-size: 1.7rem;
+  }
+
+  .title-line {
+    font-size: 1.7rem;
+  }
+  .title-line--lg {
+    font-size: 1.95rem;
+  }
+
+  .illustration-subtitle {
+    font-size: 0.84rem;
+  }
+
+  .illustration-badges {
+    display: flex;
+    gap: 8px;
+  }
+
+  .badge-item {
+    font-size: 0.72rem;
+    padding: 5px 12px;
+  }
+
+  .login-form-panel {
+    padding: var(--space-xl) var(--space-lg);
+    justify-content: center;
+  }
+
+  /* Dropdown user header: smaller */
+  .dropdown-user-name,
+  .dropdown-user-email {
+    max-width: 110px;
+  }
+}
+
+/* ---- Small Mobile: up to 480px ---- */
+@media (max-width: 480px) {
+  /* Single column cards */
+  .cards-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .card-value {
+    font-size: 1.5rem;
+  }
+
+  .page-content {
+    padding: calc(var(--navbar-height) + var(--space-sm)) var(--space-sm)
+      var(--space-sm);
+  }
+
+  /* Hide category column on tiny screens */
+  .transactions-table thead th:nth-child(3),
+  .transactions-table tbody td:nth-child(3) {
+    display: none;
+  }
+
+  /* Chart minimum height */
+  .chart-canvas-wrapper {
+    min-height: 200px;
+  }
+
+  /* Footer single line */
+  .footer-divider {
+    display: none;
+  }
+
+  .dashboard-footer {
+    flex-direction: column;
+    gap: 2px;
+    text-align: center;
+  }
+}

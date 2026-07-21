@@ -1,0 +1,104 @@
+{
+  "transactions": [
+    {
+      "id": 1,
+      "date": "2025-07-01",
+      "description": "Product Sale - Electronics",
+      "category": "income",
+      "amount": 1250.00,
+      "status": "completed",
+      "reference": "TXN-001"
+    },
+    {
+      "id": 2,
+      "date": "2025-07-02",
+      "description": "Office Supplies Purchase",
+      "category": "expense",
+      "amount": 320.50,
+      "status": "completed",
+      "reference": "TXN-002"
+    },
+    {
+      "id": 3,
+      "date": "2025-07-03",
+      "description": "Customer Deposit",
+      "category": "deposit",
+      "amount": 5000.00,
+      "status": "completed",
+      "reference": "TXN-003"
+    },
+    {
+      "id": 4,
+      "date": "2025-07-04",
+      "description": "Cash Withdrawal",
+      "category": "withdrawal",
+      "amount": 800.00,
+      "status": "completed",
+      "reference": "TXN-004"
+    },
+    {
+      "id": 5,
+      "date": "2025-07-05",
+      "description": "Product Sale - Clothing",
+      "category": "income",
+      "amount": 670.00,
+      "status": "pending",
+      "reference": "TXN-005"
+    },
+    {
+      "id": 6,
+      "date": "2025-07-06",
+      "description": "Utility Bill Payment",
+      "category": "expense",
+      "amount": 210.00,
+      "status": "completed",
+      "reference": "TXN-006"
+    },
+    {
+      "id": 7,
+      "date": "2025-07-07",
+      "description": "Vendor Deposit",
+      "category": "deposit",
+      "amount": 2200.00,
+      "status": "completed",
+      "reference": "TXN-007"
+    },
+    {
+      "id": 8,
+      "date": "2025-07-08",
+      "description": "ATM Withdrawal",
+      "category": "withdrawal",
+      "amount": 500.00,
+      "status": "failed",
+      "reference": "TXN-008"
+    },
+    {
+      "id": 9,
+      "date": "2025-07-09",
+      "description": "Product Sale - Groceries",
+      "category": "income",
+      "amount": 430.75,
+      "status": "completed",
+      "reference": "TXN-009"
+    },
+    {
+      "id": 10,
+      "date": "2025-07-10",
+      "description": "Equipment Maintenance",
+      "category": "expense",
+      "amount": 150.00,
+      "status": "pending",
+      "reference": "TXN-010"
+    }
+  ],
+  "users": [
+    {
+      "id": 1,
+      "name": "Admin User",
+      "email": "admin@posdash.com",
+      "password": "admin123",
+      "role": "admin",
+      "avatar": ""
+    }
+  ]
+}

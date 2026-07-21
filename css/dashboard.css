@@ -1,0 +1,198 @@
+/* ============================================================
+   dashboard.css — Dashboard page layout styles
+   POS Dashboard | Module 1: Authentication & Dashboard
+   ============================================================ */
+
+/* ---------- App wrapper ---------- */
+.app-wrapper {
+  display: flex;
+  min-height: 100vh;
+  background-color: var(--color-bg-primary);
+}
+
+/* ---------- Main content area ---------- */
+.main-wrapper {
+  flex: 1;
+  margin-left: var(--sidebar-width);
+  transition: margin-left var(--transition-normal);
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar.collapsed ~ .main-wrapper {
+  margin-left: var(--sidebar-collapsed-width);
+}
+
+/* ---------- Page content ---------- */
+.page-content {
+  flex: 1;
+  padding: calc(var(--navbar-height) + var(--space-lg)) var(--space-xl)
+    var(--space-xl);
+}
+
+/* ============================================================
+   Welcome Banner
+   ============================================================ */
+.welcome-banner {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  background: linear-gradient(135deg, #141400 0%, #1a1500 50%, #201a00 100%);
+  border: 1px solid var(--color-border-gold);
+  border-radius: var(--radius-lg);
+  padding: var(--space-lg) var(--space-xl);
+  margin-bottom: var(--space-lg);
+  gap: var(--space-lg);
+  flex-wrap: wrap;
+}
+
+.welcome-left {
+  flex: 1;
+  min-width: 200px;
+}
+
+.welcome-greeting {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin-bottom: var(--space-xs);
+}
+
+.welcome-greeting span {
+  color: var(--color-gold);
+}
+
+.welcome-sub {
+  font-size: 0.85rem;
+  color: var(--color-text-secondary);
+  margin-bottom: var(--space-md);
+}
+
+/* Business info stats row */
+.welcome-stats {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xl);
+  flex-wrap: wrap;
+}
+
+.welcome-stat-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  font-size: 0.85rem;
+  color: var(--color-text-secondary);
+}
+
+.welcome-stat-item strong {
+  color: var(--color-text-primary);
+}
+
+.skeleton-inline {
+  min-width: 160px;
+}
+
+/* Date/time block */
+.welcome-right {
+  flex-shrink: 0;
+  text-align: right;
+}
+
+.welcome-date-block {
+  text-align: right;
+}
+
+.date-value {
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--color-gold);
+  margin-bottom: 2px;
+}
+
+.time-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 1px;
+}
+
+/* ============================================================
+   Quick Actions
+   ============================================================ */
+.quick-actions {
+  display: flex;
+  gap: var(--space-md);
+  margin-bottom: var(--space-xl);
+  flex-wrap: wrap;
+}
+
+.quick-action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: 10px var(--space-lg);
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  color: var(--color-text-secondary);
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: var(--transition-fast);
+  white-space: nowrap;
+}
+
+.quick-action-btn i {
+  font-size: 0.95rem;
+  color: var(--color-gold);
+  transition: transform 0.2s ease;
+}
+
+.quick-action-btn:hover {
+  background: rgba(201, 168, 76, 0.08);
+  border-color: var(--color-border-gold);
+  color: var(--color-gold-light);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+}
+
+.quick-action-btn:hover i {
+  transform: scale(1.15);
+}
+
+/* ============================================================
+   Dashboard grid (chart | table side-by-side)
+   ============================================================ */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-xl);
+  margin-top: var(--space-xl);
+}
+
+.dashboard-section {
+  display: flex;
+  flex-direction: column;
+}
+
+/* ============================================================
+   Footer
+   ============================================================ */
+.dashboard-footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-sm);
+  padding: var(--space-md) var(--space-xl);
+  border-top: 1px solid var(--color-border);
+  font-size: 0.78rem;
+  color: var(--color-text-muted);
+  background: var(--color-bg-secondary);
+  margin-top: auto;
+}
+
+.footer-divider {
+  color: var(--color-border);
+}

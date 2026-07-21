@@ -1,0 +1,102 @@
+<!--
+  components/sidebar.html
+  ========================
+  Reusable sidebar component — shared across ALL pages.
+
+  HOW TO USE:
+    Call Layout.loadComponent('sidebar', '#sidebar-placeholder')
+    from layout.js, OR copy the <aside> block directly into your page.
+
+  The active nav link is set automatically by layout.js based
+  on the current page filename.
+-->
+<aside id="sidebar" class="sidebar" aria-label="Main navigation">
+
+    <!-- Brand -->
+    <a href="dashboard.html" class="sidebar-brand">
+        <div class="brand-icon"><i class="fa-solid fa-coins"></i></div>
+        <div class="brand-text">
+            <span class="brand-name"><span>POS</span>Dash</span>
+            <span class="brand-tagline">Transaction Manager</span>
+        </div>
+    </a>
+
+    <!-- Navigation -->
+    <nav class="sidebar-nav" aria-label="Sidebar navigation">
+
+        <p class="sidebar-section-title">Main</p>
+        <ul>
+            <li class="nav-item">
+                <a href="dashboard.html" class="nav-link" data-tooltip="Dashboard" data-page="dashboard.html">
+                    <span class="nav-icon"><i class="fa-solid fa-gauge-high"></i></span>
+                    <span class="nav-label">Dashboard</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <!-- Module 2: New Transaction -->
+                <a href="new-transaction.html" class="nav-link" data-tooltip="New Transaction"
+                    data-page="new-transaction.html">
+                    <span class="nav-icon"><i class="fa-solid fa-plus-circle"></i></span>
+                    <span class="nav-label">New Transaction</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <!-- Module 3: Transaction History -->
+                <a href="transactions.html" class="nav-link" data-tooltip="Transactions" data-page="transactions.html">
+                    <span class="nav-icon"><i class="fa-solid fa-list"></i></span>
+                    <span class="nav-label">Transactions</span>
+                    <span class="nav-badge" id="txn-count-badge">—</span>
+                </a>
+            </li>
+        </ul>
+
+        <div class="sidebar-divider"></div>
+        <p class="sidebar-section-title">Analytics</p>
+        <ul>
+            <li class="nav-item">
+                <!-- Module 4: Reports -->
+                <a href="reports.html" class="nav-link" data-tooltip="Reports" data-page="reports.html">
+                    <span class="nav-icon"><i class="fa-solid fa-chart-bar"></i></span>
+                    <span class="nav-label">Reports</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="analytics.html" class="nav-link" data-tooltip="Analytics" data-page="analytics.html">
+                    <span class="nav-icon"><i class="fa-solid fa-chart-line"></i></span>
+                    <span class="nav-label">Analytics</span>
+                </a>
+            </li>
+        </ul>
+
+        <div class="sidebar-divider"></div>
+        <p class="sidebar-section-title">System</p>
+        <ul>
+            <li class="nav-item">
+                <!-- Module 5: Settings -->
+                <a href="settings.html" class="nav-link" data-tooltip="Settings" data-page="settings.html">
+                    <span class="nav-icon"><i class="fa-solid fa-gear"></i></span>
+                    <span class="nav-label">Settings</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link" data-tooltip="Logout" data-action="logout">
+                    <span class="nav-icon"><i class="fa-solid fa-right-from-bracket"></i></span>
+                    <span class="nav-label">Logout</span>
+                </a>
+            </li>
+        </ul>
+
+    </nav>
+
+    <!-- User profile (bottom) -->
+    <div class="sidebar-footer">
+        <div class="sidebar-user">
+            <div class="user-avatar" id="sidebar-user-avatar">AU</div>
+            <div class="sidebar-user-info">
+                <div class="user-name" id="sidebar-user-name">Loading…</div>
+                <div class="user-role" id="sidebar-user-role">Admin</div>
+            </div>
+        </div>
+    </div>
+
+</aside>

@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Settings — POSDash</title>
+    <link rel="icon"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💰</text></svg>" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <!-- Shared layout styles — DO NOT REMOVE -->
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/layout.css" />
+    <link rel="stylesheet" href="css/responsive.css" />
+</head>
+
+<body>
+
+    <div id="sidebar-overlay" class="sidebar-overlay" aria-hidden="true"></div>
+
+    <div class="app-wrapper">
+
+        <div id="sidebar-placeholder"></div>
+
+        <div class="main-wrapper">
+
+            <div id="navbar-placeholder"></div>
+
+            <!-- =====================================================
+         PAGE CONTENT — Module 5: Settings
+    ====================================================== -->
+            <main class="page-content" aria-label="Settings">
+
+                <div class="page-header">
+                    <h1>App <span>Settings</span></h1>
+                    <p>Manage your account, preferences, and application settings.</p>
+                </div>
+
+                <!-- ⬇⬇ TEAM MEMBER 5: build your content here ⬇⬇ -->
+                <div class="table-empty-state" style="margin-top: var(--space-xl)">
+                    <div class="empty-icon"><i class="fa-solid fa-gear"></i></div>
+                    <p class="empty-title">Settings</p>
+                    <p class="empty-sub">This page is being built by Team Member 5.</p>
+                </div>
+                <!-- ⬆⬆ END team content ⬆⬆ -->
+
+            </main>
+
+            <div id="footer-placeholder"></div>
+
+        </div>
+    </div>
+
+    <script type="module">
+        import Layout from './js/layout.js';
+
+        document.addEventListener('DOMContentLoaded', () => {
+            Layout.init({ pageTitle: 'Settings', breadcrumb: 'App Settings' });
+            // TODO: add your settings form logic here
+        });
+    </script>
+
+</body>
+
+</html>

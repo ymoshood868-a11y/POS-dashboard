@@ -1,0 +1,597 @@
+/* ============================================================
+   login.css — Login page styles
+   POS Dashboard | Module 1: Authentication & Dashboard
+   ============================================================ */
+
+/* ---------- Page wrapper ---------- */
+.login-page {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  background-color: var(--color-bg-primary);
+}
+
+/* ============================================================
+   LEFT PANEL — Full-bleed background image hero
+   ============================================================ */
+
+.login-illustration {
+  /* Full-bleed photo background */
+  background-image:
+    /* 1. Radial vignette — darkens edges, keeps center lighter */
+    radial-gradient(
+      ellipse at center,
+      rgba(0, 0, 0, 0.38) 0%,
+      rgba(0, 0, 0, 0.72) 65%,
+      rgba(0, 0, 0, 0.92) 100%
+    ),
+    /* 2. Directional gradient — extra dark at top & bottom for text contrast */
+    linear-gradient(
+        180deg,
+        rgba(0, 0, 0, 0.65) 0%,
+        rgba(0, 0, 0, 0.1) 35%,
+        rgba(0, 0, 0, 0.1) 65%,
+        rgba(0, 0, 0, 0.8) 100%
+      ),
+    /* 3. Gold tint overlay — keeps brand warmth */
+    linear-gradient(
+        135deg,
+        rgba(20, 12, 0, 0.55) 0%,
+        rgba(40, 25, 0, 0.3) 50%,
+        rgba(20, 12, 0, 0.55) 100%
+      ),
+    /* 4. The actual photo */ url("../assets/images/POS IMG.jpg");
+
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* vertically centered */
+  align-items: center; /* horizontally centered */
+  padding: 48px 44px;
+  overflow: hidden;
+  border-right: 1px solid rgba(201, 168, 76, 0.2);
+
+  /* Panel slide-in on load */
+  animation: panelFadeIn 0.85s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes panelFadeIn {
+  from {
+    opacity: 0;
+    transform: translateX(-24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Subtle animated gold shimmer across the panel */
+.login-illustration::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    120deg,
+    transparent 20%,
+    rgba(201, 168, 76, 0.05) 50%,
+    transparent 80%
+  );
+  background-size: 200% 100%;
+  animation: shimmerSweep 8s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 1;
+}
+
+@keyframes shimmerSweep {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* Subtle gold grid lines */
+.illus-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(201, 168, 76, 0.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(201, 168, 76, 0.045) 1px, transparent 1px);
+  background-size: 52px 52px;
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* Remove unused layers (kept in HTML for compatibility, zeroed out) */
+.illus-bg-gradient,
+.illus-radial-light,
+.illus-glow-halo,
+.illus-image-wrapper,
+.illus-vignette {
+  display: none;
+}
+
+/* Corner gold bracket accents — snapped to padding edges */
+.login-illustration .corner-tl,
+.login-illustration .corner-br {
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  pointer-events: none;
+  z-index: 10;
+  animation: cornerFadeIn 1s 0.7s ease both;
+}
+
+.login-illustration .corner-tl {
+  top: 28px;
+  left: 28px;
+  border-top: 2px solid rgba(201, 168, 76, 0.7);
+  border-left: 2px solid rgba(201, 168, 76, 0.7);
+}
+
+.login-illustration .corner-br {
+  bottom: 28px;
+  right: 28px;
+  border-bottom: 2px solid rgba(201, 168, 76, 0.7);
+  border-right: 2px solid rgba(201, 168, 76, 0.7);
+}
+
+@keyframes cornerFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* ============================================================
+   Text content — left-aligned, sits on darkened photo
+   ============================================================ */
+.illustration-content {
+  position: relative;
+  z-index: 9;
+  text-align: center;
+  width: 100%;
+  max-width: 460px;
+  animation: contentFadeUp 0.9s 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes contentFadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(22px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ============================================================
+   HEADLINE — one tight, cohesive block
+   Poppins 800 throughout. Two colors: white + #c9a84c gold.
+   ============================================================ */
+.illustration-title {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  margin: 0 0 var(--space-md);
+}
+
+/* Every line — same base size, ultra-tight line-height */
+.title-line {
+  display: block;
+ font-family: 'Times New Roman', Times, serif;
+  font-size: 5.90rem;
+  font-weight: 800;
+  line-height: 1.07;
+  letter-spacing: -0.02em;
+  color: #ffffff;
+  text-shadow:
+    0 2px 8px rgba(0, 0, 0, 0.9),
+    0 4px 24px rgba(0, 0, 0, 0.7),
+    0 0 48px rgba(0, 0, 0, 0.45);
+}
+
+/* "Management" — 12% larger as the closing anchor line */
+.title-line--lg {
+  font-size: 3.1rem;
+}
+
+/* Gold accent for "POS" and "Transaction" — flat solid color, no gradient */
+.illustration-title em {
+  font-style: normal;
+  font-weight: 800;
+  color: #c9a84c;
+  -webkit-text-fill-color: #c9a84c;
+  text-shadow:
+    0 2px 8px rgba(0, 0, 0, 0.9),
+    0 4px 24px rgba(0, 0, 0, 0.7),
+    0 0 24px rgba(201, 168, 76, 0.22);
+}
+
+/* Gold divider — centered */
+.illustration-divider {
+  width: 48px;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #c9a84c, transparent);
+  margin: var(--space-md) auto;
+  border-radius: 2px;
+}
+
+/* Subtitle — left-aligned */
+.illustration-subtitle {
+  font-size: 0.925rem;
+  font-weight: 400;
+  color: rgba(240, 224, 180, 0.85);
+  line-height: 1.72;
+  margin: 0 auto var(--space-lg);
+  max-width: 380px;
+  text-align: center;
+  text-shadow:
+    0 1px 6px rgba(0, 0, 0, 0.9),
+    0 2px 16px rgba(0, 0, 0, 0.7);
+}
+
+/* Pills — centered */
+.illustration-badges {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.badge-item {
+  /* ~45% black opacity so pill is legible over any photo region */
+  background: rgba(0, 0, 0, 0.46);
+  border: 1px solid rgba(201, 168, 76, 0.42);
+  border-radius: 30px;
+  padding: 7px 16px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: rgba(240, 224, 180, 0.9);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  transition:
+    background 0.22s ease,
+    border-color 0.22s ease,
+    transform 0.22s ease,
+    box-shadow 0.22s ease;
+  cursor: default;
+}
+
+.badge-item:hover {
+  background: rgba(201, 168, 76, 0.22);
+  border-color: rgba(201, 168, 76, 0.7);
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(201, 168, 76, 0.22);
+}
+
+.badge-item i {
+  color: var(--color-gold);
+  font-size: 0.88rem;
+}
+
+/* ============================================================
+   RIGHT PANEL — Login form
+   ============================================================ */
+.login-form-panel {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 48px 40px;
+  background-color: var(--color-bg-secondary);
+  /* Fade-in from right */
+  animation: formFadeIn 0.85s 0.15s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes formFadeIn {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.login-box {
+  width: 100%;
+  max-width: 400px;
+}
+
+/* Logo — 32px gap below */
+.login-logo {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  margin-bottom: 32px;
+}
+
+.login-logo .logo-icon {
+  width: 44px;
+  height: 44px;
+  background: linear-gradient(
+    135deg,
+    var(--color-gold-dark),
+    var(--color-gold)
+  );
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+  color: #0d0d0d;
+  font-weight: 700;
+  box-shadow: var(--shadow-gold);
+}
+
+.login-logo .logo-text {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  letter-spacing: 0.5px;
+}
+
+.login-logo .logo-text span {
+  color: var(--color-gold);
+}
+
+/* Heading — 28px gap below */
+.login-heading {
+  margin-bottom: 28px;
+}
+
+.login-heading h1 {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  line-height: 1.2;
+  margin-bottom: 6px;
+}
+
+.login-heading p {
+  font-size: 0.9rem;
+  color: var(--color-text-secondary);
+}
+
+/* ---------- Form — 24px gaps between fields ---------- */
+.login-form {
+  margin-top: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.form-group label {
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  letter-spacing: 0.3px;
+}
+
+/* Input wrapper */
+.input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-wrapper .input-icon {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--color-text-muted);
+  font-size: 0.92rem;
+  pointer-events: none;
+  transition: color 0.2s ease;
+  z-index: 1;
+}
+
+.input-wrapper input {
+  width: 100%;
+  background: var(--color-bg-input);
+  /* Visible border at rest — distinguishable on dark background */
+  border: 1.5px solid #3a3a3a;
+  border-radius: var(--radius-md);
+  padding: 13px 14px 13px 42px;
+  color: var(--color-text-primary);
+  font-size: 0.9rem;
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease,
+    box-shadow 0.2s ease;
+  line-height: 1;
+}
+
+.input-wrapper input::placeholder {
+  color: var(--color-text-muted);
+}
+
+/* Focus state — gold glow */
+.input-wrapper input:focus {
+  border-color: var(--color-gold);
+  background: var(--color-bg-card);
+  box-shadow:
+    0 0 0 3px rgba(201, 168, 76, 0.12),
+    0 2px 12px rgba(0, 0, 0, 0.3);
+  outline: none;
+}
+
+.input-wrapper:focus-within .input-icon {
+  color: var(--color-gold);
+}
+
+/* Password eye icon — perfectly centred */
+.btn-toggle-password {
+  position: absolute;
+  right: 13px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  color: var(--color-text-muted);
+  font-size: 0.95rem;
+  padding: 4px 6px;
+  line-height: 1;
+  transition: color 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-toggle-password:hover {
+  color: var(--color-gold);
+}
+
+/* Error state */
+.form-group.has-error .input-wrapper input {
+  border-color: var(--color-danger);
+  box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.1);
+}
+
+.form-group.has-error .input-icon {
+  color: var(--color-danger);
+}
+
+.error-message {
+  font-size: 0.78rem;
+  color: var(--color-danger);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* Remember me + Forgot */
+.login-options {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  cursor: pointer;
+  font-size: 0.85rem;
+  color: var(--color-text-secondary);
+}
+
+.checkbox-label input[type="checkbox"] {
+  width: 15px;
+  height: 15px;
+  accent-color: var(--color-gold);
+  cursor: pointer;
+}
+
+.forgot-link {
+  font-size: 0.85rem;
+  color: var(--color-gold);
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.forgot-link:hover {
+  color: var(--color-gold-light);
+  text-decoration: underline;
+}
+
+/* Submit button */
+.btn-login {
+  width: 100%;
+  padding: 13px;
+  background: linear-gradient(
+    135deg,
+    var(--color-gold-dark),
+    var(--color-gold)
+  );
+  color: #0d0d0d;
+  font-size: 0.95rem;
+  font-weight: 700;
+  border-radius: var(--radius-md);
+  letter-spacing: 0.4px;
+  transition:
+    background 0.25s ease,
+    box-shadow 0.25s ease,
+    transform 0.2s ease;
+  margin-top: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-sm);
+  box-shadow: 0 4px 18px rgba(201, 168, 76, 0.28);
+  border: none;
+}
+
+.btn-login:hover:not(:disabled) {
+  background: linear-gradient(
+    135deg,
+    var(--color-gold),
+    var(--color-gold-light)
+  );
+  box-shadow: 0 6px 26px rgba(201, 168, 76, 0.45);
+  transform: translateY(-1px);
+}
+
+.btn-login:active:not(:disabled) {
+  transform: translateY(0);
+}
+.btn-login:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Form alert */
+.form-alert {
+  padding: var(--space-sm) var(--space-md);
+  border-radius: var(--radius-sm);
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.form-alert.alert-error {
+  background: rgba(231, 76, 60, 0.1);
+  border: 1px solid rgba(231, 76, 60, 0.3);
+  color: #e74c3c;
+}
+
+.form-alert.alert-success {
+  background: rgba(39, 174, 96, 0.1);
+  border: 1px solid rgba(39, 174, 96, 0.3);
+  color: #27ae60;
+}
+
+/* Footer — brighter muted text for readability */
+.login-footer {
+  margin-top: 28px;
+  text-align: center;
+  font-size: 0.8rem;
+  color: #707070; /* brighter than --color-text-muted (#606060) */
+  line-height: 1.6;
+}
+
+.login-footer span {
+  color: #5a5a5a;
+  font-size: 0.75rem;
+}

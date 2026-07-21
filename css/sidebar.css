@@ -1,0 +1,280 @@
+/* ============================================================
+   sidebar.css — Sidebar navigation styles
+   POS Dashboard | Module 1: Authentication & Dashboard
+   NOTE: Sidebar is shared across all team modules.
+   ============================================================ */
+
+/* ---------- Sidebar container ---------- */
+.sidebar {
+  position: fixed;
+  left: 0;
+  top: 0;
+  height: 100vh;
+  width: var(--sidebar-width);
+  background-color: var(--color-bg-secondary);
+  border-right: 1px solid var(--color-border);
+  display: flex;
+  flex-direction: column;
+  z-index: 100;
+  transition:
+    width var(--transition-normal),
+    transform var(--transition-normal);
+  overflow: hidden;
+}
+
+/* Collapsed state */
+.sidebar.collapsed {
+  width: var(--sidebar-collapsed-width);
+}
+
+/* ---------- Sidebar brand/logo ---------- */
+.sidebar-brand {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  padding: var(--space-lg) var(--space-md);
+  border-bottom: 1px solid var(--color-border);
+  min-height: var(--navbar-height);
+  text-decoration: none;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.sidebar-brand .brand-icon {
+  min-width: 40px;
+  width: 40px;
+  height: 40px;
+  background: linear-gradient(
+    135deg,
+    var(--color-gold-dark),
+    var(--color-gold)
+  );
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  color: #0d0d0d;
+  font-weight: 700;
+  box-shadow: var(--shadow-gold);
+  flex-shrink: 0;
+}
+
+.sidebar-brand .brand-text {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.sidebar-brand .brand-text .brand-name {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.sidebar-brand .brand-text .brand-name span {
+  color: var(--color-gold);
+}
+
+.sidebar-brand .brand-text .brand-tagline {
+  font-size: 0.7rem;
+  color: var(--color-text-muted);
+  white-space: nowrap;
+}
+
+/* Hide text when collapsed */
+.sidebar.collapsed .brand-text,
+.sidebar.collapsed .nav-label,
+.sidebar.collapsed .sidebar-section-title,
+.sidebar.collapsed .sidebar-user-info,
+.sidebar.collapsed .nav-badge {
+  opacity: 0;
+  width: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+/* ---------- Sidebar nav sections ---------- */
+.sidebar-nav {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: var(--space-md) 0;
+}
+
+.sidebar-section-title {
+  padding: var(--space-sm) var(--space-md);
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  white-space: nowrap;
+  transition: var(--transition-fast);
+}
+
+/* ---------- Nav items ---------- */
+.nav-item {
+  margin: 2px var(--space-sm);
+}
+
+.nav-link {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  padding: 10px var(--space-sm);
+  border-radius: var(--radius-md);
+  color: var(--color-text-secondary);
+  text-decoration: none;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: var(--transition-fast);
+  white-space: nowrap;
+  overflow: hidden;
+  position: relative;
+}
+
+.nav-link .nav-icon {
+  min-width: 24px;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  flex-shrink: 0;
+  transition: var(--transition-fast);
+}
+
+.nav-link:hover {
+  background: rgba(201, 168, 76, 0.08);
+  color: var(--color-gold-light);
+}
+
+.nav-link:hover .nav-icon {
+  color: var(--color-gold);
+}
+
+/* Active state — gold left indicator + bright background */
+.nav-link.active {
+  background: rgba(201, 168, 76, 0.14);
+  color: var(--color-gold);
+  border-left: 3px solid var(--color-gold);
+  box-shadow: inset 0 0 12px rgba(201, 168, 76, 0.05);
+}
+
+.nav-link.active .nav-icon {
+  color: var(--color-gold);
+  filter: drop-shadow(0 0 4px rgba(201, 168, 76, 0.4));
+}
+
+/* Badge on nav items */
+.nav-badge {
+  margin-left: auto;
+  background: var(--color-gold);
+  color: #0d0d0d;
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 20px;
+  flex-shrink: 0;
+  transition: var(--transition-fast);
+}
+
+/* Tooltip for collapsed sidebar */
+.nav-link[data-tooltip] {
+  position: relative;
+}
+
+.sidebar.collapsed .nav-link[data-tooltip]::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  left: calc(var(--sidebar-collapsed-width) - 8px);
+  top: 50%;
+  transform: translateY(-50%);
+  background: var(--color-bg-elevated);
+  color: var(--color-text-primary);
+  padding: 6px 12px;
+  border-radius: var(--radius-sm);
+  font-size: 0.8rem;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-card);
+  transition: opacity 0.2s ease;
+  z-index: 200;
+}
+
+.sidebar.collapsed .nav-link[data-tooltip]:hover::after {
+  opacity: 1;
+}
+
+/* ---------- Sidebar divider ---------- */
+.sidebar-divider {
+  height: 1px;
+  background: var(--color-border);
+  margin: var(--space-sm) var(--space-md);
+}
+
+/* ---------- Sidebar user profile (bottom) ---------- */
+.sidebar-footer {
+  border-top: 1px solid var(--color-border);
+  padding: var(--space-md);
+}
+
+.sidebar-user {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-sm);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: var(--transition-fast);
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.sidebar-user:hover {
+  background: rgba(201, 168, 76, 0.08);
+}
+
+.sidebar-user .user-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: linear-gradient(
+    135deg,
+    var(--color-gold-dark),
+    var(--color-gold)
+  );
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+  color: #0d0d0d;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.sidebar-user-info {
+  flex: 1;
+  overflow: hidden;
+  transition: var(--transition-fast);
+}
+
+.sidebar-user-info .user-name {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sidebar-user-info .user-role {
+  font-size: 0.72rem;
+  color: var(--color-text-muted);
+}

@@ -1,0 +1,11 @@
+{
+  "name": "pos-dashboard",
+  "version": "1.0.0",
+  "description": "POS Transaction Dashboard",
+  "scripts": {
+    "server": "json-server --watch db.json --port 3000"
+  },
+  "dependencies": {
+    "json-server": "^0.17.4"
+  }
+}

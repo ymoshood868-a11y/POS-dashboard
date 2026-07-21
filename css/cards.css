@@ -1,0 +1,478 @@
+/* ============================================================
+   cards.css — Summary cards, table, chart section styles
+   POS Dashboard | Module 1: Authentication & Dashboard
+   ============================================================ */
+
+/* ---------- Cards grid ---------- */
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-lg);
+  margin-bottom: var(--space-xl);
+}
+
+/* ---------- Individual card ---------- */
+.summary-card {
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-lg);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  cursor: default;
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease,
+    border-color 0.25s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Top accent bar */
+.summary-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--card-accent, var(--color-gold));
+}
+
+/* Hover: lift + glow */
+.summary-card:hover {
+  transform: translateY(-5px);
+  box-shadow:
+    0 12px 40px rgba(0, 0, 0, 0.5),
+    0 0 0 1px var(--card-accent, var(--color-border-gold));
+  border-color: var(--card-accent, var(--color-border-gold));
+}
+
+/* Accent glow on hover via pseudo */
+.summary-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    ellipse at top left,
+    var(--card-glow, rgba(201, 168, 76, 0.06)),
+    transparent 70%
+  );
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.summary-card:hover::after {
+  opacity: 1;
+}
+
+/* Card accent variants */
+.summary-card.income {
+  --card-accent: #27ae60;
+  --card-glow: rgba(39, 174, 96, 0.08);
+}
+.summary-card.expense {
+  --card-accent: #e74c3c;
+  --card-glow: rgba(231, 76, 60, 0.08);
+}
+.summary-card.deposit {
+  --card-accent: #c9a84c;
+  --card-glow: rgba(201, 168, 76, 0.08);
+}
+.summary-card.withdrawal {
+  --card-accent: #9b59b6;
+  --card-glow: rgba(155, 89, 182, 0.08);
+}
+
+/* ---------- Card header ---------- */
+.card-header-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.card-title {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+}
+
+.card-icon {
+  width: 46px;
+  height: 46px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem; /* slightly larger icon */
+  color: var(--card-accent, var(--color-gold));
+  flex-shrink: 0;
+  transition: transform 0.2s ease;
+  background: color-mix(
+    in srgb,
+    var(--card-accent, var(--color-gold)) 12%,
+    transparent
+  );
+}
+
+.summary-card:hover .card-icon {
+  transform: scale(1.12);
+}
+
+/* ---------- Value ---------- */
+.card-value {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  letter-spacing: -0.5px;
+  line-height: 1;
+}
+
+/* ---------- Subtitle ---------- */
+.card-subtitle {
+  font-size: 0.78rem;
+  color: var(--color-text-muted);
+}
+
+/* ---------- Footer row (trend + period) ---------- */
+.card-footer-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 2px;
+}
+
+.card-trend {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.8rem;
+}
+
+.card-period {
+  font-size: 0.72rem;
+  color: var(--color-text-muted);
+}
+
+/* ---------- Skeleton ---------- */
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--color-bg-elevated) 25%,
+    var(--color-border) 50%,
+    var(--color-bg-elevated) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.4s infinite;
+  border-radius: var(--radius-sm);
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* ============================================================
+   Section headers
+   ============================================================ */
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-md);
+}
+
+.section-title {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.section-title span {
+  color: var(--color-gold);
+}
+
+.btn-view-all {
+  font-size: 0.82rem;
+  color: var(--color-gold);
+  font-weight: 500;
+  border: 1px solid var(--color-border-gold);
+  padding: 5px 14px;
+  border-radius: 20px;
+  background: rgba(201, 168, 76, 0.05);
+  transition: var(--transition-fast);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-xs);
+}
+
+.btn-view-all:hover {
+  background: rgba(201, 168, 76, 0.12);
+  color: var(--color-gold-light);
+}
+
+/* ============================================================
+   Transactions table
+   ============================================================ */
+.table-wrapper {
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+.transactions-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.transactions-table thead {
+  background: var(--color-bg-elevated);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.transactions-table thead th {
+  padding: var(--space-md) var(--space-lg);
+  text-align: left;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  white-space: nowrap;
+}
+
+.transactions-table tbody tr {
+  border-bottom: 1px solid var(--color-border);
+  transition: background 0.15s ease;
+}
+
+.transactions-table tbody tr:last-child {
+  border-bottom: none;
+}
+.transactions-table tbody tr:hover {
+  background: rgba(201, 168, 76, 0.04);
+}
+
+.transactions-table tbody td {
+  padding: 12px var(--space-lg);
+  font-size: 0.875rem;
+  color: var(--color-text-primary);
+  vertical-align: middle;
+}
+
+.txn-reference {
+  font-size: 0.78rem;
+  color: var(--color-text-muted);
+  font-weight: 500;
+}
+
+.txn-description {
+  max-width: 180px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  display: block;
+}
+
+/* Category badge */
+.category-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.category-badge.income {
+  background: rgba(39, 174, 96, 0.12);
+  color: #27ae60;
+}
+.category-badge.expense {
+  background: rgba(231, 76, 60, 0.12);
+  color: #e74c3c;
+}
+.category-badge.deposit {
+  background: rgba(201, 168, 76, 0.12);
+  color: var(--color-gold);
+}
+.category-badge.withdrawal {
+  background: rgba(155, 89, 182, 0.12);
+  color: #9b59b6;
+}
+
+/* Amount */
+.txn-amount {
+  font-weight: 600;
+}
+.txn-amount.positive {
+  color: var(--color-success);
+}
+.txn-amount.negative {
+  color: var(--color-danger);
+}
+
+/* Status badge */
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.status-badge::before {
+  content: "";
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.status-badge.completed {
+  background: rgba(39, 174, 96, 0.12);
+  color: #27ae60;
+}
+.status-badge.pending {
+  background: rgba(243, 156, 18, 0.12);
+  color: #f39c12;
+}
+.status-badge.failed {
+  background: rgba(231, 76, 60, 0.12);
+  color: #e74c3c;
+}
+
+/* ---------- Table empty state ---------- */
+.table-empty-state {
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-2xl) var(--space-xl);
+  text-align: center;
+}
+
+.empty-icon {
+  font-size: 2.8rem;
+  color: var(--color-border);
+  margin-bottom: var(--space-md);
+}
+
+.empty-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin-bottom: var(--space-sm);
+}
+
+.empty-sub {
+  font-size: 0.875rem;
+  color: var(--color-text-secondary);
+}
+
+.empty-link {
+  color: var(--color-gold);
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.empty-link:hover {
+  color: var(--color-gold-light);
+  text-decoration: underline;
+}
+
+/* ---------- Table skeleton wrapper ---------- */
+.table-skeleton-wrapper .table-wrapper td {
+  padding: 6px var(--space-lg);
+}
+
+/* ============================================================
+   Chart section
+   ============================================================ */
+.chart-section {
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-lg);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.chart-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-lg);
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+}
+
+.chart-legend {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  flex-wrap: wrap;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.78rem;
+  color: var(--color-text-secondary);
+}
+
+.legend-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.chart-canvas-wrapper {
+  position: relative;
+  flex: 1;
+  min-height: 250px;
+}
+
+/* Chart empty state */
+.chart-empty-state {
+  flex: 1;
+  min-height: 250px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-sm);
+  color: var(--color-text-muted);
+}
+
+.chart-empty-state i {
+  font-size: 2.5rem;
+  color: var(--color-border);
+}
+
+.chart-empty-state p {
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+}
+
+.chart-empty-state span {
+  font-size: 0.82rem;
+}
