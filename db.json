@@ -100,5 +100,13 @@
       "role": "admin",
       "avatar": ""
     }
-  ]
+  ],
+  "settings": {
+    "businessName": "POSDash Store",
+    "currency": "USD",
+    "timezone": "Africa/Lagos",
+    "theme": "dark",
+    "notifications": true,
+    "language": "en"
+  }
 }

@@ -161,3 +161,47 @@ export function getRecentTransactions(transactions, n = 8) {
 export async function getUsers() {
   return apiFetch("/users");
 }
+
+/* ============================================================
+   SETTINGS (for Team Member 5 — Settings page)
+   ============================================================ */
+
+/**
+ * Fetch app settings
+ * @returns {Promise<object>}
+ */
+export async function getSettings() {
+  return apiFetch("/settings");
+}
+
+/**
+ * Update app settings (full replace)
+ * @param {object} data
+ * @returns {Promise<object>}
+ */
+export async function updateSettings(data) {
+  return apiFetch("/settings", { method: "PUT", body: data });
+}
+
+/* ============================================================
+   PROFILE (for Team Member 5 — Profile page)
+   ============================================================ */
+
+/**
+ * Fetch a user profile by ID
+ * @param {number|string} id
+ * @returns {Promise<object>}
+ */
+export async function getUserById(id) {
+  return apiFetch(`/users/${id}`);
+}
+
+/**
+ * Update a user profile
+ * @param {number|string} id
+ * @param {object} data
+ * @returns {Promise<object>}
+ */
+export async function updateUser(id, data) {
+  return apiFetch(`/users/${id}`, { method: "PUT", body: data });
+}
