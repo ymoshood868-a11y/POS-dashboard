@@ -4,19 +4,20 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Transactions — POSDash</title>
+    <title>New Transaction — POSDash</title>
     <link rel="icon"
-        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💰</text></svg>" />
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💳</text></svg>" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
         rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
-    <!-- Shared layout styles — DO NOT REMOVE -->
+    <!-- Shared layout styles -->
     <link rel="stylesheet" href="css/style.css" />
     <link rel="stylesheet" href="css/layout.css" />
     <link rel="stylesheet" href="css/responsive.css" />
-    <!-- Page-specific styles go here -->
+    <!-- Page-specific styles -->
+    <link rel="stylesheet" href="css/new-transaction.css" />
 </head>
 
 <body>
@@ -25,58 +26,360 @@
 
     <div class="app-wrapper">
 
-        <!--
-    SIDEBAR — injected by Layout.init() from components/sidebar.html
-    OR paste components/sidebar.html content here directly.
-  -->
+        <!-- SIDEBAR — injected by Layout.init() -->
         <div id="sidebar-placeholder"></div>
 
         <div class="main-wrapper">
 
-            <!-- NAVBAR — injected by Layout.init() from components/navbar.html -->
+            <!-- NAVBAR — injected by Layout.init() -->
             <div id="navbar-placeholder"></div>
 
-            <!-- =====================================================
-         PAGE CONTENT — Module 3: Transaction History
-         =====================================================
-         Replace everything inside <main> with your own content.
-         Keep the <main class="page-content"> wrapper.
-    ====================================================== -->
-            <main class="page-content" aria-label="Transactions">
+            <!-- ================================================
+                 PAGE CONTENT — Module 2: New / Edit Transaction
+                 ================================================ -->
+            <main class="page-content" aria-label="New Transaction">
 
+                <!-- Page Header (dynamic: create vs edit) -->
                 <div class="page-header">
-                    <h1>Transaction <span>History</span></h1>
-                    <p>Browse, filter, and manage all transactions.</p>
+                    <h1 id="page-title">New <span>Transaction</span></h1>
+                    <p id="page-subtitle">Fill in the details below to record a new transaction.</p>
                 </div>
 
-                <!-- ⬇⬇ TEAM MEMBER 3: build your content here ⬇⬇ -->
-                <div class="table-empty-state" style="margin-top: var(--space-xl)">
-                    <div class="empty-icon"><i class="fa-solid fa-list"></i></div>
-                    <p class="empty-title">Transaction History</p>
-                    <p class="empty-sub">This page is being built by Team Member 3.</p>
-                </div>
-                <!-- ⬆⬆ END team content ⬆⬆ -->
+                <!-- Two-column layout: form + sidebar info -->
+                <div class="txn-form-layout">
+
+                    <!-- ── MAIN FORM CARD ── -->
+                    <section class="txn-form-card" aria-label="Transaction form">
+
+                        <!-- Gold accent bar via CSS ::before -->
+                        <div class="txn-form-card-header">
+                            <div class="txn-form-card-title">
+                                <i class="fa-solid fa-pen-to-square" id="form-icon"></i>
+                                <span id="form-card-title">Transaction Details</span>
+                            </div>
+                            <div class="txn-form-card-subtitle" id="form-card-subtitle">
+                                All fields marked <span class="required-star">*</span> are required.
+                            </div>
+                        </div>
+
+                        <form id="txn-form" novalidate autocomplete="off">
+
+                            <!-- Row 1: Type + Category -->
+                            <div class="txn-form-grid">
+
+                                <div class="form-group" id="group-type">
+                                    <label for="txn-type">
+                                        Transaction Type <span class="required-star">*</span>
+                                    </label>
+                                    <div class="input-wrapper">
+                                        <i class="fa-solid fa-tag input-icon"></i>
+                                        <select id="txn-type" class="form-control has-icon" required
+                                            aria-required="true">
+                                            <option value="" disabled selected>Select type…</option>
+                                            <option value="credit">Credit</option>
+                                            <option value="debit">Debit</option>
+                                            <option value="transfer">Transfer</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="form-group" id="group-category">
+                                    <label for="txn-category">
+                                        Category <span class="required-star">*</span>
+                                    </label>
+                                    <div class="input-wrapper">
+                                        <i class="fa-solid fa-layer-group input-icon"></i>
+                                        <select id="txn-category" class="form-control has-icon" required
+                                            aria-required="true">
+                                            <option value="" disabled selected>Select category…</option>
+                                            <option value="income">Income</option>
+                                            <option value="expense">Expense</option>
+                                            <option value="deposit">Deposit</option>
+                                            <option value="withdrawal">Withdrawal</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                            </div><!-- /row 1 -->
+
+                            <!-- Row 2: Amount + Date -->
+                            <div class="txn-form-grid">
+
+                                <div class="form-group" id="group-amount">
+                                    <label for="txn-amount">
+                                        Amount (USD) <span class="required-star">*</span>
+                                    </label>
+                                    <div class="input-wrapper">
+                                        <i class="fa-solid fa-dollar-sign input-icon"></i>
+                                        <input type="number" id="txn-amount" class="form-control has-icon"
+                                            placeholder="0.00" min="0.01" step="0.01" inputmode="decimal"
+                                            required aria-required="true" />
+                                    </div>
+                                    <span class="field-hint">Numeric values only (e.g. 1500 or 99.99)</span>
+                                </div>
+
+                                <div class="form-group" id="group-date">
+                                    <label for="txn-date">
+                                        Date <span class="required-star">*</span>
+                                    </label>
+                                    <div class="input-wrapper">
+                                        <i class="fa-solid fa-calendar-days input-icon"></i>
+                                        <input type="date" id="txn-date" class="form-control has-icon"
+                                            required aria-required="true" />
+                                    </div>
+                                </div>
+
+                            </div><!-- /row 2 -->
+
+                            <!-- Row 3: Description (full width) -->
+                            <div class="form-group form-group-full" id="group-description">
+                                <label for="txn-description">
+                                    Description <span class="required-star">*</span>
+                                </label>
+                                <div class="input-wrapper input-wrapper-textarea">
+                                    <i class="fa-solid fa-file-lines input-icon input-icon-textarea"></i>
+                                    <textarea id="txn-description" class="form-control has-icon" rows="3"
+                                        placeholder="Brief description of this transaction…"
+                                        maxlength="300" required aria-required="true"></textarea>
+                                </div>
+                                <span class="field-hint char-counter">
+                                    <span id="char-count">0</span> / 300 characters
+                                </span>
+                            </div>
+
+                            <!-- Row 4: Status (full width, only shown on edit) -->
+                            <div class="form-group form-group-full txn-edit-only d-none" id="group-status">
+                                <label for="txn-status">Status</label>
+                                <div class="input-wrapper">
+                                    <i class="fa-solid fa-circle-half-stroke input-icon"></i>
+                                    <select id="txn-status" class="form-control has-icon">
+                                        <option value="pending">Pending</option>
+                                        <option value="completed">Completed</option>
+                                        <option value="failed">Failed</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- Form alert (shown on API error) -->
+                            <div id="form-alert" class="form-alert d-none" role="alert" aria-live="polite"></div>
+
+                            <!-- Action buttons -->
+                            <div class="form-actions txn-form-actions">
+                                <a href="transactions.html" class="btn btn-secondary" id="btn-cancel">
+                                    <i class="fa-solid fa-xmark"></i> Cancel
+                                </a>
+                                <button type="submit" class="btn btn-primary" id="btn-submit">
+                                    <span id="btn-submit-text">
+                                        <i class="fa-solid fa-floppy-disk"></i> Save Transaction
+                                    </span>
+                                    <span id="btn-submit-spinner" class="spinner d-none" aria-hidden="true"></span>
+                                </button>
+                            </div>
+
+                        </form>
+
+                    </section><!-- /txn-form-card -->
+
+                    <!-- ── SIDEBAR INFO PANEL ── -->
+                    <aside class="txn-info-panel" aria-label="Transaction info">
+
+                        <!-- Category guide -->
+                        <div class="txn-info-card">
+                            <div class="txn-info-card-title">
+                                <i class="fa-solid fa-circle-info"></i> Category Guide
+                            </div>
+                            <ul class="txn-category-guide">
+                                <li>
+                                    <span class="category-badge income">
+                                        <i class="fa-solid fa-arrow-up"></i> Income
+                                    </span>
+                                    <span>Money received from sales or services</span>
+                                </li>
+                                <li>
+                                    <span class="category-badge expense">
+                                        <i class="fa-solid fa-arrow-down"></i> Expense
+                                    </span>
+                                    <span>Money spent on operations or purchases</span>
+                                </li>
+                                <li>
+                                    <span class="category-badge deposit">
+                                        <i class="fa-solid fa-piggy-bank"></i> Deposit
+                                    </span>
+                                    <span>Funds deposited into an account</span>
+                                </li>
+                                <li>
+                                    <span class="category-badge withdrawal">
+                                        <i class="fa-solid fa-money-bill-wave"></i> Withdrawal
+                                    </span>
+                                    <span>Funds withdrawn from an account</span>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <!-- Live preview -->
+                        <div class="txn-info-card txn-preview-card" id="txn-preview">
+                            <div class="txn-info-card-title">
+                                <i class="fa-solid fa-eye"></i> Live Preview
+                            </div>
+                            <div class="txn-preview-body">
+                                <div class="preview-row">
+                                    <span class="preview-label">Reference</span>
+                                    <span class="preview-value" id="preview-ref">TXN-—</span>
+                                </div>
+                                <div class="preview-row">
+                                    <span class="preview-label">Type</span>
+                                    <span class="preview-value" id="preview-type">—</span>
+                                </div>
+                                <div class="preview-row">
+                                    <span class="preview-label">Category</span>
+                                    <span class="preview-value" id="preview-category">—</span>
+                                </div>
+                                <div class="preview-row">
+                                    <span class="preview-label">Amount</span>
+                                    <span class="preview-value preview-amount" id="preview-amount">$0.00</span>
+                                </div>
+                                <div class="preview-row">
+                                    <span class="preview-label">Date</span>
+                                    <span class="preview-value" id="preview-date">—</span>
+                                </div>
+                                <div class="preview-row">
+                                    <span class="preview-label">Description</span>
+                                    <span class="preview-value preview-desc" id="preview-desc">—</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Custom Dropdowns -->
+                        <div class="txn-info-card txn-dropdowns-card">
+                            <div class="txn-info-card-title">
+                                <i class="fa-solid fa-sliders"></i> Quick Select
+                            </div>
+                            <div class="txn-custom-dropdowns">
+
+                                <!-- Type dropdown -->
+                                <div class="txn-dropdown-group">
+                                    <span class="txn-dropdown-label">
+                                        <i class="fa-solid fa-tag"></i> Type
+                                    </span>
+                                    <div class="txn-custom-select" id="dd-type" role="listbox"
+                                        aria-label="Transaction type" aria-expanded="false" tabindex="0">
+                                        <div class="txn-select-trigger">
+                                            <span class="txn-select-value" id="dd-type-value">Select type…</span>
+                                            <i class="fa-solid fa-chevron-down txn-select-arrow"></i>
+                                        </div>
+                                        <ul class="txn-select-dropdown" role="listbox">
+                                            <li class="txn-select-option" data-value="credit" role="option">
+                                                <span class="txn-opt-icon txn-opt-credit">
+                                                    <i class="fa-solid fa-arrow-up-right-dots"></i>
+                                                </span>
+                                                Credit
+                                            </li>
+                                            <li class="txn-select-option" data-value="debit" role="option">
+                                                <span class="txn-opt-icon txn-opt-debit">
+                                                    <i class="fa-solid fa-arrow-down-right"></i>
+                                                </span>
+                                                Debit
+                                            </li>
+                                            <li class="txn-select-option" data-value="transfer" role="option">
+                                                <span class="txn-opt-icon txn-opt-transfer">
+                                                    <i class="fa-solid fa-right-left"></i>
+                                                </span>
+                                                Transfer
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+
+                                <!-- Category dropdown -->
+                                <div class="txn-dropdown-group">
+                                    <span class="txn-dropdown-label">
+                                        <i class="fa-solid fa-layer-group"></i> Category
+                                    </span>
+                                    <div class="txn-custom-select" id="dd-category" role="listbox"
+                                        aria-label="Transaction category" aria-expanded="false" tabindex="0">
+                                        <div class="txn-select-trigger">
+                                            <span class="txn-select-value" id="dd-category-value">Select category…</span>
+                                            <i class="fa-solid fa-chevron-down txn-select-arrow"></i>
+                                        </div>
+                                        <ul class="txn-select-dropdown" role="listbox">
+                                            <li class="txn-select-option" data-value="income" role="option">
+                                                <span class="txn-opt-icon txn-opt-income">
+                                                    <i class="fa-solid fa-arrow-trend-up"></i>
+                                                </span>
+                                                Income
+                                            </li>
+                                            <li class="txn-select-option" data-value="expense" role="option">
+                                                <span class="txn-opt-icon txn-opt-expense">
+                                                    <i class="fa-solid fa-arrow-trend-down"></i>
+                                                </span>
+                                                Expense
+                                            </li>
+                                            <li class="txn-select-option" data-value="deposit" role="option">
+                                                <span class="txn-opt-icon txn-opt-deposit">
+                                                    <i class="fa-solid fa-piggy-bank"></i>
+                                                </span>
+                                                Deposit
+                                            </li>
+                                            <li class="txn-select-option" data-value="withdrawal" role="option">
+                                                <span class="txn-opt-icon txn-opt-withdrawal">
+                                                    <i class="fa-solid fa-money-bill-wave"></i>
+                                                </span>
+                                                Withdrawal
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+
+                                <!-- Status dropdown -->
+                                <div class="txn-dropdown-group">
+                                    <span class="txn-dropdown-label">
+                                        <i class="fa-solid fa-circle-half-stroke"></i> Status
+                                    </span>
+                                    <div class="txn-custom-select" id="dd-status" role="listbox"
+                                        aria-label="Transaction status" aria-expanded="false" tabindex="0">
+                                        <div class="txn-select-trigger">
+                                            <span class="txn-select-value" id="dd-status-value">Select status…</span>
+                                            <i class="fa-solid fa-chevron-down txn-select-arrow"></i>
+                                        </div>
+                                        <ul class="txn-select-dropdown" role="listbox">
+                                            <li class="txn-select-option" data-value="pending" role="option">
+                                                <span class="txn-opt-icon txn-opt-pending">
+                                                    <i class="fa-solid fa-clock"></i>
+                                                </span>
+                                                Pending
+                                            </li>
+                                            <li class="txn-select-option" data-value="completed" role="option">
+                                                <span class="txn-opt-icon txn-opt-completed">
+                                                    <i class="fa-solid fa-circle-check"></i>
+                                                </span>
+                                                Completed
+                                            </li>
+                                            <li class="txn-select-option" data-value="failed" role="option">
+                                                <span class="txn-opt-icon txn-opt-failed">
+                                                    <i class="fa-solid fa-circle-xmark"></i>
+                                                </span>
+                                                Failed
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </aside><!-- /txn-info-panel -->
+
+                </div><!-- /txn-form-layout -->
 
             </main>
 
-            <!-- FOOTER — injected by Layout.init() from components/footer.html -->
+            <!-- FOOTER — injected by Layout.init() -->
             <div id="footer-placeholder"></div>
 
         </div>
     </div>
 
-    <script type="module">
-        /**
-         * Page bootstrap for transactions.html
-         * Team Member 3: replace the import and page-specific logic below.
-         */
-        import Layout from './js/layout.js';
-
-        document.addEventListener('DOMContentLoaded', () => {
-            Layout.init({ pageTitle: 'Transactions', breadcrumb: 'Transaction History' });
-            // TODO: add your transaction table logic here
-        });
-    </script>
+    <script type="module" src="js/new-transaction.js"></script>
 
 </body>
 
