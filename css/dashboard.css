@@ -177,6 +177,36 @@
   flex-direction: column;
 }
 
+/* Dashboard grid — stacked layout (table on top, chart below) */
+.dashboard-grid-stacked {
+  grid-template-columns: 1fr; /* single column — full width */
+}
+
+.dashboard-grid-stacked .chart-section {
+  height: auto;
+  min-height: 340px; /* chart has enough room */
+}
+
+.dashboard-grid-stacked .chart-canvas-wrapper {
+  min-height: 300px;
+}
+.dashboard-footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-sm);
+  padding: var(--space-md) var(--space-xl);
+  border-top: 1px solid var(--color-border);
+  font-size: 0.78rem;
+  color: var(--color-text-muted);
+  background: var(--color-bg-secondary);
+  margin-top: auto;
+}
+
+.footer-divider {
+  color: var(--color-border);
+}
+
 /* ============================================================
    Footer
    ============================================================ */

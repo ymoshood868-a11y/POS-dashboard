@@ -347,44 +347,11 @@
                 </div><!-- /cards-grid -->
 
                 <!-- ==========================================
-           DASHBOARD GRID: Chart + Table
+           DASHBOARD GRID: Table on top, Chart below
            ========================================== -->
-                <div class="dashboard-grid">
+                <div class="dashboard-grid dashboard-grid-stacked">
 
-                    <!-- Revenue Overview Chart -->
-                    <section class="chart-section" aria-label="Revenue overview chart">
-                        <div class="chart-header">
-                            <div>
-                                <div class="section-title">Revenue <span>Overview</span></div>
-                                <div style="font-size:0.78rem;color:var(--color-text-muted);margin-top:2px">
-                                    This week (Mon–Sun)
-                                </div>
-                            </div>
-                            <div class="chart-legend">
-                                <div class="legend-item">
-                                    <div class="legend-dot" style="background:#c9a84c"></div>
-                                    Income / Deposits
-                                </div>
-                                <div class="legend-item">
-                                    <div class="legend-dot" style="background:#e74c3c"></div>
-                                    Expenses / Withdrawals
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Chart canvas or empty state -->
-                        <div class="chart-canvas-wrapper" id="chart-wrapper">
-                            <canvas id="revenue-chart" aria-label="Revenue bar chart"></canvas>
-                        </div>
-                        <!-- Empty state (hidden by default, shown by JS when no data) -->
-                        <div class="chart-empty-state d-none" id="chart-empty">
-                            <i class="fa-solid fa-chart-bar"></i>
-                            <p>No revenue data available.</p>
-                            <span>Add transactions to see your revenue overview.</span>
-                        </div>
-                    </section>
-
-                    <!-- Recent Transactions -->
+                    <!-- Recent Transactions — FIRST, full width -->
                     <section class="dashboard-section" aria-label="Recent transactions">
 
                         <div class="section-header">
@@ -409,7 +376,6 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <!-- 5 skeleton rows -->
                                         <tr>
                                             <td colspan="6">
                                                 <div class="skeleton"
@@ -464,7 +430,7 @@
                             </div>
                         </div>
 
-                        <!-- Empty state (hidden until we know there's no data) -->
+                        <!-- Empty state -->
                         <div id="table-empty" class="table-empty-state d-none">
                             <div class="empty-icon"><i class="fa-solid fa-inbox"></i></div>
                             <p class="empty-title">No transactions found</p>
@@ -478,6 +444,37 @@
                         </div>
 
                     </section><!-- /recent transactions -->
+
+                    <!-- Revenue Overview Chart — SECOND, full width below -->
+                    <section class="chart-section" aria-label="Revenue overview chart">
+                        <div class="chart-header">
+                            <div>
+                                <div class="section-title">Revenue <span>Overview</span></div>
+                                <div style="font-size:0.78rem;color:var(--color-text-muted);margin-top:2px">
+                                    This week (Mon–Sun)
+                                </div>
+                            </div>
+                            <div class="chart-legend">
+                                <div class="legend-item">
+                                    <div class="legend-dot" style="background:#c9a84c"></div>
+                                    Income / Deposits
+                                </div>
+                                <div class="legend-item">
+                                    <div class="legend-dot" style="background:#e74c3c"></div>
+                                    Expenses / Withdrawals
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="chart-canvas-wrapper" id="chart-wrapper">
+                            <canvas id="revenue-chart" aria-label="Revenue bar chart"></canvas>
+                        </div>
+                        <div class="chart-empty-state d-none" id="chart-empty">
+                            <i class="fa-solid fa-chart-bar"></i>
+                            <p>No revenue data available.</p>
+                            <span>Add transactions to see your revenue overview.</span>
+                        </div>
+                    </section>
 
                 </div><!-- /dashboard-grid -->
 
