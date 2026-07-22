@@ -1,0 +1,698 @@
+/* ============================================================
+   reports.css — Reports & Analytics page styles
+   POS Dashboard | Module 4: Reports & Analytics
+   ============================================================ */
+
+/* ============================================================
+   Page Header
+   ============================================================ */
+.page-header {
+  margin-bottom: var(--space-xl);
+}
+
+.page-header h1 {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin-bottom: 4px;
+}
+
+.page-header h1 span {
+  color: var(--color-gold);
+}
+
+.page-header p {
+  font-size: 0.9rem;
+  color: var(--color-text-secondary);
+}
+
+/* ============================================================
+   Filter Bar
+   ============================================================ */
+.reports-filter-bar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  flex-wrap: wrap;
+  margin-bottom: var(--space-xl);
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-md) var(--space-lg);
+}
+
+.filter-label {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.filter-label i {
+  color: var(--color-gold);
+}
+
+.filter-group {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  flex-wrap: wrap;
+  flex: 1;
+}
+
+.filter-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 16px;
+  background: var(--color-bg-elevated);
+  border: 1px solid var(--color-border);
+  border-radius: 20px;
+  color: var(--color-text-secondary);
+  font-size: 0.8rem;
+  font-weight: 500;
+  font-family: "Poppins", sans-serif;
+  cursor: pointer;
+  transition: var(--transition-fast);
+  white-space: nowrap;
+}
+
+.filter-btn i {
+  font-size: 0.78rem;
+}
+
+.filter-btn:hover {
+  background: rgba(201, 168, 76, 0.08);
+  border-color: var(--color-border-gold);
+  color: var(--color-gold-light);
+}
+
+.filter-btn.active {
+  background: rgba(201, 168, 76, 0.12);
+  border-color: var(--color-gold);
+  color: var(--color-gold);
+}
+
+.filter-btn.active.income   { background: rgba(39,174,96,0.12);  border-color: #27ae60; color: #27ae60; }
+.filter-btn.active.expense  { background: rgba(231,76,60,0.12);  border-color: #e74c3c; color: #e74c3c; }
+.filter-btn.active.deposit  { background: rgba(201,168,76,0.12); border-color: var(--color-gold); color: var(--color-gold); }
+.filter-btn.active.withdrawal { background: rgba(155,89,182,0.12); border-color: #9b59b6; color: #9b59b6; }
+
+.filter-count {
+  background: rgba(255,255,255,0.08);
+  border-radius: 10px;
+  padding: 1px 7px;
+  font-size: 0.72rem;
+  font-weight: 600;
+}
+
+/* ============================================================
+   Stats Grid (Net Profit + KPI cards)
+   ============================================================ */
+.reports-stats-grid {
+  display: grid;
+  grid-template-columns: 1.5fr repeat(3, 1fr);
+  gap: var(--space-lg);
+  margin-bottom: var(--space-xl);
+}
+
+/* Net Profit hero card */
+.net-profit-card {
+  background: linear-gradient(135deg, #141400 0%, #1a1500 50%, #201a00 100%);
+  border: 1px solid var(--color-border-gold);
+  border-radius: var(--radius-lg);
+  padding: var(--space-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  position: relative;
+  overflow: hidden;
+}
+
+.net-profit-card::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: var(--color-gold);
+}
+
+.net-profit-card .card-title {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+}
+
+.net-profit-value {
+  font-size: 2.2rem;
+  font-weight: 700;
+  letter-spacing: -1px;
+  line-height: 1;
+}
+
+.net-profit-value.positive { color: var(--color-success); }
+.net-profit-value.negative { color: var(--color-danger); }
+
+.net-profit-sub {
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+}
+
+/* KPI cards row */
+.kpi-card {
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-lg);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
+
+.kpi-card::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: var(--kpi-accent, var(--color-gold));
+}
+
+.kpi-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+  border-color: var(--kpi-accent, var(--color-border-gold));
+}
+
+.kpi-card .card-title {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+}
+
+.kpi-card .kpi-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  letter-spacing: -0.5px;
+  line-height: 1;
+}
+
+.kpi-card .kpi-sub {
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+}
+
+/* ============================================================
+   Breakdown Cards (Income / Expense / Deposit / Withdrawal)
+   ============================================================ */
+.breakdown-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-lg);
+  margin-bottom: var(--space-xl);
+}
+
+.breakdown-card {
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-lg);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.breakdown-card::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: var(--bc-accent, var(--color-gold));
+}
+
+.breakdown-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+}
+
+.breakdown-card.income    { --bc-accent: #27ae60; }
+.breakdown-card.expense   { --bc-accent: #e74c3c; }
+.breakdown-card.deposit   { --bc-accent: var(--color-gold); }
+.breakdown-card.withdrawal{ --bc-accent: #9b59b6; }
+
+.bc-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.bc-title {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+}
+
+.bc-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  color: var(--bc-accent, var(--color-gold));
+  background: color-mix(in srgb, var(--bc-accent, var(--color-gold)) 12%, transparent);
+  flex-shrink: 0;
+}
+
+.bc-value {
+  font-size: 1.65rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  letter-spacing: -0.5px;
+  line-height: 1;
+}
+
+.bc-count {
+  font-size: 0.78rem;
+  color: var(--color-text-muted);
+}
+
+.bc-pct-bar {
+  height: 4px;
+  background: var(--color-border);
+  border-radius: 2px;
+  overflow: hidden;
+  margin-top: 4px;
+}
+
+.bc-pct-fill {
+  height: 100%;
+  background: var(--bc-accent, var(--color-gold));
+  border-radius: 2px;
+  transition: width 0.8s ease;
+}
+
+/* ============================================================
+   Chart + Table two-column layout
+   ============================================================ */
+.reports-main-grid {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: var(--space-xl);
+  margin-bottom: var(--space-xl);
+}
+
+/* ============================================================
+   Revenue Overview Chart panel
+   ============================================================ */
+.report-chart-panel {
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-lg);
+  display: flex;
+  flex-direction: column;
+}
+
+.report-chart-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: var(--space-lg);
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+}
+
+.report-chart-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.report-chart-title span { color: var(--color-gold); }
+
+.report-chart-sub {
+  font-size: 0.78rem;
+  color: var(--color-text-muted);
+  margin-top: 2px;
+}
+
+.chart-range-tabs {
+  display: flex;
+  gap: var(--space-xs);
+}
+
+.chart-range-btn {
+  padding: 5px 12px;
+  background: var(--color-bg-elevated);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  color: var(--color-text-muted);
+  font-size: 0.75rem;
+  font-weight: 500;
+  font-family: "Poppins", sans-serif;
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+
+.chart-range-btn:hover {
+  border-color: var(--color-border-gold);
+  color: var(--color-gold-light);
+}
+
+.chart-range-btn.active {
+  background: rgba(201, 168, 76, 0.12);
+  border-color: var(--color-gold);
+  color: var(--color-gold);
+}
+
+.report-canvas-wrapper {
+  flex: 1;
+  min-height: 280px;
+  position: relative;
+}
+
+/* ============================================================
+   Transactions breakdown table panel
+   ============================================================ */
+.report-table-panel {
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-lg);
+  display: flex;
+  flex-direction: column;
+}
+
+.report-table-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-md);
+}
+
+.report-table-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.report-table-title span { color: var(--color-gold); }
+
+.report-txn-count {
+  font-size: 0.78rem;
+  color: var(--color-text-muted);
+  background: var(--color-bg-elevated);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  padding: 3px 10px;
+}
+
+.report-table-wrapper {
+  overflow-y: auto;
+  flex: 1;
+  max-height: 340px;
+}
+
+.report-table-wrapper::-webkit-scrollbar { width: 4px; }
+.report-table-wrapper::-webkit-scrollbar-thumb { background: var(--color-border); border-radius: 2px; }
+
+/* ============================================================
+   Category Donut Chart Panel (full-width below)
+   ============================================================ */
+.reports-bottom-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-xl);
+  margin-bottom: var(--space-xl);
+}
+
+.donut-panel {
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-lg);
+  display: flex;
+  flex-direction: column;
+}
+
+.donut-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-lg);
+}
+
+.donut-panel-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.donut-panel-title span { color: var(--color-gold); }
+
+.donut-content {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xl);
+  flex-wrap: wrap;
+}
+
+.donut-canvas-wrapper {
+  position: relative;
+  width: 180px;
+  height: 180px;
+  flex-shrink: 0;
+}
+
+.donut-legend {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  flex: 1;
+}
+
+.donut-legend-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  font-size: 0.82rem;
+  color: var(--color-text-secondary);
+}
+
+.donut-legend-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.donut-legend-value {
+  margin-left: auto;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  font-size: 0.82rem;
+}
+
+/* ============================================================
+   Top Transactions Panel
+   ============================================================ */
+.top-txn-panel {
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-lg);
+  display: flex;
+  flex-direction: column;
+}
+
+.top-txn-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-md);
+}
+
+.top-txn-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.top-txn-title span { color: var(--color-gold); }
+
+.top-txn-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  flex: 1;
+}
+
+.top-txn-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  padding: var(--space-sm) 0;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.top-txn-item:last-child { border-bottom: none; }
+
+.top-txn-rank {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--color-bg-elevated);
+  border: 1px solid var(--color-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--color-text-muted);
+  flex-shrink: 0;
+}
+
+.top-txn-rank.rank-1 { background: rgba(201,168,76,0.15); border-color: var(--color-gold); color: var(--color-gold); }
+.top-txn-rank.rank-2 { background: rgba(160,160,160,0.12); border-color: #aaa; color: #aaa; }
+.top-txn-rank.rank-3 { background: rgba(180,100,50,0.12); border-color: #c67a3c; color: #c67a3c; }
+
+.top-txn-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.top-txn-desc {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--color-text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.top-txn-date {
+  font-size: 0.72rem;
+  color: var(--color-text-muted);
+}
+
+.top-txn-amount {
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.top-txn-amount.positive { color: var(--color-success); }
+.top-txn-amount.negative { color: var(--color-danger); }
+
+/* ============================================================
+   Loading state
+   ============================================================ */
+.reports-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-md);
+  padding: var(--space-2xl);
+  color: var(--color-text-muted);
+  font-size: 0.9rem;
+}
+
+.reports-loading .spinner {
+  width: 32px;
+  height: 32px;
+  border-width: 3px;
+}
+
+/* ============================================================
+   Responsive
+   ============================================================ */
+@media (max-width: 1199px) {
+  .reports-stats-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .net-profit-card {
+    grid-column: span 2;
+  }
+
+  .reports-main-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .report-canvas-wrapper {
+    min-height: 260px;
+  }
+}
+
+@media (max-width: 991px) {
+  .breakdown-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .reports-bottom-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 767px) {
+  .reports-stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .net-profit-card {
+    grid-column: span 1;
+  }
+
+  .breakdown-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-md);
+  }
+
+  .filter-group {
+    gap: var(--space-xs);
+  }
+
+  .filter-btn {
+    padding: 6px 12px;
+    font-size: 0.75rem;
+  }
+
+  .donut-content {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .donut-canvas-wrapper {
+    width: 160px;
+    height: 160px;
+  }
+}
+
+@media (max-width: 480px) {
+  .breakdown-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .net-profit-value {
+    font-size: 1.8rem;
+  }
+}

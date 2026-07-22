@@ -2,69 +2,308 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Reports — POSDash</title>
-    <link rel="icon"
-        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💰</text></svg>" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
-        rel="stylesheet" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
-    <!-- Chart.js — needed for reports charts -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-    <!-- Shared layout styles — DO NOT REMOVE -->
-    <link rel="stylesheet" href="css/style.css" />
-    <link rel="stylesheet" href="css/layout.css" />
-    <link rel="stylesheet" href="css/responsive.css" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Reports — POSDash</title>
+  <link rel="icon"
+    href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💰</text></svg>" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <!-- Shared layout styles -->
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/layout.css" />
+  <link rel="stylesheet" href="css/cards.css" />
+  <link rel="stylesheet" href="css/responsive.css" />
+  <!-- Reports page styles -->
+  <link rel="stylesheet" href="css/reports.css" />
 </head>
 
 <body>
 
-    <div id="sidebar-overlay" class="sidebar-overlay" aria-hidden="true"></div>
+  <div id="sidebar-overlay" class="sidebar-overlay" aria-hidden="true"></div>
 
-    <div class="app-wrapper">
+  <div class="app-wrapper">
 
-        <div id="sidebar-placeholder"></div>
+    <div id="sidebar-placeholder"></div>
 
-        <div class="main-wrapper">
+    <div class="main-wrapper">
 
-            <div id="navbar-placeholder"></div>
+      <div id="navbar-placeholder"></div>
 
-            <!-- =====================================================
-         PAGE CONTENT — Module 4: Reports & Analytics
-    ====================================================== -->
-            <main class="page-content" aria-label="Reports">
+      <!-- =====================================================
+           PAGE CONTENT — Module 4: Reports & Analytics
+           ====================================================== -->
+      <main class="page-content" aria-label="Reports and Analytics">
 
-                <div class="page-header">
-                    <h1>Reports <span>&amp; Analytics</span></h1>
-                    <p>Gain insights from your transaction data.</p>
+        <div class="page-header">
+          <h1>Reports <span>&amp; Analytics</span></h1>
+          <p>Gain insights from your transaction data — filter by category and explore trends.</p>
+        </div>
+
+        <!-- Loading state -->
+        <div id="reports-loading" class="reports-loading">
+          <div class="spinner"></div>
+          <span>Loading report data…</span>
+        </div>
+
+        <!-- Main reports content (hidden until data loads) -->
+        <div id="reports-content" class="d-none">
+
+          <!-- ================================================
+               FILTER BAR
+               ================================================ -->
+          <div class="reports-filter-bar" role="group" aria-label="Filter by category">
+            <span class="filter-label"><i class="fa-solid fa-sliders"></i> Filter</span>
+            <div class="filter-group">
+              <button class="filter-btn active" data-filter="all" aria-pressed="true">
+                <i class="fa-solid fa-layer-group"></i> All
+                <span class="filter-count" id="count-all">0</span>
+              </button>
+              <button class="filter-btn income" data-filter="income" aria-pressed="false">
+                <i class="fa-solid fa-arrow-trend-up"></i> Income
+                <span class="filter-count" id="count-income">0</span>
+              </button>
+              <button class="filter-btn expense" data-filter="expense" aria-pressed="false">
+                <i class="fa-solid fa-arrow-trend-down"></i> Expenses
+                <span class="filter-count" id="count-expense">0</span>
+              </button>
+              <button class="filter-btn deposit" data-filter="deposit" aria-pressed="false">
+                <i class="fa-solid fa-piggy-bank"></i> Deposits
+                <span class="filter-count" id="count-deposit">0</span>
+              </button>
+              <button class="filter-btn withdrawal" data-filter="withdrawal" aria-pressed="false">
+                <i class="fa-solid fa-money-bill-transfer"></i> Withdrawals
+                <span class="filter-count" id="count-withdrawal">0</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- ================================================
+               STATS ROW — Net Profit hero + 4 KPI cards
+               ================================================ -->
+          <div class="reports-stats-grid">
+
+            <!-- Net Profit hero -->
+            <div class="net-profit-card" aria-label="Net Profit">
+              <span class="card-title"><i class="fa-solid fa-scale-balanced" style="margin-right:6px;color:var(--color-gold)"></i>Net Profit</span>
+              <div id="net-profit-value" class="net-profit-value positive">$0.00</div>
+              <div id="net-profit-sub" class="net-profit-sub">Positive cash flow</div>
+              <div style="font-size:0.72rem;color:var(--color-text-muted);margin-top:4px">
+                Income + Deposits &minus; Expenses &minus; Withdrawals
+              </div>
+            </div>
+
+            <!-- KPI: Transaction Count -->
+            <div class="kpi-card" style="--kpi-accent:#c9a84c" aria-label="Transaction Count">
+              <span class="card-title"><i class="fa-solid fa-receipt" style="margin-right:6px;color:#c9a84c"></i>Transactions</span>
+              <div id="kpi-txn-count" class="kpi-value">0</div>
+              <div class="kpi-sub">Total transaction count</div>
+            </div>
+
+            <!-- KPI: Avg Transaction -->
+            <div class="kpi-card" style="--kpi-accent:#2980b9" aria-label="Average Transaction">
+              <span class="card-title"><i class="fa-solid fa-chart-simple" style="margin-right:6px;color:#2980b9"></i>Avg. Transaction</span>
+              <div id="kpi-avg-txn" class="kpi-value">$0.00</div>
+              <div class="kpi-sub">Average amount per transaction</div>
+            </div>
+
+            <!-- KPI: Total Inflow -->
+            <div class="kpi-card" style="--kpi-accent:#27ae60" aria-label="Total Inflow">
+              <span class="card-title"><i class="fa-solid fa-circle-arrow-down" style="margin-right:6px;color:#27ae60"></i>Total Inflow</span>
+              <div id="kpi-inflow" class="kpi-value">$0.00</div>
+              <div class="kpi-sub">Income + Deposits</div>
+            </div>
+
+          </div>
+
+          <!-- ================================================
+               BREAKDOWN CARDS (Income / Expenses / Deposits / Withdrawals)
+               ================================================ -->
+          <div class="breakdown-grid">
+
+            <!-- Income -->
+            <div class="breakdown-card income" aria-label="Income breakdown">
+              <div class="bc-header">
+                <span class="bc-title">Income</span>
+                <span class="bc-icon"><i class="fa-solid fa-arrow-trend-up"></i></span>
+              </div>
+              <div id="bc-value-income" class="bc-value">$0.00</div>
+              <div id="bc-count-income" class="bc-count">0 transactions</div>
+              <div class="bc-pct-bar"><div class="bc-pct-fill" id="bc-fill-income" style="width:0%"></div></div>
+            </div>
+
+            <!-- Expenses -->
+            <div class="breakdown-card expense" aria-label="Expenses breakdown">
+              <div class="bc-header">
+                <span class="bc-title">Expenses</span>
+                <span class="bc-icon"><i class="fa-solid fa-arrow-trend-down"></i></span>
+              </div>
+              <div id="bc-value-expense" class="bc-value">$0.00</div>
+              <div id="bc-count-expense" class="bc-count">0 transactions</div>
+              <div class="bc-pct-bar"><div class="bc-pct-fill" id="bc-fill-expense" style="width:0%"></div></div>
+            </div>
+
+            <!-- Deposits -->
+            <div class="breakdown-card deposit" aria-label="Deposits breakdown">
+              <div class="bc-header">
+                <span class="bc-title">Deposits</span>
+                <span class="bc-icon"><i class="fa-solid fa-piggy-bank"></i></span>
+              </div>
+              <div id="bc-value-deposit" class="bc-value">$0.00</div>
+              <div id="bc-count-deposit" class="bc-count">0 transactions</div>
+              <div class="bc-pct-bar"><div class="bc-pct-fill" id="bc-fill-deposit" style="width:0%"></div></div>
+            </div>
+
+            <!-- Withdrawals -->
+            <div class="breakdown-card withdrawal" aria-label="Withdrawals breakdown">
+              <div class="bc-header">
+                <span class="bc-title">Withdrawals</span>
+                <span class="bc-icon"><i class="fa-solid fa-money-bill-transfer"></i></span>
+              </div>
+              <div id="bc-value-withdrawal" class="bc-value">$0.00</div>
+              <div id="bc-count-withdrawal" class="bc-count">0 transactions</div>
+              <div class="bc-pct-bar"><div class="bc-pct-fill" id="bc-fill-withdrawal" style="width:0%"></div></div>
+            </div>
+
+          </div>
+
+          <!-- ================================================
+               MAIN GRID — Revenue Chart (left) + Transaction Table (right)
+               ================================================ -->
+          <div class="reports-main-grid">
+
+            <!-- Revenue Overview Chart -->
+            <div class="report-chart-panel">
+              <div class="report-chart-header">
+                <div>
+                  <div class="report-chart-title">Revenue <span>Overview</span></div>
+                  <div id="chart-range-label" class="report-chart-sub">This week (Mon–Sun)</div>
+                </div>
+                <div style="display:flex;flex-direction:column;gap:var(--space-sm);align-items:flex-end">
+                  <!-- Range toggle -->
+                  <div class="chart-range-tabs" role="group" aria-label="Chart date range">
+                    <button class="chart-range-btn active" data-range="weekly" aria-pressed="true">Weekly</button>
+                    <button class="chart-range-btn" data-range="monthly" aria-pressed="false">Monthly</button>
+                  </div>
+                  <!-- Legend -->
+                  <div class="chart-legend">
+                    <span class="legend-item">
+                      <span class="legend-dot" style="background:#c9a84c"></span> Income / Deposits
+                    </span>
+                    <span class="legend-item">
+                      <span class="legend-dot" style="background:#e74c3c"></span> Expenses / Withdrawals
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <div class="report-canvas-wrapper">
+                <canvas id="report-revenue-chart" role="img" aria-label="Revenue overview bar chart"></canvas>
+              </div>
+            </div>
+
+            <!-- Transactions Table Panel -->
+            <div class="report-table-panel">
+              <div class="report-table-header">
+                <div class="report-table-title">Transactions <span>Breakdown</span></div>
+                <span id="report-txn-count" class="report-txn-count">0 records</span>
+              </div>
+
+              <!-- Table -->
+              <div class="report-table-wrapper">
+                <div id="report-table-real">
+                  <table class="transactions-table" aria-label="Filtered transactions">
+                    <thead>
+                      <tr>
+                        <th>Ref</th>
+                        <th>Description</th>
+                        <th>Category</th>
+                        <th>Amount</th>
+                        <th>Date</th>
+                        <th>Status</th>
+                      </tr>
+                    </thead>
+                    <tbody id="report-tbody"></tbody>
+                  </table>
                 </div>
 
-                <!-- ⬇⬇ TEAM MEMBER 4: build your content here ⬇⬇ -->
-                <div class="table-empty-state" style="margin-top: var(--space-xl)">
-                    <div class="empty-icon"><i class="fa-solid fa-chart-bar"></i></div>
-                    <p class="empty-title">Reports &amp; Analytics</p>
-                    <p class="empty-sub">This page is being built by Team Member 4.</p>
+                <!-- Table empty state -->
+                <div id="report-table-empty" class="table-empty-state d-none" style="border:none;padding:var(--space-xl) 0">
+                  <div class="empty-icon"><i class="fa-solid fa-inbox"></i></div>
+                  <p class="empty-title">No transactions found</p>
+                  <p class="empty-sub">Try selecting a different category filter.</p>
                 </div>
-                <!-- ⬆⬆ END team content ⬆⬆ -->
+              </div>
+            </div>
 
-            </main>
+          </div>
 
-            <div id="footer-placeholder"></div>
+          <!-- ================================================
+               BOTTOM GRID — Donut Chart (left) + Top Transactions (right)
+               ================================================ -->
+          <div class="reports-bottom-grid">
+
+            <!-- Category Distribution Donut -->
+            <div class="donut-panel">
+              <div class="donut-panel-header">
+                <div class="donut-panel-title">Category <span>Distribution</span></div>
+              </div>
+              <div class="donut-content">
+                <div class="donut-canvas-wrapper">
+                  <canvas id="report-donut-chart" role="img" aria-label="Category distribution donut chart"></canvas>
+                </div>
+                <div class="donut-legend">
+                  <div class="donut-legend-item">
+                    <span class="donut-legend-dot" style="background:#27ae60"></span>
+                    Income
+                    <span id="donut-val-income" class="donut-legend-value">$0.00</span>
+                  </div>
+                  <div class="donut-legend-item">
+                    <span class="donut-legend-dot" style="background:#e74c3c"></span>
+                    Expenses
+                    <span id="donut-val-expense" class="donut-legend-value">$0.00</span>
+                  </div>
+                  <div class="donut-legend-item">
+                    <span class="donut-legend-dot" style="background:#c9a84c"></span>
+                    Deposits
+                    <span id="donut-val-deposit" class="donut-legend-value">$0.00</span>
+                  </div>
+                  <div class="donut-legend-item">
+                    <span class="donut-legend-dot" style="background:#9b59b6"></span>
+                    Withdrawals
+                    <span id="donut-val-withdrawal" class="donut-legend-value">$0.00</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Top 5 Transactions by Amount -->
+            <div class="top-txn-panel">
+              <div class="top-txn-header">
+                <div class="top-txn-title">Top <span>Transactions</span></div>
+                <span style="font-size:0.78rem;color:var(--color-text-muted)">By amount</span>
+              </div>
+              <div class="top-txn-list" id="top-txn-list">
+                <!-- Populated by reports.js -->
+              </div>
+            </div>
+
+          </div>
 
         </div>
+        <!-- /#reports-content -->
+
+      </main>
+
+      <div id="footer-placeholder"></div>
+
     </div>
+  </div>
 
-    <script type="module">
-        import Layout from './js/layout.js';
-
-        document.addEventListener('DOMContentLoaded', () => {
-            Layout.init({ pageTitle: 'Reports', breadcrumb: 'Reports & Analytics' });
-            // TODO: add your charts and report logic here
-        });
-    </script>
+  <script type="module" src="js/reports.js"></script>
 
 </body>
 
