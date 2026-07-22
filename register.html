@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Create Account — POSDash</title>
+
+    <link rel="icon"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💰</text></svg>" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet" />
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/login.css" />
+</head>
+
+<body>
+
+    <main class="login-page">
+
+        <!-- ================================================
+             LEFT PANEL — identical to login.html
+        ================================================ -->
+        <section class="login-illustration" aria-hidden="true">
+
+            <div class="illus-grid"></div>
+            <div class="corner-tl"></div>
+            <div class="corner-br"></div>
+
+            <div class="illustration-content">
+                <h2 class="illustration-title">
+                    <span class="title-line">Smart <em>POS</em></span>
+                    <span class="title-line"><em>Transaction</em></span>
+                    <span class="title-line title-line--lg">Management</span>
+                </h2>
+
+                <div class="illustration-divider"></div>
+
+                <p class="illustration-subtitle">
+                    Join POSDash and start tracking your income, expenses,
+                    deposits, and withdrawals in real time.
+                </p>
+
+                <div class="illustration-badges">
+                    <div class="badge-item">
+                        <i class="fa-solid fa-shield-halved"></i>
+                        Secure Auth
+                    </div>
+                    <div class="badge-item">
+                        <i class="fa-solid fa-bolt"></i>
+                        Real-time Data
+                    </div>
+                    <div class="badge-item">
+                        <i class="fa-solid fa-chart-pie"></i>
+                        Analytics
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- ================================================
+             RIGHT PANEL — Register form
+        ================================================ -->
+        <section class="login-form-panel">
+            <div class="login-box">
+
+                <!-- Logo -->
+                <div class="login-logo">
+                    <div class="logo-icon">
+                        <i class="fa-solid fa-coins"></i>
+                    </div>
+                    <div class="logo-text">
+                        <span>POS</span>Dash
+                    </div>
+                </div>
+
+                <!-- Heading -->
+                <div class="login-heading">
+                    <h1>Create account</h1>
+                    <p>Fill in your details to get started</p>
+                </div>
+
+                <!-- Alert -->
+                <div id="form-alert" class="form-alert d-none" role="alert" aria-live="polite"></div>
+
+                <!-- Register Form -->
+                <form id="register-form" class="login-form" novalidate autocomplete="off">
+
+                    <!-- Full Name -->
+                    <div class="form-group" id="group-name">
+                        <label for="reg-name">Full Name</label>
+                        <div class="input-wrapper">
+                            <i class="fa-solid fa-user input-icon"></i>
+                            <input type="text" id="reg-name" name="name"
+                                placeholder="John Doe"
+                                autocomplete="name" required />
+                        </div>
+                    </div>
+
+                    <!-- Email -->
+                    <div class="form-group" id="group-email">
+                        <label for="reg-email">Email Address</label>
+                        <div class="input-wrapper">
+                            <i class="fa-solid fa-envelope input-icon"></i>
+                            <input type="email" id="reg-email" name="email"
+                                placeholder="you@example.com"
+                                autocomplete="email" required />
+                        </div>
+                    </div>
+
+                    <!-- Password -->
+                    <div class="form-group" id="group-password">
+                        <label for="reg-password">Password</label>
+                        <div class="input-wrapper">
+                            <i class="fa-solid fa-lock input-icon"></i>
+                            <input type="password" id="reg-password" name="password"
+                                placeholder="Min. 6 characters"
+                                autocomplete="new-password" required />
+                            <button type="button" class="btn-toggle-password" id="btn-toggle-pwd"
+                                aria-label="Toggle password visibility">
+                                <i class="fa-solid fa-eye"></i>
+                            </button>
+                        </div>
+                        <!-- Password strength bar -->
+                        <div class="pwd-strength" id="pwd-strength" aria-live="polite">
+                            <div class="pwd-strength-bar">
+                                <div class="pwd-strength-fill" id="pwd-strength-fill"></div>
+                            </div>
+                            <span class="pwd-strength-label" id="pwd-strength-label"></span>
+                        </div>
+                    </div>
+
+                    <!-- Confirm Password -->
+                    <div class="form-group" id="group-confirm">
+                        <label for="reg-confirm">Confirm Password</label>
+                        <div class="input-wrapper">
+                            <i class="fa-solid fa-lock-open input-icon"></i>
+                            <input type="password" id="reg-confirm" name="confirm"
+                                placeholder="Repeat your password"
+                                autocomplete="new-password" required />
+                            <button type="button" class="btn-toggle-password" id="btn-toggle-confirm"
+                                aria-label="Toggle confirm password visibility">
+                                <i class="fa-solid fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Terms checkbox -->
+                    <div class="form-group" id="group-terms">
+                        <label class="checkbox-label" for="reg-terms">
+                            <input type="checkbox" id="reg-terms" name="terms" required />
+                            I agree to the
+                            <a href="#" class="forgot-link"
+                                onclick="event.preventDefault()"
+                                style="margin-left:3px">Terms &amp; Conditions</a>
+                        </label>
+                    </div>
+
+                    <!-- Submit -->
+                    <button type="submit" id="btn-register" class="btn-login">
+                        <span id="btn-register-text">
+                            <i class="fa-solid fa-user-plus"></i> Create Account
+                        </span>
+                        <span id="btn-register-spinner" class="spinner d-none" aria-hidden="true"></span>
+                    </button>
+
+                </form>
+
+                <!-- Switch to login -->
+                <p class="login-switch">
+                    Already have an account?
+                    <a href="login.html" class="login-switch-link">Sign in</a>
+                </p>
+
+                <!-- Footer -->
+                <p class="login-footer">
+                    &copy; 2025 POSDash. All rights reserved.
+                </p>
+
+            </div>
+        </section>
+
+    </main>
+
+    <script type="module" src="js/register.js"></script>
+
+</body>
+
+</html>
