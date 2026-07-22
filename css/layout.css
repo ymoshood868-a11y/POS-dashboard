@@ -1215,3 +1215,154 @@
   color: var(--color-text-secondary);
   margin-top: var(--space-xs);
 }
+
+/* ============================================================
+   SIDEBAR DROPDOWN SUBMENU
+   Used by Settings (and any future page needing sub-nav)
+   ============================================================ */
+
+/* Parent toggle button — same look as nav-link */
+.nav-link-toggle {
+  width: 100%;
+  background: none;
+  border: none;
+  font-family: "Poppins", sans-serif;
+  cursor: pointer;
+  text-align: left;
+}
+
+/* Dropdown arrow */
+.nav-dropdown-arrow {
+  margin-left: auto;
+  font-size: 0.7rem;
+  color: var(--color-text-muted);
+  transition: transform 0.25s ease;
+  flex-shrink: 0;
+}
+
+.nav-link-toggle[aria-expanded="true"] .nav-dropdown-arrow {
+  transform: rotate(180deg);
+}
+
+/* Submenu list — animated slide */
+.nav-submenu {
+  list-style: none;
+  overflow: hidden;
+  max-height: 0;
+  transition: max-height 0.3s ease;
+  padding-left: 0;
+  margin: 0;
+}
+
+.nav-submenu.open {
+  max-height: 400px; /* large enough for all items */
+}
+
+/* Sub-items */
+.nav-sublink {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 8px var(--space-sm) 8px 44px; /* indent under parent icon */
+  border: none;
+  background: none;
+  font-family: "Poppins", sans-serif;
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  text-align: left;
+  transition:
+    background 0.15s ease,
+    color 0.15s ease;
+  white-space: nowrap;
+  position: relative;
+  margin: 1px var(--space-sm);
+}
+
+/* Left accent line — shows hierarchy */
+.nav-sublink::before {
+  content: "";
+  position: absolute;
+  left: 26px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--color-border);
+  transition: background 0.15s ease;
+}
+
+.nav-sublink i {
+  font-size: 0.82rem;
+  width: 14px;
+  flex-shrink: 0;
+  color: var(--color-text-muted);
+  transition: color 0.15s ease;
+}
+
+.nav-sublink:hover {
+  background: rgba(201, 168, 76, 0.08);
+  color: var(--color-gold-light);
+}
+
+.nav-sublink:hover i,
+.nav-sublink:hover::before {
+  color: var(--color-gold);
+  background: var(--color-gold);
+}
+
+/* Active sub-item */
+.nav-sublink.active {
+  background: rgba(201, 168, 76, 0.14);
+  color: var(--color-gold);
+  border-left: 3px solid var(--color-gold);
+  padding-left: 41px;
+}
+
+.nav-sublink.active i {
+  color: var(--color-gold);
+}
+
+.nav-sublink.active::before {
+  background: var(--color-gold);
+}
+
+/* Danger zone sub-item */
+.nav-sublink-danger {
+  color: var(--color-danger);
+}
+.nav-sublink-danger i {
+  color: var(--color-danger);
+}
+.nav-sublink-danger::before {
+  background: var(--color-danger);
+}
+.nav-sublink-danger:hover {
+  background: rgba(231, 76, 60, 0.08);
+  color: var(--color-danger);
+}
+
+/* Hide submenu text when sidebar is collapsed */
+.sidebar.collapsed .nav-submenu {
+  display: none;
+}
+.sidebar.collapsed .nav-dropdown-arrow {
+  display: none;
+}
+
+/* ============================================================
+   SETTINGS FULL-WIDTH LAYOUT
+   When tab nav is in sidebar, panels expand to full width
+   ============================================================ */
+.settings-wrapper-full {
+  display: block !important; /* override any flex/grid from settings.css */
+}
+
+.settings-wrapper-full .settings-panels {
+  width: 100%;
+  max-width: 100%;
+}
