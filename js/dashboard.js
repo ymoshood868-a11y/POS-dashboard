@@ -169,7 +169,7 @@ function renderSummaryCards(transactions) {
 }
 
 /* ============================================================
-   Revenue Chart — Bar chart with empty-state
+   Revenue Chart — Weekly bar chart (Mon–Sun), checklist requirement
    ============================================================ */
 function renderChart(transactions) {
   const canvas = document.getElementById("revenue-chart");
@@ -183,22 +183,25 @@ function renderChart(transactions) {
     return;
   }
 
-  const labels = [],
-    incomeData = [],
-    expenseData = [];
+  // Build Mon–Sun of the current week
+  const today = new Date();
+  const dayOfWk = today.getDay(); // 0=Sun … 6=Sat
+  // Monday of this week
+  const monday = new Date(today);
+  monday.setDate(today.getDate() - ((dayOfWk + 6) % 7));
 
-  for (let i = 5; i >= 0; i--) {
-    const d = new Date();
-    d.setDate(1);
-    d.setMonth(d.getMonth() - i);
-    labels.push(d.toLocaleString("en-US", { month: "short", year: "2-digit" }));
+  const dayNames = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+  const incomeData = [];
+  const expenseData = [];
 
-    const mo = d.getMonth(),
-      yr = d.getFullYear();
-    const slice = transactions.filter((t) => {
-      const td = new Date(t.date);
-      return td.getMonth() === mo && td.getFullYear() === yr;
-    });
+  for (let i = 0; i < 7; i++) {
+    const day = new Date(monday);
+    day.setDate(monday.getDate() + i);
+    const dayStr = day.toISOString().split("T")[0]; // 'YYYY-MM-DD'
+
+    const slice = transactions.filter(
+      (t) => t.date && t.date.startsWith(dayStr),
+    );
 
     incomeData.push(
       slice
@@ -212,10 +215,16 @@ function renderChart(transactions) {
     );
   }
 
+  // Update subtitle in HTML
+  const subtitle = document.querySelector(
+    '.chart-section [style*="color:var(--color-text-muted)"]',
+  );
+  if (subtitle) subtitle.textContent = "This week (Mon–Sun)";
+
   new Chart(canvas, {
     type: "bar",
     data: {
-      labels,
+      labels: dayNames,
       datasets: [
         {
           label: "Income / Deposits",
