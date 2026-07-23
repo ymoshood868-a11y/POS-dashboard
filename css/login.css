@@ -582,6 +582,27 @@
   color: #27ae60;
 }
 
+/* Switch link (login ↔ register) */
+.login-switch {
+  margin-top: 20px;
+  text-align: center;
+  font-size: 0.875rem;
+  color: var(--color-text-secondary);
+}
+
+.login-switch-link {
+  color: var(--color-gold);
+  font-weight: 600;
+  text-decoration: none;
+  margin-left: 4px;
+  transition: color 0.2s ease;
+}
+
+.login-switch-link:hover {
+  color: var(--color-gold-light);
+  text-decoration: underline;
+}
+
 /* Footer — brighter muted text for readability */
 .login-footer {
   margin-top: 28px;
@@ -594,4 +615,73 @@
 .login-footer span {
   color: #5a5a5a;
   font-size: 0.75rem;
+}
+
+/* ============================================================
+   Password strength indicator (register page)
+   ============================================================ */
+.pwd-strength {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  margin-top: 6px;
+  min-height: 16px;
+}
+
+.pwd-strength-bar {
+  flex: 1;
+  height: 4px;
+  background: var(--color-border);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.pwd-strength-fill {
+  height: 100%;
+  width: 0%;
+  border-radius: 4px;
+  transition: width 0.3s ease, background 0.3s ease;
+}
+
+.pwd-strength-fill.weak   { background: var(--color-danger);  width: 33%; }
+.pwd-strength-fill.medium { background: var(--color-warning); width: 66%; }
+.pwd-strength-fill.strong { background: var(--color-success); width: 100%; }
+
+.pwd-strength-label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  min-width: 48px;
+  text-align: right;
+}
+.pwd-strength-label.weak   { color: var(--color-danger); }
+.pwd-strength-label.medium { color: var(--color-warning); }
+.pwd-strength-label.strong { color: var(--color-success); }
+
+/* Responsive — stack panels on small screens */
+@media (max-width: 768px) {
+  .login-page {
+    grid-template-columns: 1fr;
+  }
+
+  .login-illustration {
+    min-height: 260px;
+    padding: 36px 28px;
+    border-right: none;
+    border-bottom: 1px solid rgba(201, 168, 76, 0.2);
+  }
+
+  .title-line       { font-size: 3.2rem; }
+  .title-line--lg   { font-size: 2rem; }
+
+  .login-form-panel {
+    padding: 36px 24px;
+  }
+}
+
+@media (max-width: 480px) {
+  .login-illustration { min-height: 200px; padding: 28px 20px; }
+  .title-line         { font-size: 2.4rem; }
+  .title-line--lg     { font-size: 1.6rem; }
+  .login-form-panel   { padding: 28px 16px; }
+  .login-box          { max-width: 100%; }
 }

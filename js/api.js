@@ -167,7 +167,16 @@ export async function getUsers() {
    ============================================================ */
 
 /**
- * Fetch app settings
+ * Create a new user account
+ * NOTE: Used by register.js
+ * @param {object} data
+ * @returns {Promise<object>}
+ */
+export async function createUser(data) {
+  return apiFetch("/users", { method: "POST", body: data });
+}
+
+
  * @returns {Promise<object>}
  */
 export async function getSettings() {
