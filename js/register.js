@@ -1,250 +1,195 @@
 /**
- * register.js — User registration logic
- * POS Dashboard | Module 1 (extended)
+ * register.js — New account registration
+ * POS Dashboard
  *
- * Handles:
- *   - Full form validation (name, email, password, confirm, terms)
- *   - Email uniqueness check against existing /users
- *   - Password strength meter
- *   - POST /users to create the new account
- *   - Redirect to login.html on success
+ * POSTs new user to JSON Server /users.
+ * On success redirects to login.html.
  */
 
-import { showToast, redirectIfLoggedIn } from "./utils.js";
-import { getUsers, createUser } from "./api.js";
+import { showToast } from "./utils.js";
 
-/* ============================================================
-   DOM References
-   ============================================================ */
-const form           = document.getElementById("register-form");
-const fldName        = document.getElementById("reg-name");
-const fldEmail       = document.getElementById("reg-email");
-const fldPassword    = document.getElementById("reg-password");
-const fldConfirm     = document.getElementById("reg-confirm");
-const fldTerms       = document.getElementById("reg-terms");
-const btnSubmit      = document.getElementById("btn-register");
-const btnSubmitText  = document.getElementById("btn-register-text");
-const btnSpinner     = document.getElementById("btn-register-spinner");
-const formAlert      = document.getElementById("form-alert");
-const btnTogglePwd   = document.getElementById("btn-toggle-pwd");
-const btnToggleCfm   = document.getElementById("btn-toggle-confirm");
-const strengthFill   = document.getElementById("pwd-strength-fill");
-const strengthLabel  = document.getElementById("pwd-strength-label");
+const BASE_URL = "http://localhost:3000";
 
-let isSaving = false;
+/* ── DOM refs ────────────────────────────────────────────── */
+const form = document.getElementById("register-form");
+const nameInput = document.getElementById("reg-name");
+const emailInput = document.getElementById("reg-email");
+const passwordInput = document.getElementById("reg-password");
+const confirmInput = document.getElementById("reg-confirm");
+const termsCheck = document.getElementById("reg-terms");
+const btnRegister = document.getElementById("btn-register");
+const btnText = document.getElementById("btn-register-text");
+const btnSpinner = document.getElementById("btn-register-spinner");
+const formAlert = document.getElementById("form-alert");
+const strengthFill = document.getElementById("pwd-strength-fill");
+const strengthLabel = document.getElementById("pwd-strength-label");
 
-/* ============================================================
-   Init
-   ============================================================ */
+/* ── Init ────────────────────────────────────────────────── */
 document.addEventListener("DOMContentLoaded", () => {
-  // Already logged in → go to dashboard
-  redirectIfLoggedIn("dashboard.html");
-
-  form.addEventListener("submit", handleSubmit);
-
-  // Password visibility toggles
-  btnTogglePwd?.addEventListener("click", () => toggleVisibility(fldPassword, btnTogglePwd));
-  btnToggleCfm?.addEventListener("click", () => toggleVisibility(fldConfirm, btnToggleCfm));
-
-  // Password strength on input
-  fldPassword.addEventListener("input", () => {
-    updateStrength(fldPassword.value);
-    if (fldConfirm.value) validateMatchInline();
+  // Password toggle — main field
+  document.getElementById("btn-toggle-pwd")?.addEventListener("click", () => {
+    toggleField(passwordInput, document.querySelector("#btn-toggle-pwd i"));
   });
 
-  fldConfirm.addEventListener("input", validateMatchInline);
+  // Password toggle — confirm field
+  document
+    .getElementById("btn-toggle-confirm")
+    ?.addEventListener("click", () => {
+      toggleField(
+        confirmInput,
+        document.querySelector("#btn-toggle-confirm i"),
+      );
+    });
 
-  // Clear errors on input
-  [fldName, fldEmail, fldPassword, fldConfirm].forEach((el) => {
-    el.addEventListener("input", () => clearFieldError(el.closest(".form-group")));
+  // Live password strength
+  passwordInput?.addEventListener("input", () => {
+    updateStrength(passwordInput.value);
+    clearErr("group-password");
   });
+
+  // Clear errors on typing
+  emailInput?.addEventListener("input", () => clearErr("group-email"));
+  nameInput?.addEventListener("input", () => clearErr("group-name"));
+  confirmInput?.addEventListener("input", () => clearErr("group-confirm"));
+
+  // Submit
+  form?.addEventListener("submit", handleRegister);
 });
 
-/* ============================================================
-   Submit Handler
-   ============================================================ */
-async function handleSubmit(e) {
+/* ── Registration handler ────────────────────────────────── */
+async function handleRegister(e) {
   e.preventDefault();
-  if (isSaving) return;
 
-  hideAlert();
-  const valid = validateAll();
-  if (!valid) return;
+  const name = nameInput.value.trim();
+  const email = emailInput.value.trim();
+  const password = passwordInput.value;
+  const confirm = confirmInput.value;
+  const agreed = termsCheck?.checked;
+
+  // ── Validate ─────────────────────────────────────────────
+  let ok = true;
+
+  if (!name) {
+    setErr("group-name", "Full name is required.");
+    ok = false;
+  }
+  if (!validateEmail(email)) {
+    setErr("group-email", "Please enter a valid email address.");
+    ok = false;
+  }
+  if (password.length < 6) {
+    setErr("group-password", "Password must be at least 6 characters.");
+    ok = false;
+  }
+  if (password !== confirm) {
+    setErr("group-confirm", "Passwords do not match.");
+    ok = false;
+  }
+  if (!agreed) {
+    showAlert("Please accept the Terms & Conditions.", "error");
+    ok = false;
+  }
+  if (!ok) return;
 
   setLoading(true);
-
-  const name     = fldName.value.trim();
-  const email    = fldEmail.value.trim().toLowerCase();
-  const password = fldPassword.value;
+  hideAlert();
 
   try {
-    // Check for duplicate email
-    let existingUsers = [];
-    try {
-      existingUsers = await getUsers();
-    } catch {
-      // Server may be offline — proceed anyway (no duplicate check possible)
-    }
-
-    const duplicate = existingUsers.find(
-      (u) => u.email.toLowerCase() === email
+    // ── Check email not already taken ─────────────────────
+    const checkRes = await fetch(
+      `${BASE_URL}/users?email=${encodeURIComponent(email)}`,
     );
+    const existing = await checkRes.json();
 
-    if (duplicate) {
-      showFieldError(fldEmail, "An account with this email already exists.");
-      showAlert("This email is already registered. Try signing in instead.", "error");
+    if (existing.length > 0) {
+      showAlert(
+        "An account with this email already exists. Please sign in.",
+        "error",
+      );
       setLoading(false);
       return;
     }
 
-    // Create user via POST /users
+    // ── Build new user object ─────────────────────────────
     const newUser = {
       name,
+      username: name.toLowerCase().replace(/\s+/g, "").slice(0, 16),
       email,
       password,
       role: "user",
+      phone: "",
+      department: "",
       avatar: "",
     };
 
-    await createUser(newUser);
+    // ── POST to JSON Server ───────────────────────────────
+    const res = await fetch(`${BASE_URL}/users`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(newUser),
+    });
 
-    showToast("Account created! Redirecting to sign in…", "success", 2500);
+    if (!res.ok) throw new Error("Registration failed.");
 
-    setTimeout(() => {
-      window.location.href = "login.html";
-    }, 1500);
-
+    // ── Success — redirect to login ───────────────────────
+    showAlert("Account created! Redirecting to sign in…", "success");
+    setTimeout(() => window.location.replace("login.html"), 1500);
   } catch (err) {
-    console.error("[Register] Error:", err);
+    console.error("Register error:", err);
+    // Server offline fallback message
     showAlert(
-      "Could not create account. Make sure the server is running and try again.",
-      "error"
+      "Cannot reach server. Make sure JSON Server is running (npm run server).",
+      "error",
     );
     setLoading(false);
   }
 }
 
-/* ============================================================
-   Validation
-   ============================================================ */
-function validateAll() {
-  clearAllErrors();
-  let valid = true;
-
-  // Name
-  const name = fldName.value.trim();
-  if (!name || name.length < 2) {
-    showFieldError(fldName, "Full name must be at least 2 characters.");
-    valid = false;
-  }
-
-  // Email
-  const email = fldEmail.value.trim();
-  if (!validateEmail(email)) {
-    showFieldError(fldEmail, "Please enter a valid email address.");
-    valid = false;
-  }
-
-  // Password
-  const pwd = fldPassword.value;
-  if (!pwd || pwd.length < 6) {
-    showFieldError(fldPassword, "Password must be at least 6 characters.");
-    valid = false;
-  }
-
-  // Confirm password
-  const confirm = fldConfirm.value;
-  if (!confirm) {
-    showFieldError(fldConfirm, "Please confirm your password.");
-    valid = false;
-  } else if (pwd && confirm !== pwd) {
-    showFieldError(fldConfirm, "Passwords do not match.");
-    valid = false;
-  }
-
-  // Terms
-  if (!fldTerms.checked) {
-    const group = document.getElementById("group-terms");
-    showGroupError(group, "You must agree to the Terms & Conditions.");
-    valid = false;
-  }
-
-  return valid;
-}
-
-function validateMatchInline() {
-  const group = fldConfirm.closest(".form-group");
-  if (fldConfirm.value && fldPassword.value !== fldConfirm.value) {
-    showGroupError(group, "Passwords do not match.");
-  } else {
-    clearGroupError(group);
-  }
-}
-
-function validateEmail(email) {
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-}
-
-/* ============================================================
-   Password Strength Meter
-   ============================================================ */
+/* ── Password strength meter ─────────────────────────────── */
 function updateStrength(pwd) {
   if (!strengthFill || !strengthLabel) return;
 
-  if (!pwd) {
-    strengthFill.className = "pwd-strength-fill";
-    strengthFill.style.width = "0%";
-    strengthLabel.textContent = "";
-    strengthLabel.className = "pwd-strength-label";
-    return;
-  }
-
   let score = 0;
-  if (pwd.length >= 6)  score++;
+  if (pwd.length >= 6) score++;
   if (pwd.length >= 10) score++;
-  if (/[A-Z]/.test(pwd) && /[a-z]/.test(pwd)) score++;
-  if (/\d/.test(pwd)) score++;
-  if (/[^a-zA-Z0-9]/.test(pwd)) score++;
+  if (/[A-Z]/.test(pwd)) score++;
+  if (/[0-9]/.test(pwd)) score++;
+  if (/[^A-Za-z0-9]/.test(pwd)) score++;
 
-  let level, label;
-  if (score <= 2) {
-    level = "weak";   label = "Weak";
-  } else if (score <= 3) {
-    level = "medium"; label = "Medium";
-  } else {
-    level = "strong"; label = "Strong";
-  }
+  const levels = [
+    { label: "", color: "transparent", width: "0%" },
+    { label: "Weak", color: "#e74c3c", width: "25%" },
+    { label: "Fair", color: "#f39c12", width: "50%" },
+    { label: "Good", color: "#c9a84c", width: "75%" },
+    { label: "Strong", color: "#27ae60", width: "90%" },
+    { label: "Very Strong", color: "#27ae60", width: "100%" },
+  ];
 
-  strengthFill.className  = `pwd-strength-fill ${level}`;
-  strengthLabel.textContent = label;
-  strengthLabel.className = `pwd-strength-label ${level}`;
+  const level = levels[Math.min(score, 5)];
+  strengthFill.style.width = level.width;
+  strengthFill.style.background = level.color;
+  strengthLabel.textContent = level.label;
+  strengthLabel.style.color = level.color;
 }
 
-/* ============================================================
-   Loading State
-   ============================================================ */
-function setLoading(state) {
-  isSaving = state;
-  btnSubmit.disabled = state;
-
-  if (state) {
-    btnSubmitText.innerHTML =
-      '<i class="fa-solid fa-spinner fa-spin"></i> Creating account…';
-    btnSpinner?.classList.remove("d-none");
-  } else {
-    btnSubmitText.innerHTML =
-      '<i class="fa-solid fa-user-plus"></i> Create Account';
-    btnSpinner?.classList.add("d-none");
-  }
+/* ── Helpers ─────────────────────────────────────────────── */
+function toggleField(input, icon) {
+  if (!input) return;
+  const show = input.type === "password";
+  input.type = show ? "text" : "password";
+  if (icon) icon.className = show ? "fa-solid fa-eye-slash" : "fa-solid fa-eye";
 }
 
-/* ============================================================
-   Alert
-   ============================================================ */
-function showAlert(message, type = "error") {
+function setLoading(on) {
+  if (!btnRegister) return;
+  btnRegister.disabled = on;
+  if (btnText) btnText.style.display = on ? "none" : "";
+  if (btnSpinner) btnSpinner.classList.toggle("d-none", !on);
+}
+
+function showAlert(msg, type = "error") {
   if (!formAlert) return;
-  const icon = type === "error" ? "circle-xmark" : "circle-check";
-  formAlert.innerHTML = `<i class="fa-solid fa-${icon}"></i> ${message}`;
+  formAlert.textContent = msg;
   formAlert.className = `form-alert alert-${type}`;
   formAlert.classList.remove("d-none");
 }
@@ -253,48 +198,26 @@ function hideAlert() {
   formAlert?.classList.add("d-none");
 }
 
-/* ============================================================
-   Field Error Helpers
-   ============================================================ */
-function showFieldError(input, message) {
-  const group = input.closest(".form-group");
-  showGroupError(group, message);
-}
-
-function showGroupError(group, message) {
+function setErr(groupId, msg) {
+  const group = document.getElementById(groupId);
   if (!group) return;
   group.classList.add("has-error");
-
-  let errEl = group.querySelector(".error-message");
-  if (!errEl) {
-    errEl = document.createElement("span");
-    errEl.className = "error-message";
-    group.appendChild(errEl);
+  let err = group.querySelector(".error-message");
+  if (!err) {
+    err = document.createElement("span");
+    err.className = "error-message";
+    group.appendChild(err);
   }
-  errEl.innerHTML = `<i class="fa-solid fa-circle-exclamation"></i> ${message}`;
+  err.innerHTML = `<i class="fa-solid fa-circle-exclamation"></i> ${msg}`;
 }
 
-function clearFieldError(group) {
-  clearGroupError(group);
-}
-
-function clearGroupError(group) {
+function clearErr(groupId) {
+  const group = document.getElementById(groupId);
   if (!group) return;
   group.classList.remove("has-error");
   group.querySelector(".error-message")?.remove();
 }
 
-function clearAllErrors() {
-  document.querySelectorAll(".form-group.has-error").forEach(clearGroupError);
-}
-
-/* ============================================================
-   Password Visibility Toggle
-   ============================================================ */
-function toggleVisibility(input, btn) {
-  const hidden = input.type === "password";
-  input.type = hidden ? "text" : "password";
-  btn.querySelector("i").className = hidden
-    ? "fa-solid fa-eye-slash"
-    : "fa-solid fa-eye";
+function validateEmail(email) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
