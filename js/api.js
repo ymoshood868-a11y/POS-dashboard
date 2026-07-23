@@ -176,7 +176,8 @@ export async function createUser(data) {
   return apiFetch("/users", { method: "POST", body: data });
 }
 
-
+/**
+ * Fetch app settings
  * @returns {Promise<object>}
  */
 export async function getSettings() {
