@@ -3,8 +3,7 @@
  * POS Dashboard
  *
  * Validates credentials against JSON Server (/users).
- * Falls back gracefully if server is offline.
- * Stores session in localStorage on success.
+ * Falls back to built-in admin account if server is offline.
  */
 
 import { showToast, redirectIfLoggedIn } from "./utils.js";
@@ -24,18 +23,24 @@ const btnTogglePwd = document.getElementById("btn-toggle-password");
 
 /* ── Init ────────────────────────────────────────────────── */
 document.addEventListener("DOMContentLoaded", () => {
-  // If already logged in, go straight to dashboard
   redirectIfLoggedIn("dashboard.html");
-
   restoreRememberedEmail();
 
-  btnTogglePwd?.addEventListener("click", togglePasswordVisibility);
+  // Eye icon — show / hide password
+  btnTogglePwd?.addEventListener("click", () => {
+    if (!passwordInput) return;
+    const isHidden = passwordInput.type === "password";
+    passwordInput.type = isHidden ? "text" : "password";
+    const icon = btnTogglePwd.querySelector("i");
+    if (icon)
+      icon.className = isHidden ? "fa-solid fa-eye-slash" : "fa-solid fa-eye";
+  });
 
   loginForm?.addEventListener("submit", handleLoginSubmit);
 
-  [emailInput, passwordInput].forEach((input) => {
-    input?.addEventListener("input", () => clearFieldError(input));
-  });
+  [emailInput, passwordInput].forEach((input) =>
+    input?.addEventListener("input", () => clearFieldError(input)),
+  );
 });
 
 /* ── Form submission ─────────────────────────────────────── */
@@ -45,7 +50,6 @@ async function handleLoginSubmit(e) {
   const email = emailInput.value.trim();
   const password = passwordInput.value;
 
-  // Validate fields
   let valid = true;
   if (!validateEmail(email)) {
     showFieldError(emailInput, "Please enter a valid email address.");
@@ -61,10 +65,10 @@ async function handleLoginSubmit(e) {
   hideAlert();
 
   try {
-    // ── Try JSON Server first ──────────────────────────────
     let matchedUser = null;
 
     try {
+      // Check credentials against JSON Server
       const res = await fetch(`${BASE_URL}/users`);
       const users = await res.json();
 
@@ -80,32 +84,39 @@ async function handleLoginSubmit(e) {
         return;
       }
     } catch {
-      // JSON Server offline — accept any valid email + password (dev mode)
-      console.warn("JSON Server offline — using dev fallback login.");
-      const displayName = email
-        .split("@")[0]
-        .replace(/[._-]/g, " ")
-        .replace(/\b\w/g, (c) => c.toUpperCase());
-
-      matchedUser = {
-        id: 1,
-        name: displayName,
-        email,
-        role: "admin",
-        password,
-      };
+      // Server offline — fall back to built-in admin account
+      console.warn("JSON Server offline — using fallback admin.");
+      if (
+        email.toLowerCase() === "admin@posdash.com" &&
+        password === "admin123"
+      ) {
+        matchedUser = {
+          id: 1,
+          name: "Admin User",
+          email: "admin@posdash.com",
+          role: "admin",
+        };
+      } else {
+        showAlert(
+          "Cannot reach server. Use admin@posdash.com / admin123 offline.",
+          "error",
+        );
+        setLoading(false);
+        return;
+      }
     }
 
-    // ── Successful login ───────────────────────────────────
-    const sessionUser = {
-      id: matchedUser.id,
-      name: matchedUser.name,
-      email: matchedUser.email,
-      role: matchedUser.role,
-    };
-
+    // Successful — save session
     localStorage.setItem("pos_session", "active");
-    localStorage.setItem("pos_user", JSON.stringify(sessionUser));
+    localStorage.setItem(
+      "pos_user",
+      JSON.stringify({
+        id: matchedUser.id,
+        name: matchedUser.name,
+        email: matchedUser.email,
+        role: matchedUser.role,
+      }),
+    );
 
     if (rememberCheck?.checked) {
       localStorage.setItem("pos_remembered_email", email);
@@ -114,7 +125,6 @@ async function handleLoginSubmit(e) {
     }
 
     showToast(`Welcome back, ${matchedUser.name}!`, "success", 1500);
-
     setTimeout(() => window.location.replace("dashboard.html"), 800);
   } catch (err) {
     console.error("Login error:", err);
@@ -163,14 +173,6 @@ function clearFieldError(input) {
   hideAlert();
 }
 
-function togglePasswordVisibility() {
-  const hidden = passwordInput.type === "password";
-  passwordInput.type = hidden ? "text" : "password";
-  btnTogglePwd.querySelector("i").className = hidden
-    ? "fa-solid fa-eye-slash"
-    : "fa-solid fa-eye";
-}
-
 function validateEmail(email) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
@@ -180,15 +182,5 @@ function restoreRememberedEmail() {
   if (saved && emailInput) {
     emailInput.value = saved;
     if (rememberCheck) rememberCheck.checked = true;
-  }
-}
-
-function togglePasswordVisibility() {
-  if (!passwordInput || !btnTogglePwd) return;
-  const isHidden = passwordInput.type === "password";
-  passwordInput.type = isHidden ? "text" : "password";
-  const icon = btnTogglePwd.querySelector("i");
-  if (icon) {
-    icon.className = isHidden ? "fa-solid fa-eye-slash" : "fa-solid fa-eye";
   }
 }
