@@ -182,3 +182,13 @@ function restoreRememberedEmail() {
     if (rememberCheck) rememberCheck.checked = true;
   }
 }
+
+function togglePasswordVisibility() {
+  if (!passwordInput || !btnTogglePwd) return;
+  const isHidden = passwordInput.type === "password";
+  passwordInput.type = isHidden ? "text" : "password";
+  const icon = btnTogglePwd.querySelector("i");
+  if (icon) {
+    icon.className = isHidden ? "fa-solid fa-eye-slash" : "fa-solid fa-eye";
+  }
+}
