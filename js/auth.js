@@ -107,6 +107,18 @@ async function handleLoginSubmit(e) {
     }
 
     // Successful — save session
+    // Clear stale profile cache if a different user is logging in
+    const oldRaw = localStorage.getItem("pos_user");
+    if (oldRaw) {
+      try {
+        if (JSON.parse(oldRaw).id !== matchedUser.id) {
+          localStorage.removeItem("userProfile");
+        }
+      } catch {
+        /* ignore */
+      }
+    }
+
     localStorage.setItem("pos_session", "active");
     localStorage.setItem(
       "pos_user",

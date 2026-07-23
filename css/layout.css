@@ -1315,12 +1315,13 @@
   background: var(--color-gold);
 }
 
-/* Active sub-item */
+/* Active sub-item — gold background, no border */
 .nav-sublink.active {
-  background: rgba(201, 168, 76, 0.14);
+  background: rgba(201, 168, 76, 0.16);
   color: var(--color-gold);
-  border-left: 3px solid var(--color-gold);
-  padding-left: 41px;
+  border-left: none;
+  padding-left: 44px;
+  font-weight: 600;
 }
 
 .nav-sublink.active i {
