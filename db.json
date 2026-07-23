@@ -95,9 +95,12 @@
     {
       "id": 1,
       "name": "Admin User",
+      "username": "adminuser",
       "email": "admin@posdash.com",
       "password": "admin123",
       "role": "admin",
+      "phone": "+2348012345678",
+      "department": "Operations",
       "avatar": ""
     }
   ],

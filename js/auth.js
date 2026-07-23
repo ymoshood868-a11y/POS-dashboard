@@ -1,19 +1,17 @@
 /**
  * auth.js — Login / authentication logic
- * POS Dashboard | Module 1: Authentication & Dashboard
+ * POS Dashboard
  *
- * Handles: form validation, credential check against JSON Server,
- * localStorage session management, remember me, and redirect.
- *
- * Fallback: if JSON Server is offline, credentials are verified
- * against FALLBACK_USERS so the app always works during development.
+ * Validates credentials against JSON Server (/users).
+ * Falls back gracefully if server is offline.
+ * Stores session in localStorage on success.
  */
 
 import { showToast, redirectIfLoggedIn } from "./utils.js";
 
-/* ============================================================
-   DOM References
-   ============================================================ */
+const BASE_URL = "http://localhost:3000";
+
+/* ── DOM refs ────────────────────────────────────────────── */
 const loginForm = document.getElementById("login-form");
 const emailInput = document.getElementById("email");
 const passwordInput = document.getElementById("password");
@@ -24,42 +22,30 @@ const btnLoginSpinner = document.getElementById("btn-login-spinner");
 const formAlert = document.getElementById("form-alert");
 const btnTogglePwd = document.getElementById("btn-toggle-password");
 
-/* ============================================================
-   Init — run when DOM is ready
-   ============================================================ */
+/* ── Init ────────────────────────────────────────────────── */
 document.addEventListener("DOMContentLoaded", () => {
-  // Redirect to dashboard if already logged in
+  // If already logged in, go straight to dashboard
   redirectIfLoggedIn("dashboard.html");
 
-  // Pre-fill email if remember-me was used
   restoreRememberedEmail();
 
-  // Password visibility toggle
-  if (btnTogglePwd) {
-    btnTogglePwd.addEventListener("click", togglePasswordVisibility);
-  }
+  btnTogglePwd?.addEventListener("click", togglePasswordVisibility);
 
-  // Form submit
-  if (loginForm) {
-    loginForm.addEventListener("submit", handleLoginSubmit);
-  }
+  loginForm?.addEventListener("submit", handleLoginSubmit);
 
-  // Clear errors on input
   [emailInput, passwordInput].forEach((input) => {
-    if (input) input.addEventListener("input", () => clearFieldError(input));
+    input?.addEventListener("input", () => clearFieldError(input));
   });
 });
 
-/* ============================================================
-   Form Submission
-   ============================================================ */
+/* ── Form submission ─────────────────────────────────────── */
 async function handleLoginSubmit(e) {
   e.preventDefault();
 
   const email = emailInput.value.trim();
   const password = passwordInput.value;
 
-  // Client-side validation
+  // Validate fields
   let valid = true;
   if (!validateEmail(email)) {
     showFieldError(emailInput, "Please enter a valid email address.");
@@ -71,40 +57,65 @@ async function handleLoginSubmit(e) {
   }
   if (!valid) return;
 
-  // Show loading state
   setLoading(true);
   hideAlert();
 
   try {
-    // DEV MODE: accept any valid email + non-empty password
-    // Derive a display name from the email (part before @)
-    const displayName = email
-      .split("@")[0]
-      .replace(/[._-]/g, " ")
-      .replace(/\b\w/g, (c) => c.toUpperCase());
+    // ── Try JSON Server first ──────────────────────────────
+    let matchedUser = null;
 
+    try {
+      const res = await fetch(`${BASE_URL}/users`);
+      const users = await res.json();
+
+      matchedUser = users.find(
+        (u) =>
+          u.email.toLowerCase() === email.toLowerCase() &&
+          u.password === password,
+      );
+
+      if (!matchedUser) {
+        showAlert("Invalid email or password. Please try again.", "error");
+        setLoading(false);
+        return;
+      }
+    } catch {
+      // JSON Server offline — accept any valid email + password (dev mode)
+      console.warn("JSON Server offline — using dev fallback login.");
+      const displayName = email
+        .split("@")[0]
+        .replace(/[._-]/g, " ")
+        .replace(/\b\w/g, (c) => c.toUpperCase());
+
+      matchedUser = {
+        id: 1,
+        name: displayName,
+        email,
+        role: "admin",
+        password,
+      };
+    }
+
+    // ── Successful login ───────────────────────────────────
     const sessionUser = {
-      id: 1,
-      name: displayName,
-      email: email,
-      role: "admin",
+      id: matchedUser.id,
+      name: matchedUser.name,
+      email: matchedUser.email,
+      role: matchedUser.role,
     };
 
     localStorage.setItem("pos_session", "active");
     localStorage.setItem("pos_user", JSON.stringify(sessionUser));
 
-    // Handle remember me
-    if (rememberCheck && rememberCheck.checked) {
+    if (rememberCheck?.checked) {
       localStorage.setItem("pos_remembered_email", email);
     } else {
       localStorage.removeItem("pos_remembered_email");
     }
 
-    showToast(`Welcome back, ${displayName}!`, "success", 1500);
+    showToast(`Welcome back, ${matchedUser.name}!`, "success", 1500);
 
-    setTimeout(() => {
-      window.location.replace("dashboard.html");
-    }, 800);
+    setTimeout(() => window.location.replace("dashboard.html"), 800);
   } catch (err) {
     console.error("Login error:", err);
     showAlert("An unexpected error occurred. Please try again.", "error");
@@ -112,76 +123,62 @@ async function handleLoginSubmit(e) {
   }
 }
 
-/* ============================================================
-   Helpers
-   ============================================================ */
-
-/** Toggle loading state on the login button */
-function setLoading(isLoading) {
+/* ── Helpers ─────────────────────────────────────────────── */
+function setLoading(on) {
   if (!btnLogin) return;
-  btnLogin.disabled = isLoading;
-  if (btnLoginText)
-    btnLoginText.textContent = isLoading ? "Signing in…" : "Sign In";
-  if (btnLoginSpinner) btnLoginSpinner.classList.toggle("d-none", !isLoading);
+  btnLogin.disabled = on;
+  if (btnLoginText) btnLoginText.textContent = on ? "Signing in…" : "Sign In";
+  if (btnLoginSpinner) btnLoginSpinner.classList.toggle("d-none", !on);
 }
 
-/** Show an inline alert below the form */
-function showAlert(message, type = "error") {
+function showAlert(msg, type = "error") {
   if (!formAlert) return;
-  formAlert.textContent = message;
+  formAlert.textContent = msg;
   formAlert.className = `form-alert alert-${type}`;
   formAlert.classList.remove("d-none");
 }
 
 function hideAlert() {
-  if (!formAlert) return;
-  formAlert.classList.add("d-none");
+  formAlert?.classList.add("d-none");
 }
 
-/** Show validation error on a specific field */
-function showFieldError(input, message) {
+function showFieldError(input, msg) {
   const group = input.closest(".form-group");
   if (!group) return;
   group.classList.add("has-error");
-
-  let errEl = group.querySelector(".error-message");
-  if (!errEl) {
-    errEl = document.createElement("span");
-    errEl.className = "error-message";
-    group.appendChild(errEl);
+  let err = group.querySelector(".error-message");
+  if (!err) {
+    err = document.createElement("span");
+    err.className = "error-message";
+    group.appendChild(err);
   }
-  errEl.innerHTML = `<i class="fa-solid fa-circle-exclamation"></i> ${message}`;
+  err.innerHTML = `<i class="fa-solid fa-circle-exclamation"></i> ${msg}`;
 }
 
-/** Clear validation error from a specific field */
 function clearFieldError(input) {
   const group = input.closest(".form-group");
   if (!group) return;
   group.classList.remove("has-error");
-  const errEl = group.querySelector(".error-message");
-  if (errEl) errEl.remove();
+  group.querySelector(".error-message")?.remove();
   hideAlert();
 }
 
-/** Toggle password input visibility */
 function togglePasswordVisibility() {
-  const isHidden = passwordInput.type === "password";
-  passwordInput.type = isHidden ? "text" : "password";
-  btnTogglePwd.querySelector("i").className = isHidden
+  const hidden = passwordInput.type === "password";
+  passwordInput.type = hidden ? "text" : "password";
+  btnTogglePwd.querySelector("i").className = hidden
     ? "fa-solid fa-eye-slash"
     : "fa-solid fa-eye";
 }
 
-/** Validate email format */
 function validateEmail(email) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
 
-/** Pre-fill email if remembered */
 function restoreRememberedEmail() {
-  const remembered = localStorage.getItem("pos_remembered_email");
-  if (remembered && emailInput) {
-    emailInput.value = remembered;
+  const saved = localStorage.getItem("pos_remembered_email");
+  if (saved && emailInput) {
+    emailInput.value = saved;
     if (rememberCheck) rememberCheck.checked = true;
   }
 }
