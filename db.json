@@ -5,7 +5,7 @@
       "date": "2025-07-01",
       "description": "Product Sale - Electronics",
       "category": "income",
-      "amount": 1250.00,
+      "amount": 1250,
       "status": "completed",
       "reference": "TXN-001"
     },
@@ -14,7 +14,7 @@
       "date": "2025-07-02",
       "description": "Office Supplies Purchase",
       "category": "expense",
-      "amount": 320.50,
+      "amount": 320.5,
       "status": "completed",
       "reference": "TXN-002"
     },
@@ -23,7 +23,7 @@
       "date": "2025-07-03",
       "description": "Customer Deposit",
       "category": "deposit",
-      "amount": 5000.00,
+      "amount": 5000,
       "status": "completed",
       "reference": "TXN-003"
     },
@@ -32,7 +32,7 @@
       "date": "2025-07-04",
       "description": "Cash Withdrawal",
       "category": "withdrawal",
-      "amount": 800.00,
+      "amount": 800,
       "status": "completed",
       "reference": "TXN-004"
     },
@@ -41,7 +41,7 @@
       "date": "2025-07-05",
       "description": "Product Sale - Clothing",
       "category": "income",
-      "amount": 670.00,
+      "amount": 670,
       "status": "pending",
       "reference": "TXN-005"
     },
@@ -50,7 +50,7 @@
       "date": "2025-07-06",
       "description": "Utility Bill Payment",
       "category": "expense",
-      "amount": 210.00,
+      "amount": 210,
       "status": "completed",
       "reference": "TXN-006"
     },
@@ -59,7 +59,7 @@
       "date": "2025-07-07",
       "description": "Vendor Deposit",
       "category": "deposit",
-      "amount": 2200.00,
+      "amount": 2200,
       "status": "completed",
       "reference": "TXN-007"
     },
@@ -68,7 +68,7 @@
       "date": "2025-07-08",
       "description": "ATM Withdrawal",
       "category": "withdrawal",
-      "amount": 500.00,
+      "amount": 500,
       "status": "failed",
       "reference": "TXN-008"
     },
@@ -86,9 +86,19 @@
       "date": "2025-07-10",
       "description": "Equipment Maintenance",
       "category": "expense",
-      "amount": 150.00,
+      "amount": 150,
       "status": "pending",
       "reference": "TXN-010"
+    },
+    {
+      "type": "debit",
+      "category": "expense",
+      "amount": 2220000,
+      "date": "2026-07-24",
+      "description": "full payment",
+      "status": "pending",
+      "reference": "TXN-1643",
+      "id": 11
     }
   ],
   "users": [
@@ -102,6 +112,28 @@
       "phone": "+2348012345678",
       "department": "Operations",
       "avatar": ""
+    },
+    {
+      "name": "Arigbabu Fathia",
+      "username": "arigbabufathia",
+      "email": "arigbabufathia@gmail.com",
+      "password": "1234567@1",
+      "role": "user",
+      "phone": "",
+      "department": "",
+      "avatar": "",
+      "id": 2
+    },
+    {
+      "name": "Arigbabu Fathia",
+      "username": "arigbabufathia",
+      "email": "arigbabufathia1@gmail.com",
+      "password": "fathia11@",
+      "role": "user",
+      "phone": "",
+      "department": "",
+      "avatar": "",
+      "id": 3
     }
   ],
   "settings": {
