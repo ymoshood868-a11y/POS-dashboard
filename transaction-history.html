@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Transactions — POSDash</title>
+    <link rel="icon"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💳</text></svg>" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/layout.css" />
+    <link rel="stylesheet" href="css/transactions.css" />
+    <link rel="stylesheet" href="css/responsive.css" />
+</head>
+
+<body>
+
+    <div id="sidebar-overlay" class="sidebar-overlay" aria-hidden="true"></div>
+
+    <div class="app-wrapper">
+        <div id="sidebar-placeholder"></div>
+
+        <div class="main-wrapper">
+            <div id="navbar-placeholder"></div>
+
+            <main class="page-content" aria-label="Transaction History">
+
+                <!-- Page Header -->
+                <div class="page-header">
+                    <h1>Transaction <span>History</span></h1>
+                    <p>Browse, search, filter, and manage all recorded transactions.</p>
+                </div>
+
+                <!-- Toolbar: search + filters -->
+                <div class="txn-toolbar">
+
+                    <!-- Search -->
+                    <div class="txn-search-wrap">
+                        <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                        <input type="search" id="search-input" placeholder="Search by description or reference…"
+                            aria-label="Search transactions" />
+                    </div>
+
+                    <!-- Filters -->
+                    <div class="txn-filters">
+
+                        <select id="filter-category" class="txn-filter-select" aria-label="Filter by category">
+                            <option value="">All Categories</option>
+                            <option value="income">Income</option>
+                            <option value="expense">Expense</option>
+                            <option value="deposit">Deposit</option>
+                            <option value="withdrawal">Withdrawal</option>
+                        </select>
+
+                        <select id="filter-status" class="txn-filter-select" aria-label="Filter by status">
+                            <option value="">All Statuses</option>
+                            <option value="completed">Completed</option>
+                            <option value="pending">Pending</option>
+                            <option value="failed">Failed</option>
+                        </select>
+
+                        <input type="date" id="filter-date-from" class="txn-filter-date" aria-label="From date"
+                            title="From date" />
+
+                        <input type="date" id="filter-date-to" class="txn-filter-date" aria-label="To date"
+                            title="To date" />
+
+                        <button id="btn-clear-filters" class="btn-clear-filters">
+                            <i class="fa-solid fa-filter-circle-xmark"></i> Clear
+                        </button>
+
+                    </div>
+                </div><!-- /toolbar -->
+
+                <!-- Results count -->
+                <div class="txn-results-bar">
+                    <span class="txn-results-count" id="results-count">Loading…</span>
+                    <a href="new-transaction.html" class="btn btn-primary"
+                        style="padding:8px 16px;font-size:0.85rem;text-decoration:none">
+                        <i class="fa-solid fa-plus"></i> New Transaction
+                    </a>
+                </div>
+
+                <!-- Table -->
+                <div class="table-wrapper">
+                    <table class="transactions-table data-table" aria-label="Transaction list">
+                        <thead>
+                            <tr>
+                                <th>Ref #</th>
+                                <th>Description</th>
+                                <th>Category</th>
+                                <th>Amount</th>
+                                <th>Date</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="txn-tbody">
+                            <!-- Skeleton rows -->
+                            <tr>
+                                <td colspan="7">
+                                    <div class="skeleton" style="height:16px;border-radius:4px;margin:4px 0"></div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="7">
+                                    <div class="skeleton" style="height:16px;border-radius:4px;margin:4px 0"></div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="7">
+                                    <div class="skeleton" style="height:16px;border-radius:4px;margin:4px 0"></div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="7">
+                                    <div class="skeleton" style="height:16px;border-radius:4px;margin:4px 0"></div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="7">
+                                    <div class="skeleton" style="height:16px;border-radius:4px;margin:4px 0"></div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <!-- Pagination -->
+                    <div class="txn-pagination" id="pagination-bar">
+                        <span class="pagination-info" id="pagination-info"></span>
+                        <div class="pagination-controls" id="pagination-controls"></div>
+                    </div>
+                </div>
+
+                <!-- Empty state (hidden until needed) -->
+                <div class="table-empty-state d-none" id="empty-state">
+                    <div class="empty-icon"><i class="fa-solid fa-receipt"></i></div>
+                    <p class="empty-title">No transactions found</p>
+                    <p class="empty-sub">
+                        Try adjusting your search or filters, or
+                        <a href="new-transaction.html" class="empty-link">
+                            <i class="fa-solid fa-plus"></i> add a new transaction
+                        </a>
+                    </p>
+                </div>
+
+            </main>
+
+            <div id="footer-placeholder"></div>
+        </div>
+    </div>
+
+    <!-- Delete confirmation modal -->
+    <div class="confirm-modal-overlay d-none" id="delete-modal" role="dialog" aria-modal="true">
+        <div class="confirm-modal">
+            <div class="confirm-modal-icon">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+            </div>
+            <h3>Delete Transaction?</h3>
+            <p>
+                You are about to delete
+                <strong id="delete-modal-ref">TXN-000</strong>.
+                This action cannot be undone.
+            </p>
+            <div class="confirm-modal-actions">
+                <button class="btn btn-secondary" id="btn-cancel-delete">
+                    <i class="fa-solid fa-xmark"></i> Cancel
+                </button>
+                <button class="btn btn-danger" id="btn-confirm-delete">
+                    <i class="fa-solid fa-trash"></i> Delete
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="js/transaction-history.js"></script>
+
+</body>
+
+</html>

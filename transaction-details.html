@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Transaction Details — POSDash</title>
+    <link rel="icon"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💳</text></svg>" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/layout.css" />
+    <link rel="stylesheet" href="css/transactions.css" />
+    <link rel="stylesheet" href="css/responsive.css" />
+
+    <style>
+        /* Detail page specific */
+        .detail-card {
+            background: var(--color-bg-card);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            max-width: 700px;
+        }
+
+        .detail-card-header {
+            background: var(--color-bg-elevated);
+            border-bottom: 1px solid var(--color-border);
+            padding: var(--space-lg) var(--space-xl);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: var(--space-md);
+        }
+
+        .detail-ref {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--color-text-primary);
+        }
+
+        .detail-ref span {
+            color: var(--color-gold);
+        }
+
+        .detail-body {
+            padding: var(--space-xl);
+        }
+
+        .detail-amount-block {
+            text-align: center;
+            padding: var(--space-xl) 0;
+            border-bottom: 1px solid var(--color-border);
+            margin-bottom: var(--space-xl);
+        }
+
+        .detail-amount {
+            font-size: 2.8rem;
+            font-weight: 800;
+            letter-spacing: -1px;
+        }
+
+        .detail-amount.positive {
+            color: var(--color-success);
+        }
+
+        .detail-amount.negative {
+            color: var(--color-danger);
+        }
+
+        .detail-amount-label {
+            font-size: 0.82rem;
+            color: var(--color-text-muted);
+            margin-top: 4px;
+        }
+
+        .detail-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--space-lg);
+        }
+
+        .detail-field {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .detail-field-label {
+            font-size: 0.72rem;
+            font-weight: 600;
+            color: var(--color-text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+        }
+
+        .detail-field-value {
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: var(--color-text-primary);
+        }
+
+        .detail-field-full {
+            grid-column: 1 / -1;
+        }
+
+        .detail-actions {
+            display: flex;
+            align-items: center;
+            gap: var(--space-md);
+            padding: var(--space-lg) var(--space-xl);
+            border-top: 1px solid var(--color-border);
+            background: var(--color-bg-elevated);
+            flex-wrap: wrap;
+        }
+
+        /* Skeleton states */
+        .skeleton-text {
+            height: 16px;
+            border-radius: 4px;
+            width: 60%;
+        }
+
+        .skeleton-amount {
+            height: 48px;
+            width: 200px;
+            border-radius: 6px;
+            margin: 0 auto;
+        }
+
+        @media (max-width: 600px) {
+            .detail-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .detail-card {
+                max-width: 100%;
+            }
+
+            .detail-amount {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="sidebar-overlay" class="sidebar-overlay" aria-hidden="true"></div>
+
+    <div class="app-wrapper">
+        <div id="sidebar-placeholder"></div>
+
+        <div class="main-wrapper">
+            <div id="navbar-placeholder"></div>
+
+            <main class="page-content" aria-label="Transaction Details">
+
+                <!-- Back link -->
+                <div style="margin-bottom:var(--space-lg)">
+                    <a href="transaction-history.html" class="btn btn-secondary"
+                        style="display:inline-flex;align-items:center;gap:6px;font-size:0.85rem;text-decoration:none">
+                        <i class="fa-solid fa-arrow-left"></i> Back to Transactions
+                    </a>
+                </div>
+
+                <!-- Page header -->
+                <div class="page-header">
+                    <h1>Transaction <span>Details</span></h1>
+                    <p>Full information for this transaction record.</p>
+                </div>
+
+                <!-- Detail card -->
+                <div class="detail-card" id="detail-card">
+
+                    <!-- Header -->
+                    <div class="detail-card-header">
+                        <div class="detail-ref">
+                            Reference: <span id="detail-ref">—</span>
+                        </div>
+                        <span class="status-badge" id="detail-status-badge">—</span>
+                    </div>
+
+                    <!-- Body -->
+                    <div class="detail-body">
+
+                        <!-- Amount block -->
+                        <div class="detail-amount-block">
+                            <div class="detail-amount" id="detail-amount">
+                                <div class="skeleton skeleton-amount"></div>
+                            </div>
+                            <div class="detail-amount-label" id="detail-amount-label">Loading…</div>
+                        </div>
+
+                        <!-- Fields grid -->
+                        <div class="detail-grid">
+
+                            <div class="detail-field">
+                                <span class="detail-field-label">Category</span>
+                                <span class="detail-field-value" id="detail-category">
+                                    <div class="skeleton skeleton-text"></div>
+                                </span>
+                            </div>
+
+                            <div class="detail-field">
+                                <span class="detail-field-label">Date</span>
+                                <span class="detail-field-value" id="detail-date">
+                                    <div class="skeleton skeleton-text"></div>
+                                </span>
+                            </div>
+
+                            <div class="detail-field">
+                                <span class="detail-field-label">Status</span>
+                                <span class="detail-field-value" id="detail-status">
+                                    <div class="skeleton skeleton-text"></div>
+                                </span>
+                            </div>
+
+                            <div class="detail-field">
+                                <span class="detail-field-label">Transaction ID</span>
+                                <span class="detail-field-value" id="detail-id">
+                                    <div class="skeleton skeleton-text"></div>
+                                </span>
+                            </div>
+
+                            <div class="detail-field detail-field-full">
+                                <span class="detail-field-label">Description</span>
+                                <span class="detail-field-value" id="detail-description">
+                                    <div class="skeleton skeleton-text" style="width:80%"></div>
+                                </span>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- Actions footer -->
+                    <div class="detail-actions">
+                        <a href="#" id="btn-edit-txn" class="btn btn-secondary" style="text-decoration:none">
+                            <i class="fa-solid fa-pen-to-square"></i> Edit
+                        </a>
+                        <button class="btn btn-danger" id="btn-delete-txn">
+                            <i class="fa-solid fa-trash"></i> Delete
+                        </button>
+                    </div>
+
+                </div><!-- /detail-card -->
+
+            </main>
+
+            <div id="footer-placeholder"></div>
+        </div>
+    </div>
+
+    <!-- Delete confirmation modal -->
+    <div class="confirm-modal-overlay d-none" id="delete-modal" role="dialog" aria-modal="true">
+        <div class="confirm-modal">
+            <div class="confirm-modal-icon">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+            </div>
+            <h3>Delete Transaction?</h3>
+            <p>
+                You are about to permanently delete
+                <strong id="delete-modal-ref">—</strong>.
+                This cannot be undone.
+            </p>
+            <div class="confirm-modal-actions">
+                <button class="btn btn-secondary" id="btn-cancel-delete">
+                    <i class="fa-solid fa-xmark"></i> Cancel
+                </button>
+                <button class="btn btn-danger" id="btn-confirm-delete">
+                    <i class="fa-solid fa-trash"></i> Delete
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="js/transaction-details.js"></script>
+
+</body>
+
+</html>

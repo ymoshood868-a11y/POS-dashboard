@@ -1,0 +1,360 @@
+/* ============================================================
+   transactions.css — Transaction History page styles
+   POS Dashboard | Module 3
+   ============================================================ */
+
+/* ── Toolbar (search + filters) ────────────────────────── */
+.txn-toolbar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  flex-wrap: wrap;
+  margin-bottom: var(--space-xl);
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-md) var(--space-lg);
+}
+
+/* Search */
+.txn-search-wrap {
+  position: relative;
+  flex: 1;
+  min-width: 180px;
+}
+
+.txn-search-wrap .search-icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--color-text-muted);
+  font-size: 0.88rem;
+  pointer-events: none;
+}
+
+.txn-search-wrap input {
+  width: 100%;
+  background: var(--color-bg-input);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 9px 12px 9px 36px;
+  font-size: 0.875rem;
+  color: var(--color-text-primary);
+  font-family: "Poppins", sans-serif;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.txn-search-wrap input::placeholder {
+  color: var(--color-text-muted);
+}
+
+.txn-search-wrap input:focus {
+  outline: none;
+  border-color: var(--color-gold);
+  box-shadow: 0 0 0 3px rgba(201, 168, 76, 0.1);
+}
+
+/* Filters */
+.txn-filters {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  flex-wrap: wrap;
+}
+
+.txn-filter-select {
+  background: var(--color-bg-input);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 9px 12px;
+  font-size: 0.82rem;
+  color: var(--color-text-secondary);
+  font-family: "Poppins", sans-serif;
+  cursor: pointer;
+  transition: border-color 0.2s ease;
+  min-width: 130px;
+}
+
+.txn-filter-select:focus {
+  outline: none;
+  border-color: var(--color-gold);
+}
+
+.txn-filter-date {
+  background: var(--color-bg-input);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 9px 12px;
+  font-size: 0.82rem;
+  color: var(--color-text-secondary);
+  font-family: "Poppins", sans-serif;
+  cursor: pointer;
+  transition: border-color 0.2s ease;
+}
+
+.txn-filter-date:focus {
+  outline: none;
+  border-color: var(--color-gold);
+}
+
+.btn-clear-filters {
+  background: rgba(231, 76, 60, 0.08);
+  border: 1px solid rgba(231, 76, 60, 0.25);
+  border-radius: var(--radius-md);
+  padding: 8px 14px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--color-danger);
+  font-family: "Poppins", sans-serif;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+}
+
+.btn-clear-filters:hover {
+  background: rgba(231, 76, 60, 0.15);
+  border-color: rgba(231, 76, 60, 0.5);
+}
+
+/* ── Results summary bar ──────────────────────────────── */
+.txn-results-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-md);
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+}
+
+.txn-results-count {
+  font-size: 0.85rem;
+  color: var(--color-text-secondary);
+}
+
+.txn-results-count strong {
+  color: var(--color-gold);
+}
+
+/* ── Table enhancements ───────────────────────────────── */
+.txn-actions-cell {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.btn-view-detail {
+  background: rgba(201, 168, 76, 0.08);
+  border: 1px solid rgba(201, 168, 76, 0.25);
+  border-radius: var(--radius-sm);
+  padding: 5px 10px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--color-gold);
+  font-family: "Poppins", sans-serif;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.btn-view-detail:hover {
+  background: rgba(201, 168, 76, 0.18);
+  border-color: var(--color-gold);
+}
+
+.btn-delete-txn {
+  background: rgba(231, 76, 60, 0.08);
+  border: 1px solid rgba(231, 76, 60, 0.25);
+  border-radius: var(--radius-sm);
+  padding: 5px 10px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--color-danger);
+  font-family: "Poppins", sans-serif;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.btn-delete-txn:hover {
+  background: rgba(231, 76, 60, 0.18);
+  border-color: var(--color-danger);
+}
+
+/* Deleting row animation */
+.txn-row-deleting {
+  opacity: 0.4;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+/* ── Pagination ───────────────────────────────────────── */
+.txn-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-md) var(--space-lg);
+  border-top: 1px solid var(--color-border);
+  background: var(--color-bg-elevated);
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+}
+
+.pagination-info {
+  font-size: 0.82rem;
+  color: var(--color-text-muted);
+}
+
+.pagination-controls {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+}
+
+.btn-page {
+  min-width: 34px;
+  height: 34px;
+  border-radius: var(--radius-sm);
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  color: var(--color-text-secondary);
+  font-size: 0.82rem;
+  font-family: "Poppins", sans-serif;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  padding: 0 8px;
+}
+
+.btn-page:hover:not(:disabled) {
+  background: rgba(201, 168, 76, 0.08);
+  border-color: var(--color-border-gold);
+  color: var(--color-gold);
+}
+
+.btn-page.active {
+  background: rgba(201, 168, 76, 0.18);
+  border-color: var(--color-gold);
+  color: var(--color-gold);
+  font-weight: 600;
+}
+
+.btn-page:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+/* ── Confirm delete modal ─────────────────────────────── */
+.confirm-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.65);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-lg);
+  backdrop-filter: blur(3px);
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.confirm-modal {
+  background: var(--color-bg-elevated);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-xl) var(--space-xl) var(--space-lg);
+  max-width: 420px;
+  width: 100%;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+  animation: slideUp 0.25s ease;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.confirm-modal-icon {
+  font-size: 2.4rem;
+  color: var(--color-danger);
+  margin-bottom: var(--space-md);
+  text-align: center;
+}
+
+.confirm-modal h3 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin-bottom: var(--space-sm);
+  text-align: center;
+}
+
+.confirm-modal p {
+  font-size: 0.875rem;
+  color: var(--color-text-secondary);
+  text-align: center;
+  margin-bottom: var(--space-xl);
+  line-height: 1.6;
+}
+
+.confirm-modal p strong {
+  color: var(--color-text-primary);
+}
+
+.confirm-modal-actions {
+  display: flex;
+  gap: var(--space-md);
+}
+
+.confirm-modal-actions .btn {
+  flex: 1;
+  justify-content: center;
+}
+
+/* Responsive */
+@media (max-width: 767px) {
+  .txn-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .txn-filters {
+    flex-direction: column;
+  }
+  .txn-filter-select,
+  .txn-filter-date {
+    min-width: unset;
+    width: 100%;
+  }
+  .txn-search-wrap {
+    min-width: unset;
+  }
+}
