@@ -128,7 +128,9 @@ function initEditForm() {
     showToast("Changes discarded.", "info");
   });
 
-  form.addEventListener("submit", async (e) => { = _getVal("edit-full-name");
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const fullName = _getVal("edit-full-name");
     const username = _getVal("edit-username");
     const email = _getVal("edit-email");
     const phone = _getVal("edit-phone");
@@ -333,7 +335,12 @@ function initDangerZone() {
   document
     .getElementById("reset-profile-btn")
     ?.addEventListener("click", async () => {
-      if (!confirm("Reset your profile to defaults? Your transactions will not be affected.")) return;
+      if (
+        !confirm(
+          "Reset your profile to defaults? Your transactions will not be affected.",
+        )
+      )
+        return;
       await resetProfile();
       prefillEditForm();
       renderProfileDisplay();
@@ -341,13 +348,18 @@ function initDangerZone() {
     });
 
   document.getElementById("clear-data-btn")?.addEventListener("click", () => {
-    if (!confirm("This will clear ALL saved data (profile, preferences). This cannot be undone. Continue?")) return;
-    const session    = localStorage.getItem("pos_session");
-    const user       = localStorage.getItem("pos_user");
+    if (
+      !confirm(
+        "This will clear ALL saved data (profile, preferences). This cannot be undone. Continue?",
+      )
+    )
+      return;
+    const session = localStorage.getItem("pos_session");
+    const user = localStorage.getItem("pos_user");
     const remembered = localStorage.getItem("pos_remembered_email");
     localStorage.clear();
-    if (session)    localStorage.setItem("pos_session", session);
-    if (user)       localStorage.setItem("pos_user", user);
+    if (session) localStorage.setItem("pos_session", session);
+    if (user) localStorage.setItem("pos_user", user);
     if (remembered) localStorage.setItem("pos_remembered_email", remembered);
     showToast("All saved data cleared. Reloading…", "success");
     setTimeout(() => window.location.reload(), 1800);

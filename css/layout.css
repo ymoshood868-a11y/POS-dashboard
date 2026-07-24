@@ -1315,21 +1315,24 @@
   background: var(--color-gold);
 }
 
-/* Active sub-item — gold background, no border */
+/* Active sub-item — gold background highlight, no border, no dot */
 .nav-sublink.active {
-  background: rgba(201, 168, 76, 0.16);
+  background: rgba(201, 168, 76, 0.18);
   color: var(--color-gold);
   border-left: none;
   padding-left: 44px;
   font-weight: 600;
+  border-radius: var(--radius-md);
+  box-shadow: inset 3px 0 0 var(--color-gold); /* subtle left glow — not a border */
 }
 
 .nav-sublink.active i {
   color: var(--color-gold);
 }
 
+/* Hide the dot on active — box-shadow already indicates selection */
 .nav-sublink.active::before {
-  background: var(--color-gold);
+  display: none;
 }
 
 /* Danger zone sub-item */
