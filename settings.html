@@ -749,10 +749,20 @@
     <!-- Layout + sidebar submenu + tab switching -->
     <script type="module">
         import Layout from './js/layout.js';
+        import { logout } from './js/logout.js';
 
         document.addEventListener('DOMContentLoaded', async () => {
             // Init shared layout
             await Layout.init({ pageTitle: 'Settings', breadcrumb: 'System' });
+
+            // ── Direct logout wiring (don't rely on bubbling) ────
+            document.querySelectorAll('[data-action="logout"]').forEach(el => {
+                el.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    logout();
+                });
+            });
 
             // ── Sidebar dropdown toggle ──────────────────────────
             const toggleBtn = document.getElementById('settings-nav-toggle');
