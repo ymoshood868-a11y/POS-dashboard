@@ -4,12 +4,15 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>POS Dashboard</title>
-    <!-- Clear any stale session and redirect to login -->
+    <title>POSDash</title>
     <script>
-        localStorage.removeItem("pos_session");
-        localStorage.removeItem("pos_user");
-        window.location.replace("login.html");
+        // If already logged in → go straight to dashboard
+        // If not → go to login page
+        if (localStorage.getItem('pos_session') === 'active') {
+            window.location.replace('dashboard.html');
+        } else {
+            window.location.replace('login.html');
+        }
     </script>
 </head>
 
