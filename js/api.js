@@ -45,11 +45,16 @@ async function apiFetch(endpoint, options = {}) {
    ============================================================ */
 
 /**
- * Fetch all transactions
+ * Fetch transactions belonging to the currently logged-in user only.
+ * New users with no transactions will get an empty array.
  * @returns {Promise<Array>}
  */
 export async function getTransactions() {
-  return apiFetch("/transactions");
+  const raw = localStorage.getItem("pos_user");
+  if (!raw) return [];
+  const user = JSON.parse(raw);
+  // JSON Server supports ?userId= filtering natively
+  return apiFetch(`/transactions?userId=${encodeURIComponent(user.id)}`);
 }
 
 /**
@@ -62,24 +67,30 @@ export async function getTransactionById(id) {
 }
 
 /**
- * Fetch transactions with optional query params
- * e.g. { category: 'income', _sort: 'date', _order: 'desc', _limit: 10 }
+ * Fetch the current user's transactions with optional extra query params
+ * e.g. { category: 'income', _sort: 'date', _order: 'desc' }
  * @param {object} params
  * @returns {Promise<Array>}
  */
 export async function queryTransactions(params = {}) {
-  const query = new URLSearchParams(params).toString();
+  const raw = localStorage.getItem("pos_user");
+  const user = raw ? JSON.parse(raw) : null;
+  const allParams = { userId: user?.id || "", ...params };
+  const query = new URLSearchParams(allParams).toString();
   return apiFetch(`/transactions${query ? "?" + query : ""}`);
 }
 
 /**
- * Create a new transaction
+ * Create a new transaction — automatically tags it with the current user's ID
  * NOTE: Used by teammate Module 2 (New Transaction)
  * @param {object} data
  * @returns {Promise<object>}
  */
 export async function createTransaction(data) {
-  return apiFetch("/transactions", { method: "POST", body: data });
+  const raw = localStorage.getItem("pos_user");
+  const user = raw ? JSON.parse(raw) : null;
+  const payload = { ...data, userId: user?.id || null };
+  return apiFetch("/transactions", { method: "POST", body: payload });
 }
 
 /**
