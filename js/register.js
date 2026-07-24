@@ -96,10 +96,20 @@ async function handleRegister(e) {
 
   try {
     // ── Check email not already taken ─────────────────────
-    const checkRes = await fetch(
-      `${BASE_URL}/users?email=${encodeURIComponent(email)}`,
-    );
-    const existing = await checkRes.json();
+    let existing = [];
+    try {
+      const checkRes = await fetch(
+        `${BASE_URL}/users?email=${encodeURIComponent(email)}`,
+      );
+      existing = await checkRes.json();
+    } catch {
+      showAlert(
+        "Cannot reach server. Is JSON Server running? Run: npm run server",
+        "error",
+      );
+      setLoading(false);
+      return;
+    }
 
     if (existing.length > 0) {
       showAlert(
@@ -129,16 +139,26 @@ async function handleRegister(e) {
       body: JSON.stringify(newUser),
     });
 
-    if (!res.ok) throw new Error("Registration failed.");
+    if (!res.ok) {
+      showAlert(
+        `Registration failed (server error ${res.status}). Try again.`,
+        "error",
+      );
+      setLoading(false);
+      return;
+    }
 
-    // ── Success — redirect to login ───────────────────────
-    showAlert("Account created! Redirecting to sign in…", "success");
-    setTimeout(() => window.location.replace("login.html"), 1500);
+    // ── Success — show message then redirect ──────────────
+    showAlert("✅ Account created! Taking you to sign in…", "success");
+    btnRegister.disabled = true;
+
+    setTimeout(() => {
+      window.location.href = "login.html";
+    }, 1500);
   } catch (err) {
     console.error("Register error:", err);
-    // Server offline fallback message
     showAlert(
-      "Cannot reach server. Make sure JSON Server is running (npm run server).",
+      `Error: ${err.message}. Make sure JSON Server is running (npm run server).`,
       "error",
     );
     setLoading(false);
