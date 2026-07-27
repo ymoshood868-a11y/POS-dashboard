@@ -1,16 +1,19 @@
 /**
- * auth.js — Login / authentication logic
- * POS Dashboard
+ * auth.js — Login page logic
+ * ===========================
+ * Calls POST /api/auth/login on the real Express backend.
+ * On success: stores JWT token + user in localStorage → redirects to dashboard.
  *
- * Validates credentials against JSON Server (/users).
- * Falls back to built-in admin account if server is offline.
+ * WHY JWT INSTEAD OF JUST A SESSION FLAG?
+ * Before: we stored pos_session = 'active' — anyone could fake this in DevTools.
+ * Now: we store a JWT token signed by the server. The server verifies every
+ * request against this token, so it can't be faked.
  */
 
 import { showToast, redirectIfLoggedIn } from "./utils.js";
+import { loginUser } from "./api.js";
 
-const BASE_URL = "http://localhost:3000";
-
-/* ── DOM refs ────────────────────────────────────────────── */
+/* ── DOM refs ─────────────────────────────────────────────── */
 const loginForm = document.getElementById("login-form");
 const emailInput = document.getElementById("email");
 const passwordInput = document.getElementById("password");
@@ -21,12 +24,11 @@ const btnLoginSpinner = document.getElementById("btn-login-spinner");
 const formAlert = document.getElementById("form-alert");
 const btnTogglePwd = document.getElementById("btn-toggle-password");
 
-/* ── Init ────────────────────────────────────────────────── */
+/* ── Init ─────────────────────────────────────────────────── */
 document.addEventListener("DOMContentLoaded", () => {
   redirectIfLoggedIn("dashboard.html");
   restoreRememberedEmail();
 
-  // Eye icon — show / hide password
   btnTogglePwd?.addEventListener("click", () => {
     if (!passwordInput) return;
     const isHidden = passwordInput.type === "password";
@@ -36,15 +38,14 @@ document.addEventListener("DOMContentLoaded", () => {
       icon.className = isHidden ? "fa-solid fa-eye-slash" : "fa-solid fa-eye";
   });
 
-  loginForm?.addEventListener("submit", handleLoginSubmit);
-
-  [emailInput, passwordInput].forEach((input) =>
-    input?.addEventListener("input", () => clearFieldError(input)),
+  loginForm?.addEventListener("submit", handleLogin);
+  [emailInput, passwordInput].forEach((inp) =>
+    inp?.addEventListener("input", () => clearFieldError(inp)),
   );
 });
 
-/* ── Form submission ─────────────────────────────────────── */
-async function handleLoginSubmit(e) {
+/* ── Login handler ────────────────────────────────────────── */
+async function handleLogin(e) {
   e.preventDefault();
 
   const email = emailInput.value.trim();
@@ -65,70 +66,14 @@ async function handleLoginSubmit(e) {
   hideAlert();
 
   try {
-    let matchedUser = null;
+    // Call real Express backend → returns { token, user }
+    const result = await loginUser(email, password);
 
-    try {
-      // Check credentials against JSON Server
-      const res = await fetch(`${BASE_URL}/users`);
-      const users = await res.json();
-
-      matchedUser = users.find(
-        (u) =>
-          u.email.toLowerCase() === email.toLowerCase() &&
-          u.password === password,
-      );
-
-      if (!matchedUser) {
-        showAlert("Invalid email or password. Please try again.", "error");
-        setLoading(false);
-        return;
-      }
-    } catch {
-      // Server offline — fall back to built-in admin account
-      console.warn("JSON Server offline — using fallback admin.");
-      if (
-        email.toLowerCase() === "admin@posdash.com" &&
-        password === "admin123"
-      ) {
-        matchedUser = {
-          id: 1,
-          name: "Admin User",
-          email: "admin@posdash.com",
-          role: "admin",
-        };
-      } else {
-        showAlert(
-          "Cannot reach server. Use admin@posdash.com / admin123 offline.",
-          "error",
-        );
-        setLoading(false);
-        return;
-      }
-    }
-
-    // Successful — save session
-    // Clear stale profile cache if a different user is logging in
-    const oldRaw = localStorage.getItem("pos_user");
-    if (oldRaw) {
-      try {
-        if (JSON.parse(oldRaw).id !== matchedUser.id) {
-          localStorage.removeItem("userProfile");
-        }
-      } catch {
-        /* ignore */
-      }
-    }
-
+    // Store JWT token — sent with every future API request
+    localStorage.setItem("pos_token", result.token);
     localStorage.setItem("pos_session", "active");
-    localStorage.setItem(
-      "pos_user",
-      JSON.stringify({
-        id: matchedUser.id,
-        name: matchedUser.name,
-        email: matchedUser.email,
-        role: matchedUser.role,
-      }),
-    );
+    localStorage.setItem("pos_user", JSON.stringify(result.user));
+    localStorage.removeItem("userProfile"); // clear any stale profile cache
 
     if (rememberCheck?.checked) {
       localStorage.setItem("pos_remembered_email", email);
@@ -136,16 +81,15 @@ async function handleLoginSubmit(e) {
       localStorage.removeItem("pos_remembered_email");
     }
 
-    showToast(`Welcome back, ${matchedUser.name}!`, "success", 1500);
+    showToast(`Welcome back, ${result.user.name}!`, "success", 1500);
     setTimeout(() => window.location.replace("dashboard.html"), 800);
   } catch (err) {
-    console.error("Login error:", err);
-    showAlert("An unexpected error occurred. Please try again.", "error");
+    showAlert(err.message || "Invalid email or password.", "error");
     setLoading(false);
   }
 }
 
-/* ── Helpers ─────────────────────────────────────────────── */
+/* ── Helpers ──────────────────────────────────────────────── */
 function setLoading(on) {
   if (!btnLogin) return;
   btnLogin.disabled = on;

@@ -7,8 +7,10 @@
  */
 
 import { showToast } from "./utils.js";
+import { registerUser } from "./api.js";
 
-const BASE_URL = "http://localhost:3000";
+// No longer needed — real backend handles everything
+// const BASE_URL = "http://localhost:3000";
 
 /* ── DOM refs ────────────────────────────────────────────── */
 const form = document.getElementById("register-form");
@@ -95,55 +97,25 @@ async function handleRegister(e) {
   hideAlert();
 
   try {
-    // ── Check email not already taken ─────────────────────
-    let existing = [];
-    try {
-      const checkRes = await fetch(
-        `${BASE_URL}/users?email=${encodeURIComponent(email)}`,
-      );
-      existing = await checkRes.json();
-    } catch {
-      showAlert(
-        "Cannot reach server. Is JSON Server running? Run: npm run server",
-        "error",
-      );
-      setLoading(false);
-      return;
-    }
+    // Call the real Express backend — it handles duplicate check, hashing, JWT
+    const result = await registerUser(name, email, password);
 
-    if (existing.length > 0) {
-      showAlert(
-        "An account with this email already exists. Please sign in.",
-        "error",
-      );
-      setLoading(false);
-      return;
-    }
+    // Store session immediately so user is logged in after registering
+    localStorage.setItem('pos_token',   result.token);
+    localStorage.setItem('pos_session', 'active');
+    localStorage.setItem('pos_user',    JSON.stringify(result.user));
 
-    // ── Build new user object ─────────────────────────────
-    const newUser = {
-      name,
-      username: name.toLowerCase().replace(/\s+/g, "").slice(0, 16),
-      email,
-      password,
-      role: "user",
-      phone: "",
-      department: "",
-      avatar: "",
-    };
+    showAlert('✅ Account created! Taking you to your dashboard…', 'success');
+    btnRegister.disabled = true;
 
-    // ── POST to JSON Server ───────────────────────────────
-    const res = await fetch(`${BASE_URL}/users`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(newUser),
-    });
+    // Go straight to dashboard — no need to login again
+    setTimeout(() => window.location.replace('dashboard.html'), 1500);
 
-    if (!res.ok) {
-      showAlert(
-        `Registration failed (server error ${res.status}). Try again.`,
-        "error",
-      );
+  } catch (err) {
+    showAlert(err.message || 'Registration failed. Is the server running?', 'error');
+    setLoading(false);
+  }
+}
       setLoading(false);
       return;
     }

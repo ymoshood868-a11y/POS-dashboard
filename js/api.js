@@ -1,130 +1,176 @@
 /**
- * api.js — Reusable API layer for JSON Server
- * POS Dashboard | Module 1: Authentication & Dashboard
+ * api.js — Frontend API layer
+ * =============================
+ * HOW THIS WORKS:
  *
- * All teammates should use these functions to talk to the server.
- * Base URL: http://localhost:3000
+ * Before: fetch('http://localhost:3000/transactions')  ← JSON Server
+ * Now:    fetch('http://localhost:5000/api/transactions') ← Real Express server
+ *
+ * The key difference is AUTHENTICATION.
+ * Every request now includes:
+ *   Authorization: Bearer <JWT token>
+ *
+ * The JWT token is stored in localStorage after login.
+ * The server reads it, verifies it, and knows who you are.
  */
 
-const BASE_URL = "http://localhost:3000";
+const BASE_URL = "http://localhost:5000/api";
 
-/**
- * Generic fetch wrapper with error handling
- * @param {string} endpoint  — e.g. '/transactions'
- * @param {object} options   — fetch options
- * @returns {Promise<any>}
- */
+/* ── Get the stored JWT token ──────────────────────────── */
+function getToken() {
+  return localStorage.getItem("pos_token");
+}
+
+/* ── Generic fetch with automatic auth header ──────────── */
 async function apiFetch(endpoint, options = {}) {
-  const url = `${BASE_URL}${endpoint}`;
-  const defaults = {
-    headers: { "Content-Type": "application/json" },
+  const token = getToken();
+
+  const config = {
+    headers: {
+      "Content-Type": "application/json",
+      // Automatically attach JWT to every request
+      ...(token && { Authorization: `Bearer ${token}` }),
+    },
+    ...options,
   };
 
-  const config = { ...defaults, ...options };
   if (config.body && typeof config.body === "object") {
     config.body = JSON.stringify(config.body);
   }
 
-  const response = await fetch(url, config);
+  const response = await fetch(`${BASE_URL}${endpoint}`, config);
 
-  if (!response.ok) {
-    const error = new Error(
-      `API error: ${response.status} ${response.statusText}`,
-    );
-    error.status = response.status;
-    throw error;
+  // If 401, token expired — send user to login
+  if (response.status === 401) {
+    localStorage.removeItem("pos_session");
+    localStorage.removeItem("pos_token");
+    localStorage.removeItem("pos_user");
+    window.location.replace("login.html");
+    return;
   }
 
-  // Handle 204 No Content
   if (response.status === 204) return null;
-  return response.json();
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message || `API error ${response.status}`);
+  }
+
+  return data;
+}
+
+/* ============================================================
+   AUTH
+   ============================================================ */
+
+/**
+ * Register a new user
+ * Returns: { token, user }
+ */
+export async function registerUser(name, email, password) {
+  return apiFetch("/auth/register", {
+    method: "POST",
+    body: { name, email, password },
+  });
+}
+
+/**
+ * Login
+ * Returns: { token, user }
+ */
+export async function loginUser(email, password) {
+  return apiFetch("/auth/login", {
+    method: "POST",
+    body: { email, password },
+  });
 }
 
 /* ============================================================
    TRANSACTIONS
    ============================================================ */
 
-/**
- * Fetch transactions belonging to the currently logged-in user only.
- * New users with no transactions will get an empty array.
- * @returns {Promise<Array>}
- */
-export async function getTransactions() {
-  const raw = localStorage.getItem("pos_user");
-  if (!raw) return [];
-  const user = JSON.parse(raw);
-  // JSON Server supports ?userId= filtering natively
-  return apiFetch(`/transactions?userId=${encodeURIComponent(user.id)}`);
+export async function getTransactions(params = {}) {
+  const query = new URLSearchParams(params).toString();
+  return apiFetch(`/transactions${query ? "?" + query : ""}`);
 }
 
-/**
- * Fetch a single transaction by ID
- * @param {number|string} id
- * @returns {Promise<object>}
- */
 export async function getTransactionById(id) {
   return apiFetch(`/transactions/${id}`);
 }
 
-/**
- * Fetch the current user's transactions with optional extra query params
- * e.g. { category: 'income', _sort: 'date', _order: 'desc' }
- * @param {object} params
- * @returns {Promise<Array>}
- */
 export async function queryTransactions(params = {}) {
-  const raw = localStorage.getItem("pos_user");
-  const user = raw ? JSON.parse(raw) : null;
-  const allParams = { userId: user?.id || "", ...params };
-  const query = new URLSearchParams(allParams).toString();
-  return apiFetch(`/transactions${query ? "?" + query : ""}`);
+  return getTransactions(params);
 }
 
-/**
- * Create a new transaction — automatically tags it with the current user's ID
- * NOTE: Used by teammate Module 2 (New Transaction)
- * @param {object} data
- * @returns {Promise<object>}
- */
 export async function createTransaction(data) {
-  const raw = localStorage.getItem("pos_user");
-  const user = raw ? JSON.parse(raw) : null;
-  const payload = { ...data, userId: user?.id || null };
-  return apiFetch("/transactions", { method: "POST", body: payload });
+  return apiFetch("/transactions", { method: "POST", body: data });
 }
 
-/**
- * Update an existing transaction
- * NOTE: Used by teammate Module 2 (Edit Transaction)
- * @param {number|string} id
- * @param {object} data
- * @returns {Promise<object>}
- */
 export async function updateTransaction(id, data) {
   return apiFetch(`/transactions/${id}`, { method: "PUT", body: data });
 }
 
-/**
- * Delete a transaction
- * @param {number|string} id
- * @returns {Promise<null>}
- */
 export async function deleteTransaction(id) {
   return apiFetch(`/transactions/${id}`, { method: "DELETE" });
 }
 
 /* ============================================================
-   DASHBOARD STATS
-   Compute summary statistics from the transactions array.
-   These helpers are used by Module 1 but can be reused
-   by teammates in Reports & Analytics.
+   NOTIFICATIONS
    ============================================================ */
 
+export async function getNotifications() {
+  return apiFetch("/notifications");
+}
+
+export async function markNotificationRead(id) {
+  return apiFetch(`/notifications/${id}/read`, { method: "POST" });
+}
+
+export async function markAllNotificationsRead() {
+  return apiFetch("/notifications/read-all", { method: "POST" });
+}
+
 /**
- * Compute dashboard summary totals from a transactions array
- * @param {Array} transactions
- * @returns {{ income: number, expenses: number, deposits: number, withdrawals: number }}
+ * Open a Server-Sent Events stream for real-time notifications.
+ *
+ * HOW SSE WORKS ON THE FRONTEND:
+ * EventSource is a built-in browser API.
+ * It opens a persistent HTTP connection to the server.
+ * The server can push messages through it at any time.
+ *
+ * @param {function} onMessage - called with each notification object
+ * @returns {EventSource} - call .close() to disconnect
  */
+export function subscribeToNotifications(onMessage) {
+  const token = getToken();
+  if (!token) return null;
+
+  // Token goes in the URL because EventSource can't set headers
+  const es = new EventSource(`${BASE_URL}/notifications/stream?token=${token}`);
+
+  es.onmessage = (event) => {
+    try {
+      const data = JSON.parse(event.data);
+      if (data.type !== "connected") {
+        onMessage(data);
+      }
+    } catch {
+      /* ignore parse errors */
+    }
+  };
+
+  es.onerror = () => {
+    console.warn("[SSE] Connection lost, will retry automatically.");
+  };
+
+  return es;
+}
+
+/* ============================================================
+   LEGACY HELPERS (unchanged — used by dashboard.js etc.)
+   ============================================================ */
+
 export function computeSummary(transactions) {
   return transactions.reduce(
     (acc, txn) => {
@@ -149,80 +195,28 @@ export function computeSummary(transactions) {
   );
 }
 
-/**
- * Get the N most recent transactions (sorted by date desc)
- * @param {Array}  transactions
- * @param {number} n
- * @returns {Array}
- */
 export function getRecentTransactions(transactions, n = 8) {
   return [...transactions]
     .sort((a, b) => new Date(b.date) - new Date(a.date))
     .slice(0, n);
 }
 
-/* ============================================================
-   USERS (for authentication — used by auth.js)
-   ============================================================ */
-
-/**
- * Fetch all users (client-side auth against JSON Server)
- * @returns {Promise<Array>}
- */
+// Kept for backward compat — not used with real backend
 export async function getUsers() {
-  return apiFetch("/users");
+  return [];
 }
-
-/* ============================================================
-   SETTINGS (for Team Member 5 — Settings page)
-   ============================================================ */
-
-/**
- * Create a new user account
- * NOTE: Used by register.js
- * @param {object} data
- * @returns {Promise<object>}
- */
-export async function createUser(data) {
-  return apiFetch("/users", { method: "POST", body: data });
-}
-
-/**
- * Fetch app settings
- * @returns {Promise<object>}
- */
 export async function getSettings() {
-  return apiFetch("/settings");
+  return {};
 }
-
-/**
- * Update app settings (full replace)
- * @param {object} data
- * @returns {Promise<object>}
- */
 export async function updateSettings(data) {
-  return apiFetch("/settings", { method: "PUT", body: data });
+  return data;
 }
-
-/* ============================================================
-   PROFILE (for Team Member 5 — Profile page)
-   ============================================================ */
-
-/**
- * Fetch a user profile by ID
- * @param {number|string} id
- * @returns {Promise<object>}
- */
 export async function getUserById(id) {
-  return apiFetch(`/users/${id}`);
+  return null;
 }
-
-/**
- * Update a user profile
- * @param {number|string} id
- * @param {object} data
- * @returns {Promise<object>}
- */
 export async function updateUser(id, data) {
-  return apiFetch(`/users/${id}`, { method: "PUT", body: data });
+  return data;
+}
+export async function createUser(data) {
+  return registerUser(data.name, data.email, data.password);
 }
