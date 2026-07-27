@@ -2,17 +2,14 @@
  * register.js — New account registration
  * POS Dashboard
  *
- * POSTs new user to JSON Server /users.
- * On success redirects to login.html.
+ * Calls POST /api/auth/register on the Express backend.
+ * On success: saves JWT + session → redirects to dashboard.
  */
 
 import { showToast } from "./utils.js";
 import { registerUser } from "./api.js";
 
-// No longer needed — real backend handles everything
-// const BASE_URL = "http://localhost:3000";
-
-/* ── DOM refs ────────────────────────────────────────────── */
+/* ── DOM refs ─────────────────────────────────────────────── */
 const form = document.getElementById("register-form");
 const nameInput = document.getElementById("reg-name");
 const emailInput = document.getElementById("reg-email");
@@ -26,7 +23,7 @@ const formAlert = document.getElementById("form-alert");
 const strengthFill = document.getElementById("pwd-strength-fill");
 const strengthLabel = document.getElementById("pwd-strength-label");
 
-/* ── Init ────────────────────────────────────────────────── */
+/* ── Init ─────────────────────────────────────────────────── */
 document.addEventListener("DOMContentLoaded", () => {
   // Password toggle — main field
   document.getElementById("btn-toggle-pwd")?.addEventListener("click", () => {
@@ -50,8 +47,8 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // Clear errors on typing
-  emailInput?.addEventListener("input", () => clearErr("group-email"));
   nameInput?.addEventListener("input", () => clearErr("group-name"));
+  emailInput?.addEventListener("input", () => clearErr("group-email"));
   confirmInput?.addEventListener("input", () => clearErr("group-confirm"));
 
   // Submit
@@ -68,9 +65,8 @@ async function handleRegister(e) {
   const confirm = confirmInput.value;
   const agreed = termsCheck?.checked;
 
-  // ── Validate ─────────────────────────────────────────────
+  // Validate
   let ok = true;
-
   if (!name) {
     setErr("group-name", "Full name is required.");
     ok = false;
@@ -97,40 +93,35 @@ async function handleRegister(e) {
   hideAlert();
 
   try {
-    // Call the real Express backend — it handles duplicate check, hashing, JWT
-    const result = await registerUser(name, email, password);
-
-    // Store session immediately so user is logged in after registering
-    localStorage.setItem('pos_token',   result.token);
-    localStorage.setItem('pos_session', 'active');
-    localStorage.setItem('pos_user',    JSON.stringify(result.user));
-
-    showAlert('✅ Account created! Taking you to your dashboard…', 'success');
-    btnRegister.disabled = true;
-
-    // Go straight to dashboard — no need to login again
-    setTimeout(() => window.location.replace('dashboard.html'), 1500);
-
-  } catch (err) {
-    showAlert(err.message || 'Registration failed. Is the server running?', 'error');
-    setLoading(false);
-  }
-}
+    // First check the server is reachable
+    const health = await fetch("http://localhost:5000/api/health").catch(
+      () => null,
+    );
+    if (!health || !health.ok) {
+      showAlert(
+        "Cannot reach server. Make sure you ran: cd server && npm start",
+        "error",
+      );
       setLoading(false);
       return;
     }
 
-    // ── Success — show message then redirect ──────────────
-    showAlert("✅ Account created! Taking you to sign in…", "success");
-    btnRegister.disabled = true;
+    // Register via Express backend
+    const result = await registerUser(name, email, password);
 
-    setTimeout(() => {
-      window.location.href = "login.html";
-    }, 1500);
+    // Save session immediately — no need to login again after registering
+    localStorage.setItem("pos_token", result.token);
+    localStorage.setItem("pos_session", "active");
+    localStorage.setItem("pos_user", JSON.stringify(result.user));
+
+    showAlert("✅ Account created! Redirecting to dashboard…", "success");
+    if (btnRegister) btnRegister.disabled = true;
+
+    setTimeout(() => window.location.replace("dashboard.html"), 1500);
   } catch (err) {
     console.error("Register error:", err);
     showAlert(
-      `Error: ${err.message}. Make sure JSON Server is running (npm run server).`,
+      err.message || "Registration failed. Check server is running.",
       "error",
     );
     setLoading(false);
@@ -140,7 +131,6 @@ async function handleRegister(e) {
 /* ── Password strength meter ─────────────────────────────── */
 function updateStrength(pwd) {
   if (!strengthFill || !strengthLabel) return;
-
   let score = 0;
   if (pwd.length >= 6) score++;
   if (pwd.length >= 10) score++;
@@ -164,7 +154,7 @@ function updateStrength(pwd) {
   strengthLabel.style.color = level.color;
 }
 
-/* ── Helpers ─────────────────────────────────────────────── */
+/* ── Helpers ──────────────────────────────────────────────── */
 function toggleField(input, icon) {
   if (!input) return;
   const show = input.type === "password";
