@@ -203,6 +203,8 @@ function initEditForm() {
 
 /* ══════════════════════════════════════════════════════════
    PASSWORD CHANGE
+   Talks directly to JSON Server (port 3000) — same as login.
+   No Express server needed.
 ══════════════════════════════════════════════════════════ */
 function initPasswordSection() {
   const form = document.getElementById("change-password-form");
@@ -241,7 +243,6 @@ function initPasswordSection() {
       return;
     }
 
-    // Disable the submit button while the request is in flight
     const submitBtn = form.querySelector('[type="submit"]');
     if (submitBtn) {
       submitBtn.disabled = true;
@@ -250,37 +251,46 @@ function initPasswordSection() {
     }
 
     try {
-      const token = localStorage.getItem("pos_token");
-      const res = await fetch("http://localhost:5000/api/auth/password", {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          ...(token ? { Authorization: `Bearer ${token}` } : {}),
-        },
-        body: JSON.stringify({ currentPassword: current, newPassword: next }),
-      });
+      // Get logged-in user id
+      const userRaw = localStorage.getItem("pos_user");
+      const user = userRaw ? JSON.parse(userRaw) : null;
+      if (!user?.id) throw new Error("Not logged in.");
 
-      const data = await res.json();
+      // Fetch the full user record from JSON Server
+      const getRes = await fetch(`http://localhost:3000/users/${user.id}`);
+      if (!getRes.ok) throw new Error("Could not fetch user record.");
+      const record = await getRes.json();
 
-      if (!res.ok) {
-        showToast(data.message || "Password update failed.", "error");
+      // Verify current password (JSON Server stores plain text)
+      if (record.password !== current) {
+        showToast("Current password is incorrect.", "error");
         return;
       }
+
+      // Save new password via PATCH
+      const patchRes = await fetch(`http://localhost:3000/users/${user.id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ password: next }),
+      });
+
+      if (!patchRes.ok) throw new Error("Failed to save new password.");
 
       form.reset();
       logActivity("Password changed", "security");
       showToast(
-        "Password updated successfully! Please log in again.",
+        "Password updated! Logging you out to re-authenticate…",
         "success",
       );
 
-      // Force re-login so the session token stays fresh
+      // Log out so the user signs in with the new password
       setTimeout(() => {
         import("./logout.js").then(({ logout }) => logout());
-      }, 2000);
-    } catch {
+      }, 2200);
+    } catch (err) {
       showToast(
-        "Could not reach the server. Make sure it is running (cd server && npm start).",
+        err.message ||
+          "Could not update password. Make sure JSON Server is running (npm start).",
         "error",
         5000,
       );
