@@ -98,13 +98,29 @@
   color: var(--color-gold);
 }
 
-.filter-btn.active.income   { background: rgba(39,174,96,0.12);  border-color: #27ae60; color: #27ae60; }
-.filter-btn.active.expense  { background: rgba(231,76,60,0.12);  border-color: #e74c3c; color: #e74c3c; }
-.filter-btn.active.deposit  { background: rgba(201,168,76,0.12); border-color: var(--color-gold); color: var(--color-gold); }
-.filter-btn.active.withdrawal { background: rgba(155,89,182,0.12); border-color: #9b59b6; color: #9b59b6; }
+.filter-btn.active.income {
+  background: rgba(39, 174, 96, 0.12);
+  border-color: #27ae60;
+  color: #27ae60;
+}
+.filter-btn.active.expense {
+  background: rgba(231, 76, 60, 0.12);
+  border-color: #e74c3c;
+  color: #e74c3c;
+}
+.filter-btn.active.deposit {
+  background: rgba(201, 168, 76, 0.12);
+  border-color: var(--color-gold);
+  color: var(--color-gold);
+}
+.filter-btn.active.withdrawal {
+  background: rgba(155, 89, 182, 0.12);
+  border-color: #9b59b6;
+  color: #9b59b6;
+}
 
 .filter-count {
-  background: rgba(255,255,255,0.08);
+  background: rgba(255, 255, 255, 0.08);
   border-radius: 10px;
   padding: 1px 7px;
   font-size: 0.72rem;
@@ -137,7 +153,9 @@
 .net-profit-card::before {
   content: "";
   position: absolute;
-  top: 0; left: 0; right: 0;
+  top: 0;
+  left: 0;
+  right: 0;
   height: 3px;
   background: var(--color-gold);
 }
@@ -157,8 +175,12 @@
   line-height: 1;
 }
 
-.net-profit-value.positive { color: var(--color-success); }
-.net-profit-value.negative { color: var(--color-danger); }
+.net-profit-value.positive {
+  color: var(--color-success);
+}
+.net-profit-value.negative {
+  color: var(--color-danger);
+}
 
 .net-profit-sub {
   font-size: 0.8rem;
@@ -176,20 +198,25 @@
   gap: 8px;
   position: relative;
   overflow: hidden;
-  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease,
+    border-color 0.25s ease;
 }
 
 .kpi-card::before {
   content: "";
   position: absolute;
-  top: 0; left: 0; right: 0;
+  top: 0;
+  left: 0;
+  right: 0;
   height: 3px;
   background: var(--kpi-accent, var(--color-gold));
 }
 
 .kpi-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
   border-color: var(--kpi-accent, var(--color-border-gold));
 }
 
@@ -234,26 +261,38 @@
   gap: 10px;
   position: relative;
   overflow: hidden;
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease;
 }
 
 .breakdown-card::before {
   content: "";
   position: absolute;
-  top: 0; left: 0; right: 0;
+  top: 0;
+  left: 0;
+  right: 0;
   height: 3px;
   background: var(--bc-accent, var(--color-gold));
 }
 
 .breakdown-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
 }
 
-.breakdown-card.income    { --bc-accent: #27ae60; }
-.breakdown-card.expense   { --bc-accent: #e74c3c; }
-.breakdown-card.deposit   { --bc-accent: var(--color-gold); }
-.breakdown-card.withdrawal{ --bc-accent: #9b59b6; }
+.breakdown-card.income {
+  --bc-accent: #27ae60;
+}
+.breakdown-card.expense {
+  --bc-accent: #e74c3c;
+}
+.breakdown-card.deposit {
+  --bc-accent: var(--color-gold);
+}
+.breakdown-card.withdrawal {
+  --bc-accent: #9b59b6;
+}
 
 .bc-header {
   display: flex;
@@ -278,7 +317,11 @@
   justify-content: center;
   font-size: 1.1rem;
   color: var(--bc-accent, var(--color-gold));
-  background: color-mix(in srgb, var(--bc-accent, var(--color-gold)) 12%, transparent);
+  background: color-mix(
+    in srgb,
+    var(--bc-accent, var(--color-gold)) 12%,
+    transparent
+  );
   flex-shrink: 0;
 }
 
@@ -347,7 +390,9 @@
   color: var(--color-text-primary);
 }
 
-.report-chart-title span { color: var(--color-gold); }
+.report-chart-title span {
+  color: var(--color-gold);
+}
 
 .report-chart-sub {
   font-size: 0.78rem;
@@ -415,7 +460,9 @@
   color: var(--color-text-primary);
 }
 
-.report-table-title span { color: var(--color-gold); }
+.report-table-title span {
+  color: var(--color-gold);
+}
 
 .report-txn-count {
   font-size: 0.78rem;
@@ -432,8 +479,13 @@
   max-height: 340px;
 }
 
-.report-table-wrapper::-webkit-scrollbar { width: 4px; }
-.report-table-wrapper::-webkit-scrollbar-thumb { background: var(--color-border); border-radius: 2px; }
+.report-table-wrapper::-webkit-scrollbar {
+  width: 4px;
+}
+.report-table-wrapper::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: 2px;
+}
 
 /* ============================================================
    Category Donut Chart Panel (full-width below)
@@ -467,7 +519,9 @@
   color: var(--color-text-primary);
 }
 
-.donut-panel-title span { color: var(--color-gold); }
+.donut-panel-title span {
+  color: var(--color-gold);
+}
 
 .donut-content {
   display: flex;
@@ -537,7 +591,9 @@
   color: var(--color-text-primary);
 }
 
-.top-txn-title span { color: var(--color-gold); }
+.top-txn-title span {
+  color: var(--color-gold);
+}
 
 .top-txn-list {
   display: flex;
@@ -554,7 +610,9 @@
   border-bottom: 1px solid var(--color-border);
 }
 
-.top-txn-item:last-child { border-bottom: none; }
+.top-txn-item:last-child {
+  border-bottom: none;
+}
 
 .top-txn-rank {
   width: 24px;
@@ -571,9 +629,21 @@
   flex-shrink: 0;
 }
 
-.top-txn-rank.rank-1 { background: rgba(201,168,76,0.15); border-color: var(--color-gold); color: var(--color-gold); }
-.top-txn-rank.rank-2 { background: rgba(160,160,160,0.12); border-color: #aaa; color: #aaa; }
-.top-txn-rank.rank-3 { background: rgba(180,100,50,0.12); border-color: #c67a3c; color: #c67a3c; }
+.top-txn-rank.rank-1 {
+  background: rgba(201, 168, 76, 0.15);
+  border-color: var(--color-gold);
+  color: var(--color-gold);
+}
+.top-txn-rank.rank-2 {
+  background: rgba(160, 160, 160, 0.12);
+  border-color: #aaa;
+  color: #aaa;
+}
+.top-txn-rank.rank-3 {
+  background: rgba(180, 100, 50, 0.12);
+  border-color: #c67a3c;
+  color: #c67a3c;
+}
 
 .top-txn-info {
   flex: 1;
@@ -599,8 +669,12 @@
   font-weight: 700;
 }
 
-.top-txn-amount.positive { color: var(--color-success); }
-.top-txn-amount.negative { color: var(--color-danger); }
+.top-txn-amount.positive {
+  color: var(--color-success);
+}
+.top-txn-amount.negative {
+  color: var(--color-danger);
+}
 
 /* ============================================================
    Loading state
@@ -633,23 +707,36 @@
   .net-profit-card {
     grid-column: span 2;
   }
+}
 
+@media (max-width: 991px) {
+  /* Stack chart above table — NO more side-by-side */
   .reports-main-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .reports-bottom-grid {
     grid-template-columns: 1fr;
   }
 
   .report-canvas-wrapper {
     min-height: 260px;
   }
-}
 
-@media (max-width: 991px) {
-  .breakdown-grid {
-    grid-template-columns: repeat(2, 1fr);
+  /* Table panel: no fixed max-height so it shows all rows */
+  .report-table-wrapper {
+    max-height: none;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
   }
 
-  .reports-bottom-grid {
-    grid-template-columns: 1fr;
+  /* Table scrolls horizontally instead of being cut */
+  .report-table-wrapper .transactions-table {
+    min-width: 520px;
+  }
+
+  .breakdown-grid {
+    grid-template-columns: repeat(2, 1fr);
   }
 }
 
@@ -685,6 +772,15 @@
     width: 160px;
     height: 160px;
   }
+
+  /* Report table: always scrollable on mobile */
+  .report-table-wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .report-table-wrapper .transactions-table {
+    min-width: 500px;
+  }
 }
 
 @media (max-width: 480px) {
@@ -694,5 +790,37 @@
 
   .net-profit-value {
     font-size: 1.8rem;
+  }
+
+  .reports-filter-bar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-sm);
+    padding: var(--space-md);
+  }
+
+  .filter-group {
+    width: 100%;
+  }
+
+  .filter-btn {
+    flex: 1;
+    justify-content: center;
+    padding: 8px 8px;
+    font-size: 0.72rem;
+  }
+
+  /* Hide filter counts on tiny screens */
+  .filter-count {
+    display: none;
+  }
+
+  .report-chart-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .chart-range-tabs {
+    margin-top: var(--space-sm);
   }
 }
