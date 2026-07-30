@@ -16,6 +16,7 @@
   margin-left: var(--sidebar-width);
   transition: margin-left var(--transition-normal);
   min-width: 0;
+  width: 0; /* prevent flex child from overflowing */
   display: flex;
   flex-direction: column;
 }
@@ -29,6 +30,8 @@
   flex: 1;
   padding: calc(var(--navbar-height) + var(--space-lg)) var(--space-xl)
     var(--space-xl);
+  min-width: 0;
+  overflow-x: hidden;
 }
 
 /* ============================================================

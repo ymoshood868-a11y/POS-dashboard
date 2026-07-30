@@ -227,8 +227,13 @@
   background: var(--color-bg-card);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
-  overflow: auto;
+  overflow: hidden;
+}
+
+.table-scroll {
+  overflow-x: auto;
   -webkit-overflow-scrolling: touch;
+  width: 100%;
 }
 
 .transactions-table {
