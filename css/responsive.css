@@ -1,51 +1,104 @@
 /* ============================================================
-   responsive.css — Responsive breakpoints
-   POS Dashboard | Module 1: Authentication & Dashboard
+   responsive.css — Full responsive system for ALL pages
+   Breakpoints:
+     1199px  small desktop / tablet landscape
+      991px  tablet portrait  ← sidebar goes off-canvas
+      767px  mobile landscape / large phone
+      480px  small mobile
+      360px  extra-small / POS terminal
    ============================================================ */
 
-/* ---- Large Desktop: 1400px+ ---- */
+/* ── Base: prevent horizontal overflow everywhere ─────── */
+html,
+body {
+  overflow-x: hidden;
+}
+
+/* ── Remove tap highlight on touch devices ────────────── */
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* ── Minimum 44 × 44 px touch targets on mobile ─────── */
+@media (max-width: 991px) {
+  .btn,
+  .nav-link,
+  .nav-sublink,
+  .btn-navbar-action,
+  .btn-sidebar-toggle,
+  .quick-action-btn,
+  .filter-btn,
+  .btn-page,
+  .chart-range-btn {
+    min-height: 44px;
+  }
+}
+
+/* ============================================================
+   LARGE DESKTOP  ≥ 1400px
+   ============================================================ */
 @media (min-width: 1400px) {
   .cards-grid {
     grid-template-columns: repeat(4, 1fr);
   }
 }
 
-/* ---- Standard Desktop: 1200px - 1399px ---- */
-@media (max-width: 1299px) {
-  .navbar-search {
-    max-width: 260px;
-  }
-}
-
-/* ---- Small desktop / Tablet landscape: up to 1199px ---- */
+/* ============================================================
+   SMALL DESKTOP  ≤ 1199px
+   ============================================================ */
 @media (max-width: 1199px) {
+  /* Cards: 2 columns */
   .cards-grid {
     grid-template-columns: repeat(2, 1fr);
   }
 
-  /* Stack chart above table */
+  /* Dashboard: chart stacks above table */
   .dashboard-grid {
     grid-template-columns: 1fr;
   }
 
+  /* Navbar search: narrower */
   .navbar-search {
-    max-width: 200px;
+    max-width: 220px;
+  }
+
+  /* Reports: stats 2-col, main grid stacks */
+  .reports-stats-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+  .net-profit-card {
+    grid-column: span 2;
+  }
+  .reports-main-grid {
+    grid-template-columns: 1fr;
+  }
+  .report-canvas-wrapper {
+    min-height: 260px;
+  }
+
+  /* New-transaction: narrow sidebar */
+  .txn-form-layout {
+    grid-template-columns: 1fr 280px;
   }
 }
 
-/* ---- Tablet portrait: up to 991px ---- */
+/* ============================================================
+   TABLET PORTRAIT  ≤ 991px
+   Sidebar goes completely off-canvas
+   ============================================================ */
 @media (max-width: 991px) {
-  /* Sidebar becomes off-canvas overlay */
+  /* ── Sidebar off-canvas ─────────────────────────────── */
   .sidebar {
     transform: translateX(-100%);
     width: var(--sidebar-width) !important;
-    box-shadow: 4px 0 24px rgba(0, 0, 0, 0.5);
+    box-shadow: 4px 0 24px rgba(0, 0, 0, 0.55);
+    z-index: 200;
   }
   .sidebar.mobile-open {
     transform: translateX(0);
   }
 
-  /* Main content fills full width */
+  /* ── Main fills full width ──────────────────────────── */
   .main-wrapper {
     margin-left: 0 !important;
   }
@@ -56,226 +109,33 @@
     margin-left: 0;
   }
 
-  /* Hide search bar on tablet */
-  .navbar-search {
-    display: none;
-  }
-
+  /* ── Page padding ───────────────────────────────────── */
   .page-content {
     padding: calc(var(--navbar-height) + var(--space-md)) var(--space-md)
       var(--space-md);
   }
 
-  /* Welcome banner stacks vertically */
+  /* ── Navbar search hidden ───────────────────────────── */
+  .navbar-search {
+    display: none;
+  }
+
+  /* ── Dashboard welcome banner ───────────────────────── */
   .welcome-banner {
     flex-direction: column;
     gap: var(--space-md);
   }
-
   .welcome-right {
     text-align: left;
   }
-
   .welcome-date-block {
     text-align: left;
   }
-
-  /* Quick actions wrap */
   .quick-actions {
     gap: var(--space-sm);
   }
 
-  /* Login: keep side-by-side but shrink illustration */
-  .login-illustration {
-    padding: 36px 28px 44px;
-  }
-
-  .illustration-title {
-    font-size: 2.1rem; /* fallback only — actual size on .title-line */
-  }
-
-  .title-line {
-    font-size: 2.1rem;
-  }
-  .title-line--lg {
-    font-size: 2.4rem;
-  }
-
-  /* Footer stacks */
-  .dashboard-footer {
-    flex-wrap: wrap;
-    gap: var(--space-xs);
-    padding: var(--space-sm) var(--space-md);
-  }
-}
-
-/* ---- Mobile: up to 767px ---- */
-@media (max-width: 767px) {
-  /* 2-column cards */
-  .cards-grid {
-    grid-template-columns: 1fr 1fr;
-    gap: var(--space-md);
-  }
-
-  /* Hide username text in navbar */
-  .navbar-right .user-name {
-    display: none;
-  }
-
-  /* Section header stacks */
-  .section-header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: var(--space-sm);
-  }
-
-  /* Quick actions full-width on mobile */
-  .quick-actions {
-    flex-direction: column;
-  }
-
-  .quick-action-btn {
-    width: 100%;
-    justify-content: center;
-  }
-
-  /* Welcome stats stack */
-  .welcome-stats {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: var(--space-sm);
-  }
-
-  /* Login: stack vertically — illustration becomes compact top banner */
-  .login-page {
-    grid-template-columns: 1fr;
-    grid-template-rows: auto 1fr;
-  }
-
-  .login-illustration {
-    padding: 32px var(--space-lg) 28px;
-    min-height: 260px;
-    justify-content: center;
-  }
-
-  /* Hide the machine image on mobile — too crowded */
-  .illus-image-wrapper {
-    display: none;
-  }
-
-  /* Text content — centered on mobile too */
-  .illustration-content {
-    position: relative;
-    padding: 0;
-    max-width: 100%;
-    text-align: center;
-  }
-
-  .illustration-title {
-    font-size: 1.7rem;
-  }
-
-  .title-line {
-    font-size: 1.7rem;
-  }
-  .title-line--lg {
-    font-size: 1.95rem;
-  }
-
-  .illustration-subtitle {
-    font-size: 0.84rem;
-  }
-
-  .illustration-badges {
-    display: flex;
-    gap: 8px;
-  }
-
-  .badge-item {
-    font-size: 0.72rem;
-    padding: 5px 12px;
-  }
-
-  .login-form-panel {
-    padding: var(--space-xl) var(--space-lg);
-    justify-content: center;
-  }
-
-  /* Dropdown user header: smaller */
-  .dropdown-user-name,
-  .dropdown-user-email {
-    max-width: 110px;
-  }
-}
-
-/* ---- Small Mobile: up to 480px ---- */
-@media (max-width: 480px) {
-  /* Single column cards */
-  .cards-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .card-value {
-    font-size: 1.5rem;
-  }
-
-  .page-content {
-    padding: calc(var(--navbar-height) + var(--space-sm)) var(--space-sm)
-      var(--space-sm);
-  }
-
-  /* Hide category column on tiny screens */
-  .transactions-table thead th:nth-child(3),
-  .transactions-table tbody td:nth-child(3) {
-    display: none;
-  }
-
-  /* Chart minimum height */
-  .chart-canvas-wrapper {
-    min-height: 200px;
-  }
-
-  /* Footer single line */
-  .footer-divider {
-    display: none;
-  }
-
-  .dashboard-footer {
-    flex-direction: column;
-    gap: 2px;
-    text-align: center;
-  }
-}
-
-/* ============================================================
-   RESPONSIVE ADDITIONS
-   — Settings, Profile, Tables, Touch targets, small POS screens
-   ============================================================ */
-
-/* ── Prevent horizontal scroll from off-canvas sidebar ── */
-html,
-body {
-  overflow-x: hidden;
-}
-
-/* ── Minimum touch target size on all buttons/links ────── */
-@media (max-width: 991px) {
-  .btn,
-  .nav-link,
-  .nav-sublink,
-  .btn-navbar-action,
-  .btn-sidebar-toggle {
-    min-height: 44px;
-    min-width: 44px;
-  }
-  /* Remove tap highlight */
-  * {
-    -webkit-tap-highlight-color: transparent;
-  }
-}
-
-/* ── Table horizontal scroll on all small screens ──────── */
-@media (max-width: 767px) {
+  /* ── Tables: horizontal scroll ──────────────────────── */
   .table-wrapper {
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
@@ -284,12 +144,47 @@ body {
   .transactions-table {
     min-width: 560px;
   }
-}
 
-/* ── Settings page — tablet ────────────────────────────── */
-@media (max-width: 991px) {
-  /* Settings wrapper already set to 1-col in settings.css but
-     ensure panels have no overflow */
+  /* ── Reports ────────────────────────────────────────── */
+  .reports-main-grid {
+    grid-template-columns: 1fr;
+  }
+  .reports-bottom-grid {
+    grid-template-columns: 1fr;
+  }
+  .breakdown-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .report-table-wrapper {
+    max-height: none;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .report-table-wrapper .transactions-table {
+    min-width: 500px;
+  }
+
+  /* ── New-transaction: stack form + panel ────────────── */
+  .txn-form-layout {
+    grid-template-columns: 1fr;
+  }
+  .txn-info-panel {
+    position: static;
+    order: 2;
+  }
+  .txn-form-card {
+    order: 1;
+  }
+
+  /* ── Profile: stack ─────────────────────────────────── */
+  .profile-section {
+    grid-template-columns: 1fr;
+  }
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  /* ── Settings: panels full-width ────────────────────── */
   .settings-panels {
     width: 100%;
   }
@@ -302,10 +197,132 @@ body {
   .info-grid {
     grid-template-columns: 1fr 1fr;
   }
+
+  /* ── Footer ─────────────────────────────────────────── */
+  .dashboard-footer {
+    flex-wrap: wrap;
+    gap: var(--space-xs);
+    padding: var(--space-sm) var(--space-md);
+  }
+
+  /* ── Login ──────────────────────────────────────────── */
+  .login-illustration {
+    padding: 36px 28px 44px;
+  }
+  .title-line {
+    font-size: 2.1rem;
+  }
+  .title-line--lg {
+    font-size: 2.4rem;
+  }
 }
 
-/* ── Settings page — mobile ────────────────────────────── */
+/* ============================================================
+   MOBILE  ≤ 767px
+   ============================================================ */
 @media (max-width: 767px) {
+  /* ── Cards: 2-col ───────────────────────────────────── */
+  .cards-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-md);
+  }
+  .card-value {
+    font-size: 1.55rem;
+  }
+
+  /* ── Navbar ─────────────────────────────────────────── */
+  .navbar-right .user-name {
+    display: none;
+  }
+  .navbar-breadcrumb {
+    display: none;
+  }
+
+  /* ── Section headers ────────────────────────────────── */
+  .section-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-sm);
+  }
+
+  /* ── Dashboard quick-actions ────────────────────────── */
+  .quick-actions {
+    flex-direction: column;
+  }
+  .quick-action-btn {
+    width: 100%;
+    justify-content: center;
+  }
+  .welcome-stats {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-sm);
+  }
+
+  /* ── Reports ────────────────────────────────────────── */
+  .reports-stats-grid {
+    grid-template-columns: 1fr;
+  }
+  .net-profit-card {
+    grid-column: span 1;
+  }
+  .breakdown-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-md);
+  }
+  .donut-content {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .donut-canvas-wrapper {
+    width: 160px;
+    height: 160px;
+  }
+  .filter-group {
+    gap: var(--space-xs);
+  }
+  .filter-btn {
+    padding: 6px 12px;
+    font-size: 0.75rem;
+  }
+  .report-chart-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .chart-range-tabs {
+    margin-top: var(--space-sm);
+  }
+
+  /* ── Transactions toolbar ───────────────────────────── */
+  .txn-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .txn-filters {
+    flex-direction: column;
+  }
+  .txn-filter-select,
+  .txn-filter-date {
+    min-width: unset;
+    width: 100%;
+  }
+  .txn-search-wrap {
+    min-width: unset;
+  }
+
+  /* ── New-transaction form ────────────────────────────── */
+  .txn-form-grid {
+    grid-template-columns: 1fr;
+  }
+  .txn-form-actions {
+    flex-direction: column-reverse;
+  }
+  .txn-form-actions .btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* ── Settings ───────────────────────────────────────── */
   .edit-form-grid {
     grid-template-columns: 1fr;
   }
@@ -315,18 +332,15 @@ body {
   .info-grid {
     grid-template-columns: 1fr;
   }
-
   .theme-picker {
     grid-template-columns: 1fr 1fr;
   }
-
   .export-options-grid {
     grid-template-columns: 1fr;
   }
   .quiet-hours-grid {
     grid-template-columns: 1fr;
   }
-
   .form-actions {
     flex-direction: column;
   }
@@ -334,7 +348,6 @@ body {
     width: 100%;
     justify-content: center;
   }
-
   .settings-card-header {
     flex-direction: column;
     align-items: flex-start;
@@ -343,15 +356,144 @@ body {
     width: 100%;
     justify-content: center;
   }
-
   .profile-summary {
     flex-direction: column;
     align-items: flex-start;
   }
+
+  /* ── Profile page ───────────────────────────────────── */
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-md);
+  }
+  .card-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .card-header .primary-btn {
+    width: 100%;
+    justify-content: center;
+  }
+  .info-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+  .info-item span:last-child {
+    text-align: left;
+  }
+
+  /* ── Login ──────────────────────────────────────────── */
+  .login-page {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr;
+  }
+  .login-illustration {
+    min-height: 260px;
+    padding: 32px var(--space-lg) 28px;
+    border-right: none;
+    border-bottom: 1px solid rgba(201, 168, 76, 0.2);
+    justify-content: center;
+  }
+  .illus-image-wrapper {
+    display: none;
+  }
+  .illustration-content {
+    position: relative;
+    padding: 0;
+    max-width: 100%;
+    text-align: center;
+  }
+  .illustration-title {
+    font-size: 1.7rem;
+  }
+  .title-line {
+    font-size: 1.7rem;
+  }
+  .title-line--lg {
+    font-size: 1.95rem;
+  }
+  .illustration-subtitle {
+    font-size: 0.84rem;
+  }
+  .illustration-badges {
+    justify-content: center;
+    gap: 8px;
+  }
+  .badge-item {
+    font-size: 0.72rem;
+    padding: 5px 12px;
+  }
+  .login-form-panel {
+    padding: var(--space-xl) var(--space-lg);
+    justify-content: center;
+  }
+  .dropdown-user-name,
+  .dropdown-user-email {
+    max-width: 110px;
+  }
 }
 
-/* ── Settings page — small mobile / POS ───────────────── */
+/* ============================================================
+   SMALL MOBILE  ≤ 480px
+   ============================================================ */
 @media (max-width: 480px) {
+  /* ── Page padding ───────────────────────────────────── */
+  .page-content {
+    padding: calc(var(--navbar-height) + var(--space-sm)) var(--space-sm)
+      var(--space-sm);
+  }
+
+  /* ── Cards: 1-col ───────────────────────────────────── */
+  .cards-grid {
+    grid-template-columns: 1fr;
+  }
+  .card-value {
+    font-size: 1.5rem;
+  }
+
+  /* ── Dashboard chart ────────────────────────────────── */
+  .chart-canvas-wrapper {
+    min-height: 200px;
+  }
+
+  /* ── Dashboard table: hide date column ──────────────── */
+  .transactions-table thead th:nth-child(5),
+  .transactions-table tbody td:nth-child(5) {
+    display: none;
+  }
+  /* Keep category on dashboard but hide ref on tiny */
+
+  /* ── Reports ────────────────────────────────────────── */
+  .breakdown-grid {
+    grid-template-columns: 1fr;
+  }
+  .net-profit-value {
+    font-size: 1.8rem;
+  }
+  .reports-filter-bar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-sm);
+    padding: var(--space-md);
+  }
+  .filter-group {
+    width: 100%;
+  }
+  .filter-btn {
+    flex: 1;
+    justify-content: center;
+    font-size: 0.72rem;
+    padding: 8px 6px;
+  }
+  .filter-count {
+    display: none;
+  }
+
+  /* ── Settings ───────────────────────────────────────── */
+  .settings-card {
+    padding: var(--space-md);
+  }
   .theme-picker {
     grid-template-columns: 1fr;
   }
@@ -373,88 +515,142 @@ body {
   .accent-swatches {
     flex-wrap: wrap;
   }
-}
 
-/* ── Profile page — mobile ─────────────────────────────── */
-@media (max-width: 767px) {
-  .profile-header {
+  /* ── Profile page ───────────────────────────────────── */
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+  .modal-buttons {
+    flex-direction: column;
+  }
+  .modal-buttons .primary-btn,
+  .modal-buttons .secondary-btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* ── New-transaction ────────────────────────────────── */
+  .txn-form-card {
+    padding: var(--space-lg) var(--space-md);
+  }
+
+  /* ── Modals: slide up from bottom ───────────────────── */
+  .modal-overlay {
+    align-items: flex-end;
+  }
+  .modal-box {
+    width: 100%;
+    max-width: 100%;
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+    max-height: 88vh;
+    overflow-y: auto;
+    padding: var(--space-lg) var(--space-md);
+  }
+
+  /* ── Confirm delete modal ───────────────────────────── */
+  .confirm-modal-overlay {
+    padding: 0;
+    align-items: flex-end;
+  }
+  .confirm-modal {
+    max-width: 100%;
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  }
+  .confirm-modal-actions {
+    flex-direction: column;
+  }
+  .confirm-modal-actions .btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* ── Pagination ─────────────────────────────────────── */
+  .txn-pagination {
     flex-direction: column;
     align-items: flex-start;
   }
-  .profile-grid,
-  .profile-details-grid {
-    grid-template-columns: 1fr !important;
+
+  /* ── Login ──────────────────────────────────────────── */
+  .login-illustration {
+    min-height: 200px;
+    padding: 28px 20px;
+  }
+  .title-line {
+    font-size: 2.4rem;
+  }
+  .title-line--lg {
+    font-size: 1.6rem;
+  }
+  .login-form-panel {
+    padding: 28px 16px;
+  }
+  .login-box {
+    max-width: 100%;
+  }
+
+  /* ── Footer ─────────────────────────────────────────── */
+  .footer-divider {
+    display: none;
+  }
+  .dashboard-footer {
+    flex-direction: column;
+    gap: 2px;
+    text-align: center;
   }
 }
 
-/* ── Navbar — POS / extra-small ─────────────────────────── */
-@media (max-width: 400px) {
+/* ============================================================
+   EXTRA-SMALL / POS TERMINAL  ≤ 360px
+   ============================================================ */
+@media (max-width: 360px) {
+  /* ── Navbar ─────────────────────────────────────────── */
   .navbar {
     padding: 0 var(--space-sm);
   }
   .navbar-title {
-    font-size: 0.875rem;
-  }
-  .navbar-breadcrumb {
-    display: none;
+    font-size: 0.85rem;
   }
   .btn-navbar-action {
     width: 34px;
     height: 34px;
   }
 
-  .page-content {
-    padding: calc(var(--navbar-height) + 6px) var(--space-sm) var(--space-sm);
+  /* ── Cards ──────────────────────────────────────────── */
+  .cards-grid {
+    gap: var(--space-sm);
   }
-}
-
-/* ── Login / Register — extra-small ────────────────────── */
-@media (max-width: 400px) {
-  .login-form-panel {
-    padding: var(--space-lg) var(--space-md);
-  }
-  .login-illustration {
-    padding: 24px var(--space-md) 20px;
-    min-height: 180px;
-  }
-  .title-line {
-    font-size: 1.4rem;
-  }
-  .title-line--lg {
-    font-size: 1.6rem;
-  }
-}
-
-/* ── Modals — make them safe on tiny screens ────────────── */
-@media (max-width: 480px) {
-  .modal-overlay {
-    align-items: flex-end; /* slide up from bottom on phones */
-  }
-  .modal-box {
-    width: 100%;
-    max-width: 100%;
-    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
-    max-height: 85vh;
-    overflow-y: auto;
-    padding: var(--space-lg) var(--space-md);
-  }
-}
-
-/* ── Transaction history / detail — small ───────────────── */
-@media (max-width: 480px) {
-  /* Hide less-critical table columns */
-  .transactions-table thead th:nth-child(5),
-  .transactions-table tbody td:nth-child(5) {
-    display: none; /* date column — space saver */
-  }
-}
-
-/* ── Summary card values — don't overflow ───────────────── */
-@media (max-width: 360px) {
   .card-value {
     font-size: 1.25rem;
   }
-  .cards-grid {
-    gap: var(--space-sm);
+  .summary-card {
+    padding: var(--space-md) var(--space-sm);
+  }
+
+  /* ── Page content ───────────────────────────────────── */
+  .page-content {
+    padding: calc(var(--navbar-height) + 4px) var(--space-sm) var(--space-sm);
+  }
+
+  /* ── Buttons ────────────────────────────────────────── */
+  .btn {
+    font-size: 0.82rem;
+    padding: 9px var(--space-md);
+  }
+
+  /* ── Settings/forms ─────────────────────────────────── */
+  .settings-card {
+    padding: var(--space-sm);
+  }
+  .form-control {
+    padding: 10px 12px;
+    font-size: 0.85rem;
+  }
+
+  /* ── Login ──────────────────────────────────────────── */
+  .title-line {
+    font-size: 1.8rem;
+  }
+  .title-line--lg {
+    font-size: 1.35rem;
   }
 }
