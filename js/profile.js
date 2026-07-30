@@ -87,6 +87,8 @@ export async function fetchProfile() {
 
 /**
  * saveProfile(updates) — writes to JSON Server + localStorage
+ * Uses PATCH so only changed fields are sent (avoids large PUT payloads
+ * that can fail when the avatar is a base64 image).
  */
 export async function saveProfile(updates) {
   const current = getProfile();
@@ -96,38 +98,78 @@ export async function saveProfile(updates) {
   localStorage.setItem(LOCAL_KEY, JSON.stringify(next));
   window.dispatchEvent(new CustomEvent("profileUpdated", { detail: next }));
 
-  // Sync to JSON Server
+  // Sync to JSON Server via PATCH (only send what changed)
   try {
     const u = getCurrentUser();
     if (!u) return next;
 
     // Map profile shape back to the /users schema
-    const payload = {
-      name: next.fullName,
-      username: next.username,
-      email: next.email,
-      phone: next.phone,
-      role: next.role?.toLowerCase() || "admin",
-      department: next.department,
-      avatar: next.avatar,
-      password:
-        (
-          await fetch(`${BASE_URL}/users/${u.id}`)
-            .then((r) => r.json())
-            .catch(() => ({}))
-        ).password || "", // preserve existing password
+    // Only include fields that are in updates to keep the payload small
+    const fieldMap = {
+      fullName: "name",
+      username: "username",
+      email: "email",
+      phone: "phone",
+      role: (v) => ({ role: v?.toLowerCase() || "user" }),
+      department: "department",
+      avatar: "avatar",
     };
 
+    const patch = {};
+    for (const [profileKey, serverKey] of Object.entries(fieldMap)) {
+      if (profileKey in updates) {
+        if (typeof serverKey === "function") {
+          Object.assign(patch, serverKey(next[profileKey]));
+        } else {
+          patch[serverKey] = next[profileKey];
+        }
+      }
+    }
+
+    // If the avatar is a base64 data URL, resize it before saving
+    // so JSON Server doesn't choke on a multi-MB payload
+    if (patch.avatar && patch.avatar.startsWith("data:image")) {
+      patch.avatar = await _resizeAvatar(patch.avatar, 256);
+    }
+
     await fetch(`${BASE_URL}/users/${u.id}`, {
-      method: "PUT",
+      method: "PATCH",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ id: u.id, ...payload }),
+      body: JSON.stringify(patch),
     });
-  } catch {
-    console.warn("Profile saved locally — JSON Server offline.");
+
+    // Update the cached profile with the (possibly resized) avatar
+    if (patch.avatar && patch.avatar !== next.avatar) {
+      next.avatar = patch.avatar;
+      localStorage.setItem(LOCAL_KEY, JSON.stringify(next));
+    }
+  } catch (err) {
+    console.warn("Profile saved locally — JSON Server offline.", err);
   }
 
   return next;
+}
+
+/**
+ * Resize a base64 data URL to maxSize × maxSize using a canvas.
+ * Returns a new base64 JPEG string at ~80% quality.
+ */
+async function _resizeAvatar(dataUrl, maxSize = 256) {
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.onload = () => {
+      const scale = Math.min(maxSize / img.width, maxSize / img.height, 1);
+      const w = Math.round(img.width * scale);
+      const h = Math.round(img.height * scale);
+      const canvas = document.createElement("canvas");
+      canvas.width = w;
+      canvas.height = h;
+      canvas.getContext("2d").drawImage(img, 0, 0, w, h);
+      resolve(canvas.toDataURL("image/jpeg", 0.8));
+    };
+    img.onerror = () => resolve(dataUrl); // fallback: keep original
+    img.src = dataUrl;
+  });
 }
 
 /**

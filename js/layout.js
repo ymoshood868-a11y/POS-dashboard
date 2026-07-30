@@ -77,6 +77,7 @@ const Layout = {
 
   /* ----------------------------------------------------------
      User profile — populates all avatar/name/email targets
+     Also fetches full profile from JSON Server to restore avatar.
   ---------------------------------------------------------- */
   _initUserProfile() {
     const user = getCurrentUser();
@@ -84,6 +85,7 @@ const Layout = {
 
     const initials = _getInitials(user.name);
 
+    // Set initials immediately (instant render, no flash)
     _setText("nav-user-avatar", initials);
     _setText("nav-user-name", user.name);
     _setText("sidebar-user-avatar", initials);
@@ -103,6 +105,43 @@ const Layout = {
           ? "Good afternoon"
           : "Good evening";
     _setText("welcome-greeting-text", greeting);
+
+    // Apply cached avatar from localStorage instantly (no network wait)
+    try {
+      const cached = localStorage.getItem("userProfile");
+      if (cached) {
+        const profile = JSON.parse(cached);
+        if (profile.avatar) _applyAvatarToDOM(profile.avatar, initials);
+      }
+    } catch {
+      /* ignore */
+    }
+
+    // Then fetch fresh profile from JSON Server and update if avatar changed
+    fetch(`http://localhost:3000/users/${user.id}`)
+      .then((r) => (r.ok ? r.json() : null))
+      .then((data) => {
+        if (!data) return;
+        const avatar = data.avatar || "";
+        // Cache the fresh profile
+        const profile = {
+          id: data.id,
+          fullName: data.name || user.name,
+          username: data.username || "",
+          email: data.email || user.email,
+          phone: data.phone || "",
+          role: data.role
+            ? data.role.charAt(0).toUpperCase() + data.role.slice(1)
+            : "User",
+          department: data.department || "",
+          avatar,
+        };
+        localStorage.setItem("userProfile", JSON.stringify(profile));
+        if (avatar) _applyAvatarToDOM(avatar, initials);
+      })
+      .catch(() => {
+        /* server offline — cached data already applied */
+      });
   },
 
   /* ----------------------------------------------------------
@@ -273,6 +312,56 @@ const Layout = {
 function _setText(id, text) {
   const el = document.getElementById(id);
   if (el) el.textContent = text;
+}
+
+/**
+ * Apply an avatar (URL, base64, or emoji:X) to every avatar slot in the DOM.
+ * Falls back to initials if avatar is empty.
+ */
+function _applyAvatarToDOM(avatar, initials) {
+  if (!avatar) return;
+
+  const isEmoji = avatar.startsWith("emoji:");
+  const display = isEmoji ? avatar.replace("emoji:", "") : null;
+
+  // Text slots (sidebar, navbar, dropdown use textContent)
+  const textSlots = [
+    "nav-user-avatar",
+    "sidebar-user-avatar",
+    "dropdown-avatar",
+  ];
+
+  if (isEmoji) {
+    textSlots.forEach((id) => _setText(id, display));
+  } else {
+    // For image avatars keep initials in text slots — the <img> tags
+    // in settings/profile pages are handled separately by profile.js.
+    // But update font-size so a single emoji looks right.
+    textSlots.forEach((id) => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      // If there's already an <img> child, update its src
+      const img = el.querySelector("img");
+      if (img) {
+        img.src = avatar;
+      } else {
+        // Replace text content with a small inline avatar image
+        el.innerHTML = `<img src="${avatar}" alt="avatar"
+          style="width:100%;height:100%;border-radius:50%;object-fit:cover;"
+          onerror="this.parentElement.textContent='${initials}'">`;
+      }
+    });
+  }
+
+  // Also update any [data-settings-avatar] images on the current page
+  document.querySelectorAll("[data-settings-avatar]").forEach((img) => {
+    if (!isEmoji) {
+      img.src = avatar;
+      img.onerror = () => {
+        img.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(initials)}&background=a8872e&color=fff&size=128&bold=true`;
+      };
+    }
+  });
 }
 
 function _getInitials(name) {
