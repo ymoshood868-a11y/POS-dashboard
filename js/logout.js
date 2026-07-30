@@ -13,7 +13,9 @@
 export function logout() {
   localStorage.removeItem("pos_session");
   localStorage.removeItem("pos_user");
-  localStorage.removeItem("userProfile");
+  localStorage.removeItem("pos_token");
+  // Keep "userProfile" so the avatar is immediately available on next login
+  // before the server fetch completes (prevents flash of default avatar).
   window.location.replace("login.html");
 }
 

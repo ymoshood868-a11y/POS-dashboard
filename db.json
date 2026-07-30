@@ -121,6 +121,17 @@
       "status": "pending",
       "reference": "TXN-6468",
       "id": "JwWzXKzONI0"
+    },
+    {
+      "userId": "4ZYk7S8z1L8",
+      "type": "debit",
+      "category": "income",
+      "amount": 333335757,
+      "date": "2026-07-30",
+      "description": "jauvvls",
+      "status": "pending",
+      "reference": "TXN-001",
+      "id": "RlqL13ugF7o"
     }
   ],
   "users": [
@@ -145,6 +156,17 @@
       "department": "",
       "avatar": "",
       "id": "GXWDnsBhZ34"
+    },
+    {
+      "id": "4ZYk7S8z1L8",
+      "name": "Lawal yusuf",
+      "username": "ylawal1999",
+      "email": "ylawal1999@gmail.com",
+      "phone": "08100388797",
+      "role": "user",
+      "department": "",
+      "avatar": "",
+      "password": "olamide123"
     }
   ],
   "settings": {

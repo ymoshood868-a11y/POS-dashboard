@@ -171,4 +171,56 @@ router.post("/login", async (req, res) => {
   }
 });
 
+/* ══════════════════════════════════════════════════════════
+   PATCH /api/auth/password
+   Headers: Authorization: Bearer <token>
+   Body: { currentPassword, newPassword }
+══════════════════════════════════════════════════════════ */
+const { verifyToken } = require("../middleware/auth");
+
+router.patch("/password", verifyToken, async (req, res) => {
+  try {
+    const { currentPassword, newPassword } = req.body;
+
+    if (!currentPassword || !newPassword) {
+      return res
+        .status(400)
+        .json({ message: "currentPassword and newPassword are required." });
+    }
+
+    if (newPassword.length < 8) {
+      return res
+        .status(400)
+        .json({ message: "New password must be at least 8 characters." });
+    }
+
+    const db = readDB();
+    const userIndex = db.users.findIndex((u) => u.id === req.user.id);
+
+    if (userIndex === -1) {
+      return res.status(404).json({ message: "User not found." });
+    }
+
+    const user = db.users[userIndex];
+
+    // Verify current password
+    const match = await bcrypt.compare(currentPassword, user.password);
+    if (!match) {
+      return res
+        .status(401)
+        .json({ message: "Current password is incorrect." });
+    }
+
+    // Hash and save new password
+    const hashed = await bcrypt.hash(newPassword, 10);
+    db.users[userIndex].password = hashed;
+    writeDB(db);
+
+    res.json({ message: "Password updated successfully." });
+  } catch (err) {
+    console.error("Password update error:", err);
+    res.status(500).json({ message: "Server error while updating password." });
+  }
+});
+
 module.exports = router;

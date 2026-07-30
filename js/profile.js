@@ -153,15 +153,19 @@ export async function initProfile() {
 
 export function applyProfileToNavbar(profile) {
   const initials = _getInitials(profile.fullName);
+  const avatarDisplay = profile.avatar?.startsWith("emoji:")
+    ? profile.avatar.replace("emoji:", "")
+    : initials;
+
   _setText("nav-user-name", profile.fullName);
   _setText("sidebar-user-name", profile.fullName);
   _setText("sidebar-user-role", profile.role);
   _setText("dropdown-user-name", profile.fullName);
   _setText("dropdown-user-email", profile.email);
   _setText("welcome-name", profile.fullName.split(" ")[0]);
-  _setText("nav-user-avatar", initials);
-  _setText("sidebar-user-avatar", initials);
-  _setText("dropdown-avatar", initials);
+  _setText("nav-user-avatar", avatarDisplay);
+  _setText("sidebar-user-avatar", avatarDisplay);
+  _setText("dropdown-avatar", avatarDisplay);
 }
 
 export function getAvatarFallback(name) {

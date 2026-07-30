@@ -99,14 +99,30 @@ function renderProfileDisplay() {
 
   /* Avatar images (settings page uses <img> elements) */
   document.querySelectorAll("[data-settings-avatar]").forEach((img) => {
-    if (p.avatar) {
-      img.src = p.avatar;
+    if (p.avatar?.startsWith("emoji:")) {
+      // Replace img with an emoji display span
+      const em = p.avatar.replace("emoji:", "");
+      img.style.display = "none";
+      let span = img.parentNode?.querySelector(".avatar-emoji-display");
+      if (!span) {
+        span = document.createElement("span");
+        span.className = "avatar-emoji-display";
+        img.parentNode?.insertBefore(span, img);
+      }
+      span.textContent = em;
     } else {
-      img.src = getAvatarFallback(p.fullName);
+      // Remove any emoji display
+      img.parentNode?.querySelector(".avatar-emoji-display")?.remove();
+      img.style.display = "";
+      if (p.avatar) {
+        img.src = p.avatar;
+      } else {
+        img.src = getAvatarFallback(p.fullName);
+      }
+      img.onerror = () => {
+        img.src = getAvatarFallback(p.fullName);
+      };
     }
-    img.onerror = () => {
-      img.src = getAvatarFallback(p.fullName);
-    };
   });
 
   /* Named display fields */
@@ -206,7 +222,7 @@ function initPasswordSection() {
     });
   });
 
-  form.addEventListener("submit", (e) => {
+  form.addEventListener("submit", async (e) => {
     e.preventDefault();
     const current = _getVal("current-password");
     const next = _getVal("new-password");
@@ -225,16 +241,106 @@ function initPasswordSection() {
       return;
     }
 
-    // Client-side only — acknowledge
-    form.reset();
-    logActivity("Password changed", "security");
-    showToast("Password updated successfully!", "success");
+    // Disable the submit button while the request is in flight
+    const submitBtn = form.querySelector('[type="submit"]');
+    if (submitBtn) {
+      submitBtn.disabled = true;
+      submitBtn.innerHTML =
+        '<i class="fa-solid fa-spinner fa-spin"></i> Updating…';
+    }
+
+    try {
+      const token = localStorage.getItem("pos_token");
+      const res = await fetch("http://localhost:5000/api/auth/password", {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+        body: JSON.stringify({ currentPassword: current, newPassword: next }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        showToast(data.message || "Password update failed.", "error");
+        return;
+      }
+
+      form.reset();
+      logActivity("Password changed", "security");
+      showToast(
+        "Password updated successfully! Please log in again.",
+        "success",
+      );
+
+      // Force re-login so the session token stays fresh
+      setTimeout(() => {
+        import("./logout.js").then(({ logout }) => logout());
+      }, 2000);
+    } catch {
+      showToast(
+        "Could not reach the server. Make sure it is running (cd server && npm start).",
+        "error",
+        5000,
+      );
+    } finally {
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML =
+          '<i class="fa-solid fa-shield-halved"></i> Update Password';
+      }
+    }
   });
 }
 
 /* ══════════════════════════════════════════════════════════
    AVATAR MODAL
 ══════════════════════════════════════════════════════════ */
+
+const EMOJI_AVATARS = [
+  "😀",
+  "😎",
+  "🤩",
+  "🥸",
+  "🧑‍💻",
+  "👩‍💼",
+  "👨‍💼",
+  "🧑‍🎨",
+  "👩‍🔬",
+  "👨‍🔬",
+  "🦸",
+  "🦹",
+  "🧙",
+  "🧝",
+  "🧜",
+  "🧚",
+  "👮",
+  "🕵️",
+  "💂",
+  "🥷",
+  "🐯",
+  "🦁",
+  "🐻",
+  "🐼",
+  "🐨",
+  "🦊",
+  "🐺",
+  "🦝",
+  "🐸",
+  "🐙",
+  "🌟",
+  "⚡",
+  "🔥",
+  "💎",
+  "🚀",
+  "🎯",
+  "🏆",
+  "💡",
+  "🎨",
+  "🎭",
+];
+
 function initAvatarModal() {
   const modal = document.getElementById("avatar-modal");
   const openBtns = document.querySelectorAll("[data-open-avatar-modal]");
@@ -245,16 +351,84 @@ function initAvatarModal() {
   const fileInput = document.getElementById("avatar-file-input");
   const fileBtn = document.getElementById("avatar-file-btn");
   const previewImg = document.getElementById("avatar-preview");
+  const emojiGrid = document.getElementById("emoji-picker-grid");
   if (!modal) return;
 
+  let _pendingSrc = null; // holds the value to save when Save is clicked
+  let _activeEmoji = null; // currently selected emoji button
+
+  /* ── Populate emoji grid ─────────────────────────────── */
+  if (emojiGrid) {
+    EMOJI_AVATARS.forEach((emoji) => {
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "emoji-avatar-btn";
+      btn.textContent = emoji;
+      btn.setAttribute("aria-label", `Use ${emoji} as avatar`);
+      btn.addEventListener("click", () => {
+        // Deselect previous
+        _activeEmoji?.classList.remove("active");
+        btn.classList.add("active");
+        _activeEmoji = btn;
+        _pendingSrc = `emoji:${emoji}`;
+        // Show emoji preview
+        if (previewImg) {
+          previewImg.style.display = "none";
+        }
+        const existing = document.getElementById("emoji-preview-display");
+        if (existing) {
+          existing.textContent = emoji;
+        } else {
+          const disp = document.createElement("div");
+          disp.id = "emoji-preview-display";
+          disp.className = "emoji-preview-display";
+          disp.textContent = emoji;
+          previewImg?.parentNode?.insertBefore(disp, previewImg);
+        }
+      });
+      emojiGrid.appendChild(btn);
+    });
+  }
+
+  /* ── Tab switching ───────────────────────────────────── */
+  document.querySelectorAll(".avatar-tab").forEach((tab) => {
+    tab.addEventListener("click", () => {
+      document
+        .querySelectorAll(".avatar-tab")
+        .forEach((t) => t.classList.remove("active"));
+      tab.classList.add("active");
+      const target = tab.dataset.avatarTab;
+      document.getElementById("avatar-panel-url").style.display =
+        target === "url" ? "block" : "none";
+      document.getElementById("avatar-panel-emoji").style.display =
+        target === "emoji" ? "block" : "none";
+    });
+  });
+
+  /* ── Open / close ────────────────────────────────────── */
   function openModal() {
     const p = getProfile();
-    if (urlInput) urlInput.value = p.avatar || "";
-    if (previewImg) {
-      previewImg.src = p.avatar || getAvatarFallback(p.fullName);
-      previewImg.onerror = () => {
-        previewImg.src = getAvatarFallback(p.fullName);
-      };
+    _pendingSrc = null;
+    _activeEmoji = null;
+
+    // Restore emoji tab state if current avatar is an emoji
+    if (p.avatar?.startsWith("emoji:")) {
+      const em = p.avatar.replace("emoji:", "");
+      const existing = document.getElementById("emoji-preview-display");
+      if (existing) existing.textContent = em;
+      if (previewImg) previewImg.style.display = "none";
+      _pendingSrc = p.avatar;
+    } else {
+      // Remove any emoji display
+      document.getElementById("emoji-preview-display")?.remove();
+      if (previewImg) previewImg.style.display = "";
+      if (urlInput) urlInput.value = p.avatar || "";
+      if (previewImg) {
+        previewImg.src = p.avatar || getAvatarFallback(p.fullName);
+        previewImg.onerror = () => {
+          previewImg.src = getAvatarFallback(p.fullName);
+        };
+      }
     }
     modal.classList.add("active");
   }
@@ -270,9 +444,10 @@ function initAvatarModal() {
     if (e.target === modal) closeModal();
   });
 
-  // Live URL preview
+  /* ── Live URL preview ────────────────────────────────── */
   urlInput?.addEventListener("input", () => {
     const url = urlInput.value.trim();
+    _pendingSrc = url || null;
     if (url && previewImg) {
       previewImg.src = url;
       previewImg.onerror = () => {
@@ -281,7 +456,7 @@ function initAvatarModal() {
     }
   });
 
-  // File → data URL
+  /* ── File → data URL ─────────────────────────────────── */
   fileBtn?.addEventListener("click", () => fileInput?.click());
   fileInput?.addEventListener("change", () => {
     const file = fileInput.files?.[0];
@@ -292,23 +467,28 @@ function initAvatarModal() {
     }
     const reader = new FileReader();
     reader.onload = (ev) => {
+      _pendingSrc = ev.target.result;
       if (previewImg) previewImg.src = ev.target.result;
       if (urlInput) urlInput.value = ev.target.result;
     };
     reader.readAsDataURL(file);
   });
 
-  // Save
+  /* ── Save ────────────────────────────────────────────── */
   saveBtn?.addEventListener("click", async () => {
-    const src = urlInput?.value.trim();
+    const src = _pendingSrc || urlInput?.value.trim();
     if (!src) {
-      showToast("Please enter a URL or upload an image.", "error");
+      showToast(
+        "Please enter a URL, upload an image, or pick an emoji.",
+        "error",
+      );
       return;
     }
     await saveProfile({ avatar: src });
     renderProfileDisplay();
     closeModal();
     showToast("Avatar updated!", "success");
+    logActivity("Profile avatar changed", "profile");
   });
 }
 

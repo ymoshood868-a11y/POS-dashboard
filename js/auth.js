@@ -68,7 +68,9 @@ async function handleLogin(e) {
     localStorage.setItem("pos_token", result.token);
     localStorage.setItem("pos_session", "active");
     localStorage.setItem("pos_user", JSON.stringify(result.user));
-    localStorage.removeItem("userProfile"); // clear any stale profile cache
+    // Do NOT wipe userProfile here — fetchProfile() on next page load
+    // will overwrite it with fresh server data anyway. Wiping it causes
+    // the avatar to flash as the default on the first render.
 
     if (rememberCheck?.checked) {
       localStorage.setItem("pos_remembered_email", email);

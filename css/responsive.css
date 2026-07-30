@@ -246,3 +246,215 @@
     text-align: center;
   }
 }
+
+/* ============================================================
+   RESPONSIVE ADDITIONS
+   — Settings, Profile, Tables, Touch targets, small POS screens
+   ============================================================ */
+
+/* ── Prevent horizontal scroll from off-canvas sidebar ── */
+html,
+body {
+  overflow-x: hidden;
+}
+
+/* ── Minimum touch target size on all buttons/links ────── */
+@media (max-width: 991px) {
+  .btn,
+  .nav-link,
+  .nav-sublink,
+  .btn-navbar-action,
+  .btn-sidebar-toggle {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  /* Remove tap highlight */
+  * {
+    -webkit-tap-highlight-color: transparent;
+  }
+}
+
+/* ── Table horizontal scroll on all small screens ──────── */
+@media (max-width: 767px) {
+  .table-wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .data-table,
+  .transactions-table {
+    min-width: 560px;
+  }
+}
+
+/* ── Settings page — tablet ────────────────────────────── */
+@media (max-width: 991px) {
+  /* Settings wrapper already set to 1-col in settings.css but
+     ensure panels have no overflow */
+  .settings-panels {
+    width: 100%;
+  }
+  .settings-card {
+    padding: var(--space-lg);
+  }
+  .edit-form-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+  .info-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* ── Settings page — mobile ────────────────────────────── */
+@media (max-width: 767px) {
+  .edit-form-grid {
+    grid-template-columns: 1fr;
+  }
+  .form-group-full {
+    grid-column: 1;
+  }
+  .info-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .theme-picker {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .export-options-grid {
+    grid-template-columns: 1fr;
+  }
+  .quiet-hours-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .form-actions {
+    flex-direction: column;
+  }
+  .form-actions .btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .settings-card-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .settings-card-header .btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .profile-summary {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+/* ── Settings page — small mobile / POS ───────────────── */
+@media (max-width: 480px) {
+  .theme-picker {
+    grid-template-columns: 1fr;
+  }
+  .security-item {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .security-item .btn {
+    width: 100%;
+    justify-content: center;
+  }
+  .pref-item {
+    flex-wrap: wrap;
+  }
+  .accent-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .accent-swatches {
+    flex-wrap: wrap;
+  }
+}
+
+/* ── Profile page — mobile ─────────────────────────────── */
+@media (max-width: 767px) {
+  .profile-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .profile-grid,
+  .profile-details-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* ── Navbar — POS / extra-small ─────────────────────────── */
+@media (max-width: 400px) {
+  .navbar {
+    padding: 0 var(--space-sm);
+  }
+  .navbar-title {
+    font-size: 0.875rem;
+  }
+  .navbar-breadcrumb {
+    display: none;
+  }
+  .btn-navbar-action {
+    width: 34px;
+    height: 34px;
+  }
+
+  .page-content {
+    padding: calc(var(--navbar-height) + 6px) var(--space-sm) var(--space-sm);
+  }
+}
+
+/* ── Login / Register — extra-small ────────────────────── */
+@media (max-width: 400px) {
+  .login-form-panel {
+    padding: var(--space-lg) var(--space-md);
+  }
+  .login-illustration {
+    padding: 24px var(--space-md) 20px;
+    min-height: 180px;
+  }
+  .title-line {
+    font-size: 1.4rem;
+  }
+  .title-line--lg {
+    font-size: 1.6rem;
+  }
+}
+
+/* ── Modals — make them safe on tiny screens ────────────── */
+@media (max-width: 480px) {
+  .modal-overlay {
+    align-items: flex-end; /* slide up from bottom on phones */
+  }
+  .modal-box {
+    width: 100%;
+    max-width: 100%;
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+    max-height: 85vh;
+    overflow-y: auto;
+    padding: var(--space-lg) var(--space-md);
+  }
+}
+
+/* ── Transaction history / detail — small ───────────────── */
+@media (max-width: 480px) {
+  /* Hide less-critical table columns */
+  .transactions-table thead th:nth-child(5),
+  .transactions-table tbody td:nth-child(5) {
+    display: none; /* date column — space saver */
+  }
+}
+
+/* ── Summary card values — don't overflow ───────────────── */
+@media (max-width: 360px) {
+  .card-value {
+    font-size: 1.25rem;
+  }
+  .cards-grid {
+    gap: var(--space-sm);
+  }
+}

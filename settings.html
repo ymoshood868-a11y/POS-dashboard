@@ -1267,25 +1267,48 @@
                 <span style="font-size:.72rem;color:var(--color-text-muted)">Preview</span>
             </div>
 
-            <div class="form-group">
-                <label for="avatar-url-input">Image URL</label>
-                <input type="url" id="avatar-url-input" class="form-control"
-                    placeholder="https://example.com/photo.jpg">
+            <!-- Tab switcher -->
+            <div class="avatar-tabs">
+                <button class="avatar-tab active" data-avatar-tab="url">
+                    <i class="fa-solid fa-link"></i> URL / Upload
+                </button>
+                <button class="avatar-tab" data-avatar-tab="emoji">
+                    <i class="fa-solid fa-face-smile"></i> Emoji / Icon
+                </button>
             </div>
 
-            <div class="modal-divider">
-                <div class="modal-divider-line"></div>
-                <span class="modal-divider-text">or</span>
-                <div class="modal-divider-line"></div>
+            <!-- URL / Upload panel -->
+            <div class="avatar-tab-panel" id="avatar-panel-url">
+                <div class="form-group">
+                    <label for="avatar-url-input">Image URL</label>
+                    <input type="url" id="avatar-url-input" class="form-control"
+                        placeholder="https://example.com/photo.jpg">
+                </div>
+
+                <div class="modal-divider">
+                    <div class="modal-divider-line"></div>
+                    <span class="modal-divider-text">or</span>
+                    <div class="modal-divider-line"></div>
+                </div>
+
+                <input type="file" id="avatar-file-input" accept="image/*" aria-hidden="true">
+                <button type="button" id="avatar-file-btn" class="btn btn-secondary"
+                    style="width:100%;justify-content:center;margin-bottom:var(--space-lg)">
+                    <i class="fa-solid fa-upload"></i> Upload from Device
+                </button>
             </div>
 
-            <input type="file" id="avatar-file-input" accept="image/*" aria-hidden="true">
-            <button type="button" id="avatar-file-btn" class="btn btn-secondary"
-                style="width:100%;justify-content:center;margin-bottom:var(--space-lg)">
-                <i class="fa-solid fa-upload"></i> Upload from Device
-            </button>
+            <!-- Emoji / Icon panel -->
+            <div class="avatar-tab-panel" id="avatar-panel-emoji" style="display:none">
+                <p style="font-size:.78rem;color:var(--color-text-muted);margin-bottom:var(--space-md)">
+                    Pick an emoji or icon — it will be saved as your avatar across all devices.
+                </p>
+                <div class="emoji-picker-grid" id="emoji-picker-grid" role="radiogroup" aria-label="Avatar emoji">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
 
-            <div style="display:flex;justify-content:flex-end;gap:var(--space-md)">
+            <div style="display:flex;justify-content:flex-end;gap:var(--space-md);margin-top:var(--space-lg)">
                 <button type="button" id="avatar-modal-cancel" class="btn btn-secondary">Cancel</button>
                 <button type="button" id="avatar-modal-save" class="btn btn-primary">
                     <i class="fa-solid fa-floppy-disk"></i> Save Avatar
