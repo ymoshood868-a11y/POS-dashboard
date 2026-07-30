@@ -175,9 +175,15 @@
   margin-top: var(--space-xl);
 }
 
+/* Grid children must not overflow their tracks */
+.dashboard-grid > * {
+  min-width: 0;
+}
+
 .dashboard-section {
   display: flex;
   flex-direction: column;
+  min-width: 0;
 }
 
 /* Dashboard grid — stacked layout (table on top, chart below) */

@@ -363,6 +363,12 @@
   margin-bottom: var(--space-xl);
 }
 
+/* Every direct child of any reports grid must not overflow its track */
+.reports-main-grid > *,
+.reports-bottom-grid > * {
+  min-width: 0;
+}
+
 /* ============================================================
    Revenue Overview Chart panel
    ============================================================ */
@@ -373,6 +379,7 @@
   padding: var(--space-lg);
   display: flex;
   flex-direction: column;
+  min-width: 0; /* prevent flex child overflow */
 }
 
 .report-chart-header {
@@ -433,6 +440,7 @@
   flex: 1;
   min-height: 280px;
   position: relative;
+  width: 100%; /* ensure chart fills its container */
 }
 
 /* ============================================================
@@ -445,6 +453,7 @@
   padding: var(--space-lg);
   display: flex;
   flex-direction: column;
+  min-width: 0; /* prevent flex child overflow */
 }
 
 .report-table-header {
@@ -474,13 +483,22 @@
 }
 
 .report-table-wrapper {
+  overflow-x: auto; /* always allow horizontal scroll */
   overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
   flex: 1;
   max-height: 340px;
 }
 
+/* Table inside report panel always has a min-width */
+.report-table-wrapper .transactions-table {
+  min-width: 520px;
+  width: 100%;
+}
+
 .report-table-wrapper::-webkit-scrollbar {
   width: 4px;
+  height: 4px;
 }
 .report-table-wrapper::-webkit-scrollbar-thumb {
   background: var(--color-border);
