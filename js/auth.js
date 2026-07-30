@@ -1,13 +1,8 @@
 /**
  * auth.js — Login page logic
  * ===========================
- * Calls POST /api/auth/login on the real Express backend.
- * On success: stores JWT token + user in localStorage → redirects to dashboard.
- *
- * WHY JWT INSTEAD OF JUST A SESSION FLAG?
- * Before: we stored pos_session = 'active' — anyone could fake this in DevTools.
- * Now: we store a JWT token signed by the server. The server verifies every
- * request against this token, so it can't be faked.
+ * Calls loginUser() against JSON Server user records.
+ * On success: stores a local auth token and user session in localStorage.
  */
 
 import { showToast, redirectIfLoggedIn } from "./utils.js";

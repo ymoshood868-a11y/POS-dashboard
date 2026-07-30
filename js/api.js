@@ -1,35 +1,25 @@
 /**
  * api.js — Frontend API layer
  * =============================
- * HOW THIS WORKS:
- *
- * Before: fetch('http://localhost:3000/transactions')  ← JSON Server
- * Now:    fetch('http://localhost:5000/api/transactions') ← Real Express server
- *
- * The key difference is AUTHENTICATION.
- * Every request now includes:
- *   Authorization: Bearer <JWT token>
- *
- * The JWT token is stored in localStorage after login.
- * The server reads it, verifies it, and knows who you are.
+ * This app uses JSON Server on localhost:3000 for all data operations.
+ * Auth is handled by matching /users records directly, while transactions
+ * and profile data are stored in db.json.
  */
 
-const BASE_URL = "http://localhost:5000/api";
+import { getCurrentUser } from "./utils.js";
+
+const BASE_URL = "http://localhost:3000";
 
 /* ── Get the stored JWT token ──────────────────────────── */
 function getToken() {
   return localStorage.getItem("pos_token");
 }
 
-/* ── Generic fetch with automatic auth header ──────────── */
-async function apiFetch(endpoint, options = {}) {
-  const token = getToken();
-
+/* ── JSON Server fetch helper ──────────────────────────── */
+async function jsonFetch(endpoint, options = {}) {
   const config = {
     headers: {
       "Content-Type": "application/json",
-      // Automatically attach JWT to every request
-      ...(token && { Authorization: `Bearer ${token}` }),
     },
     ...options,
   };
@@ -39,16 +29,6 @@ async function apiFetch(endpoint, options = {}) {
   }
 
   const response = await fetch(`${BASE_URL}${endpoint}`, config);
-
-  // If 401, token expired — send user to login
-  if (response.status === 401) {
-    localStorage.removeItem("pos_session");
-    localStorage.removeItem("pos_token");
-    localStorage.removeItem("pos_user");
-    window.location.replace("login.html");
-    return;
-  }
-
   if (response.status === 204) return null;
 
   const data = await response.json();
@@ -60,6 +40,11 @@ async function apiFetch(endpoint, options = {}) {
   return data;
 }
 
+/* ── Most API calls use JSON Server directly ────────────── */
+async function apiFetch(endpoint, options = {}) {
+  return jsonFetch(endpoint, options);
+}
+
 /* ============================================================
    AUTH
    ============================================================ */
@@ -69,10 +54,33 @@ async function apiFetch(endpoint, options = {}) {
  * Returns: { token, user }
  */
 export async function registerUser(name, email, password) {
-  return apiFetch("/auth/register", {
+  const username =
+    email.split("@")[0] || name.toLowerCase().replace(/\s+/g, "").slice(0, 16);
+  const newUser = {
+    name,
+    username,
+    email,
+    password,
+    phone: "",
+    role: "user",
+    department: "",
+    avatar: "",
+  };
+
+  const existing = await jsonFetch(`/users?email=${encodeURIComponent(email)}`);
+  if (Array.isArray(existing) && existing.length > 0) {
+    throw new Error("Email already exists. Please use a different email.");
+  }
+
+  const created = await jsonFetch("/users", {
     method: "POST",
-    body: { name, email, password },
+    body: newUser,
   });
+
+  return {
+    token: btoa(`${created.email}:${created.password}`),
+    user: created,
+  };
 }
 
 /**
@@ -80,10 +88,18 @@ export async function registerUser(name, email, password) {
  * Returns: { token, user }
  */
 export async function loginUser(email, password) {
-  return apiFetch("/auth/login", {
-    method: "POST",
-    body: { email, password },
-  });
+  const users = await jsonFetch(
+    `/users?email=${encodeURIComponent(email)}&password=${encodeURIComponent(password)}`,
+  );
+
+  if (!Array.isArray(users) || users.length === 0) {
+    throw new Error("Invalid email or password.");
+  }
+
+  return {
+    token: btoa(`${users[0].email}:${users[0].password}`),
+    user: users[0],
+  };
 }
 
 /* ============================================================
@@ -91,7 +107,12 @@ export async function loginUser(email, password) {
    ============================================================ */
 
 export async function getTransactions(params = {}) {
-  const query = new URLSearchParams(params).toString();
+  const currentUser = getCurrentUser();
+  const queryParams = {
+    ...(currentUser?.id ? { userId: currentUser.id } : {}),
+    ...params,
+  };
+  const query = new URLSearchParams(queryParams).toString();
   return apiFetch(`/transactions${query ? "?" + query : ""}`);
 }
 
@@ -104,7 +125,28 @@ export async function queryTransactions(params = {}) {
 }
 
 export async function createTransaction(data) {
-  return apiFetch("/transactions", { method: "POST", body: data });
+  const currentUser = getCurrentUser();
+
+  // Generate a sequential reference (TXN-001, TXN-002, …) based on
+  // the current total count in the database so references are clean.
+  let reference = data.reference;
+  if (!reference || reference.startsWith("TXN-1")) {
+    try {
+      const all = await apiFetch(
+        `/transactions?userId=${currentUser?.id || ""}`,
+      );
+      const count = Array.isArray(all) ? all.length + 1 : 1;
+      reference = `TXN-${String(count).padStart(3, "0")}`;
+    } catch {
+      // Fallback: timestamp-based unique reference
+      reference = `TXN-${String(Date.now()).slice(-6)}`;
+    }
+  }
+
+  return apiFetch("/transactions", {
+    method: "POST",
+    body: { userId: currentUser?.id, ...data, reference },
+  });
 }
 
 export async function updateTransaction(id, data) {

@@ -9,7 +9,8 @@
     href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💰</text></svg>" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
@@ -20,6 +21,17 @@
   <link rel="stylesheet" href="css/responsive.css" />
   <!-- Reports page styles -->
   <link rel="stylesheet" href="css/reports.css" />
+
+  <!-- Apply saved theme before first paint — prevents flash -->
+  <script>
+    (function () {
+      var t = localStorage.getItem('pos_theme') || 'dark';
+      var resolved = t === 'system'
+        ? (window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark')
+        : (t === 'light' ? 'light' : 'dark');
+      document.documentElement.setAttribute('data-theme', resolved);
+    })();
+  </script>
 </head>
 
 <body>
@@ -89,7 +101,8 @@
 
             <!-- Net Profit hero -->
             <div class="net-profit-card" aria-label="Net Profit">
-              <span class="card-title"><i class="fa-solid fa-scale-balanced" style="margin-right:6px;color:var(--color-gold)"></i>Net Profit</span>
+              <span class="card-title"><i class="fa-solid fa-scale-balanced"
+                  style="margin-right:6px;color:var(--color-gold)"></i>Net Profit</span>
               <div id="net-profit-value" class="net-profit-value positive">$0.00</div>
               <div id="net-profit-sub" class="net-profit-sub">Positive cash flow</div>
               <div style="font-size:0.72rem;color:var(--color-text-muted);margin-top:4px">
@@ -99,21 +112,24 @@
 
             <!-- KPI: Transaction Count -->
             <div class="kpi-card" style="--kpi-accent:#c9a84c" aria-label="Transaction Count">
-              <span class="card-title"><i class="fa-solid fa-receipt" style="margin-right:6px;color:#c9a84c"></i>Transactions</span>
+              <span class="card-title"><i class="fa-solid fa-receipt"
+                  style="margin-right:6px;color:#c9a84c"></i>Transactions</span>
               <div id="kpi-txn-count" class="kpi-value">0</div>
               <div class="kpi-sub">Total transaction count</div>
             </div>
 
             <!-- KPI: Avg Transaction -->
             <div class="kpi-card" style="--kpi-accent:#2980b9" aria-label="Average Transaction">
-              <span class="card-title"><i class="fa-solid fa-chart-simple" style="margin-right:6px;color:#2980b9"></i>Avg. Transaction</span>
+              <span class="card-title"><i class="fa-solid fa-chart-simple"
+                  style="margin-right:6px;color:#2980b9"></i>Avg. Transaction</span>
               <div id="kpi-avg-txn" class="kpi-value">$0.00</div>
               <div class="kpi-sub">Average amount per transaction</div>
             </div>
 
             <!-- KPI: Total Inflow -->
             <div class="kpi-card" style="--kpi-accent:#27ae60" aria-label="Total Inflow">
-              <span class="card-title"><i class="fa-solid fa-circle-arrow-down" style="margin-right:6px;color:#27ae60"></i>Total Inflow</span>
+              <span class="card-title"><i class="fa-solid fa-circle-arrow-down"
+                  style="margin-right:6px;color:#27ae60"></i>Total Inflow</span>
               <div id="kpi-inflow" class="kpi-value">$0.00</div>
               <div class="kpi-sub">Income + Deposits</div>
             </div>
@@ -133,7 +149,9 @@
               </div>
               <div id="bc-value-income" class="bc-value">$0.00</div>
               <div id="bc-count-income" class="bc-count">0 transactions</div>
-              <div class="bc-pct-bar"><div class="bc-pct-fill" id="bc-fill-income" style="width:0%"></div></div>
+              <div class="bc-pct-bar">
+                <div class="bc-pct-fill" id="bc-fill-income" style="width:0%"></div>
+              </div>
             </div>
 
             <!-- Expenses -->
@@ -144,7 +162,9 @@
               </div>
               <div id="bc-value-expense" class="bc-value">$0.00</div>
               <div id="bc-count-expense" class="bc-count">0 transactions</div>
-              <div class="bc-pct-bar"><div class="bc-pct-fill" id="bc-fill-expense" style="width:0%"></div></div>
+              <div class="bc-pct-bar">
+                <div class="bc-pct-fill" id="bc-fill-expense" style="width:0%"></div>
+              </div>
             </div>
 
             <!-- Deposits -->
@@ -155,7 +175,9 @@
               </div>
               <div id="bc-value-deposit" class="bc-value">$0.00</div>
               <div id="bc-count-deposit" class="bc-count">0 transactions</div>
-              <div class="bc-pct-bar"><div class="bc-pct-fill" id="bc-fill-deposit" style="width:0%"></div></div>
+              <div class="bc-pct-bar">
+                <div class="bc-pct-fill" id="bc-fill-deposit" style="width:0%"></div>
+              </div>
             </div>
 
             <!-- Withdrawals -->
@@ -166,7 +188,9 @@
               </div>
               <div id="bc-value-withdrawal" class="bc-value">$0.00</div>
               <div id="bc-count-withdrawal" class="bc-count">0 transactions</div>
-              <div class="bc-pct-bar"><div class="bc-pct-fill" id="bc-fill-withdrawal" style="width:0%"></div></div>
+              <div class="bc-pct-bar">
+                <div class="bc-pct-fill" id="bc-fill-withdrawal" style="width:0%"></div>
+              </div>
             </div>
 
           </div>
@@ -231,7 +255,8 @@
                 </div>
 
                 <!-- Table empty state -->
-                <div id="report-table-empty" class="table-empty-state d-none" style="border:none;padding:var(--space-xl) 0">
+                <div id="report-table-empty" class="table-empty-state d-none"
+                  style="border:none;padding:var(--space-xl) 0">
                   <div class="empty-icon"><i class="fa-solid fa-inbox"></i></div>
                   <p class="empty-title">No transactions found</p>
                   <p class="empty-sub">Try selecting a different category filter.</p>

@@ -300,7 +300,7 @@ async function handleSubmit(e) {
 
     // Brief delay then redirect to transactions list
     setTimeout(() => {
-      window.location.href = "transactions.html";
+      window.location.href = "transaction-history.html";
     }, 1200);
   } catch (err) {
     console.error("[TxnForm] Save error:", err);
@@ -403,7 +403,11 @@ function buildPayload() {
   } else {
     // New transaction defaults
     payload.status = "pending";
-    payload.reference = generateReference();
+    // Reference is generated server-side via createTransaction which
+    // includes a timestamp-based fallback; we omit it here so the
+    // API/JSON Server auto-assigns it cleanly via the route handler.
+    // For JSON Server (no Express route), we generate a safe reference.
+    payload.reference = `TXN-${Date.now()}`;
   }
 
   return payload;

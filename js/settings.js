@@ -22,9 +22,13 @@ import {
   applyProfileToNavbar,
   getAvatarFallback,
 } from "./profile.js";
+import { setTheme } from "./theme.js";
 
 /* ── Preferences key ─────────────────────────────────────── */
 const PREFS_KEY = "pos_preferences";
+const NOTIF_KEY = "pos_notifications";
+const ACTIVITY_LOG_KEY = "pos_activity_log";
+const APPEARANCE_KEY = "pos_appearance";
 
 const DEFAULT_PREFS = {
   emailNotifications: true,
@@ -33,6 +37,20 @@ const DEFAULT_PREFS = {
   loginAlerts: true,
   reportDigest: false,
   compactView: false,
+};
+
+const DEFAULT_NOTIFS = {
+  email: true,
+  sms: false,
+  browser: false,
+  transactions: true,
+  login: true,
+  failed: true,
+  digest: false,
+  promo: false,
+  quietEnabled: false,
+  quietFrom: "22:00",
+  quietTo: "08:00",
 };
 
 /* ── Bootstrap ───────────────────────────────────────────── */
@@ -50,7 +68,14 @@ document.addEventListener("DOMContentLoaded", async () => {
   initPasswordSection();
   initAvatarModal();
   initPreferences();
+  initAppearance();
+  initNotifications();
+  initActivityLog();
+  initDataExport();
   initDangerZone();
+
+  // Log settings page visit
+  logActivity("Settings page opened", "system");
 
   // Re-sync display if profile is updated
   window.addEventListener("profileUpdated", () => {
@@ -155,6 +180,7 @@ function initEditForm() {
 
     await saveProfile({ fullName, username, email, phone, department });
     renderProfileDisplay();
+    logActivity("Profile updated", "profile");
     showToast("Profile updated successfully!", "success");
   });
 }
@@ -201,6 +227,7 @@ function initPasswordSection() {
 
     // Client-side only — acknowledge
     form.reset();
+    logActivity("Password changed", "security");
     showToast("Password updated successfully!", "success");
   });
 }
@@ -374,4 +401,588 @@ function _getVal(id) {
 function _setVal(id, val) {
   const el = document.getElementById(id);
   if (el) el.value = val || "";
+}
+
+/* ══════════════════════════════════════════════════════════
+   APPEARANCE PANEL  (dark / light / system + accent)
+══════════════════════════════════════════════════════════ */
+
+/* Accent colour map — overrides --color-gold variables */
+const ACCENT_MAP = {
+  gold: { gold: "#c9a84c", light: "#e2c06b", dark: "#a8872e" },
+  blue: { gold: "#3b82f6", light: "#60a5fa", dark: "#1d4ed8" },
+  green: { gold: "#22c55e", light: "#4ade80", dark: "#15803d" },
+  purple: { gold: "#a855f7", light: "#c084fc", dark: "#7e22ce" },
+  red: { gold: "#ef4444", light: "#f87171", dark: "#b91c1c" },
+};
+
+function getAppearancePrefs() {
+  try {
+    const raw = localStorage.getItem(APPEARANCE_KEY);
+    return raw
+      ? JSON.parse(raw)
+      : {
+          theme: "dark",
+          accent: "gold",
+          compact: false,
+          largeText: false,
+          reduceMotion: false,
+        };
+  } catch {
+    return {
+      theme: "dark",
+      accent: "gold",
+      compact: false,
+      largeText: false,
+      reduceMotion: false,
+    };
+  }
+}
+
+function saveAppearancePrefs(updates) {
+  const current = getAppearancePrefs();
+  const next = { ...current, ...updates };
+  localStorage.setItem(APPEARANCE_KEY, JSON.stringify(next));
+  return next;
+}
+
+function applyAccent(accentKey) {
+  const colors = ACCENT_MAP[accentKey] || ACCENT_MAP.gold;
+  document.documentElement.style.setProperty("--color-gold", colors.gold);
+  document.documentElement.style.setProperty(
+    "--color-gold-light",
+    colors.light,
+  );
+  document.documentElement.style.setProperty("--color-gold-dark", colors.dark);
+}
+
+function applyDensity(compact, largeText, reduceMotion) {
+  const html = document.documentElement;
+  html.classList.toggle("compact-mode", !!compact);
+  html.classList.toggle("large-text", !!largeText);
+  html.classList.toggle("reduce-motion", !!reduceMotion);
+}
+
+function initAppearance() {
+  const prefs = getAppearancePrefs();
+
+  /* ── Theme picker ─────────────────────────────────────── */
+  const picker = document.getElementById("theme-picker");
+  if (picker) {
+    // Set initial active state
+    _setActiveThemeOption(prefs.theme);
+
+    picker.querySelectorAll(".theme-option").forEach((opt) => {
+      const activate = () => {
+        const val = opt.dataset.themeValue;
+        setTheme(val);
+        saveAppearancePrefs({ theme: val });
+        _setActiveThemeOption(val);
+        logActivity(`Theme changed to ${val}`, "profile");
+      };
+      opt.addEventListener("click", activate);
+      opt.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          activate();
+        }
+      });
+    });
+  }
+
+  /* ── Accent swatches ──────────────────────────────────── */
+  applyAccent(prefs.accent);
+  _setActiveAccent(prefs.accent);
+
+  document.querySelectorAll(".accent-swatch").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const key = btn.dataset.accent;
+      applyAccent(key);
+      saveAppearancePrefs({ accent: key });
+      _setActiveAccent(key);
+      logActivity(`Accent colour changed to ${key}`, "profile");
+    });
+  });
+
+  /* ── Density toggles ──────────────────────────────────── */
+  const compactEl = document.getElementById("appearance-compact");
+  const largeTextEl = document.getElementById("appearance-large-text");
+  const reduceMotionEl = document.getElementById("appearance-reduce-motion");
+
+  if (compactEl) compactEl.checked = prefs.compact ?? false;
+  if (largeTextEl) largeTextEl.checked = prefs.largeText ?? false;
+  if (reduceMotionEl) reduceMotionEl.checked = prefs.reduceMotion ?? false;
+
+  // Apply persisted density on load
+  applyDensity(prefs.compact, prefs.largeText, prefs.reduceMotion);
+
+  /* ── Save button ──────────────────────────────────────── */
+  document
+    .getElementById("save-appearance-btn")
+    ?.addEventListener("click", () => {
+      const compact = compactEl?.checked ?? false;
+      const largeText = largeTextEl?.checked ?? false;
+      const reduceMotion = reduceMotionEl?.checked ?? false;
+      saveAppearancePrefs({ compact, largeText, reduceMotion });
+      applyDensity(compact, largeText, reduceMotion);
+      logActivity("Appearance settings saved", "profile");
+      showToast("Appearance saved!", "success");
+    });
+
+  /* ── React to OS change when "system" is active ───────── */
+  window.addEventListener("themeChanged", (e) => {
+    _setActiveThemeOption(e.detail.pref);
+  });
+}
+
+function _setActiveThemeOption(pref) {
+  document.querySelectorAll(".theme-option").forEach((opt) => {
+    const isActive = opt.dataset.themeValue === pref;
+    opt.classList.toggle("active", isActive);
+    opt.setAttribute("aria-checked", String(isActive));
+  });
+}
+
+function _setActiveAccent(key) {
+  document.querySelectorAll(".accent-swatch").forEach((btn) => {
+    btn.classList.toggle("active", btn.dataset.accent === key);
+  });
+}
+
+/* ══════════════════════════════════════════════════════════
+   NOTIFICATIONS PANEL
+══════════════════════════════════════════════════════════ */
+function getNotifPrefs() {
+  try {
+    const raw = localStorage.getItem(NOTIF_KEY);
+    return raw
+      ? { ...DEFAULT_NOTIFS, ...JSON.parse(raw) }
+      : { ...DEFAULT_NOTIFS };
+  } catch {
+    return { ...DEFAULT_NOTIFS };
+  }
+}
+
+function saveNotifPrefs(updates) {
+  const current = getNotifPrefs();
+  localStorage.setItem(NOTIF_KEY, JSON.stringify({ ...current, ...updates }));
+}
+
+function initNotifications() {
+  const prefs = getNotifPrefs();
+
+  // Channel toggles
+  const channelMap = {
+    "notif-email": "email",
+    "notif-sms": "sms",
+    "notif-browser": "browser",
+  };
+  // Event toggles
+  const eventMap = {
+    "notif-transactions": "transactions",
+    "notif-login": "login",
+    "notif-failed": "failed",
+    "notif-digest": "digest",
+    "notif-promo": "promo",
+  };
+
+  const allMap = { ...channelMap, ...eventMap };
+
+  for (const [elId, key] of Object.entries(allMap)) {
+    const el = document.getElementById(elId);
+    if (!el) continue;
+    el.checked = prefs[key] ?? DEFAULT_NOTIFS[key];
+  }
+
+  // Quiet hours
+  const quietEnabled = document.getElementById("notif-quiet-enabled");
+  const quietFrom = document.getElementById("quiet-from");
+  const quietTo = document.getElementById("quiet-to");
+  const quietBody = document.getElementById("quiet-hours-body");
+
+  if (quietEnabled) {
+    quietEnabled.checked = prefs.quietEnabled;
+    _updateQuietHoursState(prefs.quietEnabled, quietBody);
+    quietEnabled.addEventListener("change", () => {
+      _updateQuietHoursState(quietEnabled.checked, quietBody);
+    });
+  }
+  if (quietFrom) quietFrom.value = prefs.quietFrom || "22:00";
+  if (quietTo) quietTo.value = prefs.quietTo || "08:00";
+
+  // Save button
+  document
+    .getElementById("save-notifications-btn")
+    ?.addEventListener("click", () => {
+      const updates = {};
+      for (const [elId, key] of Object.entries(allMap)) {
+        const el = document.getElementById(elId);
+        if (el) updates[key] = el.checked;
+      }
+      updates.quietEnabled = quietEnabled?.checked ?? false;
+      updates.quietFrom = quietFrom?.value || "22:00";
+      updates.quietTo = quietTo?.value || "08:00";
+      saveNotifPrefs(updates);
+      logActivity("Notification settings updated", "profile");
+      showToast("Notification settings saved!", "success");
+    });
+}
+
+function _updateQuietHoursState(enabled, container) {
+  if (!container) return;
+  container.classList.toggle("disabled", !enabled);
+}
+
+/* ══════════════════════════════════════════════════════════
+   ACTIVITY LOG PANEL
+══════════════════════════════════════════════════════════ */
+
+/** Log a new activity entry (called from other init functions) */
+export function logActivity(title, type = "system") {
+  const log = _getActivityLog();
+  const entry = {
+    id: Date.now(),
+    title,
+    type,
+    time: new Date().toISOString(),
+  };
+  log.unshift(entry); // newest first
+  // Cap at 100 entries
+  if (log.length > 100) log.length = 100;
+  localStorage.setItem(ACTIVITY_LOG_KEY, JSON.stringify(log));
+}
+
+function _getActivityLog() {
+  try {
+    const raw = localStorage.getItem(ACTIVITY_LOG_KEY);
+    return raw ? JSON.parse(raw) : _buildDefaultLog();
+  } catch {
+    return _buildDefaultLog();
+  }
+}
+
+function _buildDefaultLog() {
+  // Seed some initial entries so the panel isn't empty on first visit
+  const now = Date.now();
+  return [
+    {
+      id: now - 1000,
+      title: "Logged in successfully",
+      type: "login",
+      time: new Date(now - 5 * 60000).toISOString(),
+    },
+    {
+      id: now - 2000,
+      title: "Dashboard viewed",
+      type: "system",
+      time: new Date(now - 10 * 60000).toISOString(),
+    },
+    {
+      id: now - 3000,
+      title: "Settings page opened",
+      type: "system",
+      time: new Date(now - 11 * 60000).toISOString(),
+    },
+  ];
+}
+
+let _activeFilter = "all";
+
+function initActivityLog() {
+  // Seed default if log is empty
+  if (!localStorage.getItem(ACTIVITY_LOG_KEY)) {
+    localStorage.setItem(ACTIVITY_LOG_KEY, JSON.stringify(_buildDefaultLog()));
+  }
+
+  renderActivityLog(_activeFilter);
+
+  // Filter buttons
+  document.querySelectorAll(".activity-filter-btn").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      document
+        .querySelectorAll(".activity-filter-btn")
+        .forEach((b) => b.classList.remove("active"));
+      btn.classList.add("active");
+      _activeFilter = btn.dataset.filter || "all";
+      renderActivityLog(_activeFilter);
+    });
+  });
+
+  // Clear log button
+  document
+    .getElementById("clear-activity-btn")
+    ?.addEventListener("click", () => {
+      if (!confirm("Clear the entire activity log? This cannot be undone."))
+        return;
+      localStorage.removeItem(ACTIVITY_LOG_KEY);
+      localStorage.setItem(ACTIVITY_LOG_KEY, JSON.stringify([]));
+      renderActivityLog(_activeFilter);
+      showToast("Activity log cleared.", "info");
+    });
+}
+
+function renderActivityLog(filter = "all") {
+  const list = document.getElementById("activity-list");
+  const empty = document.getElementById("activity-empty");
+  if (!list) return;
+
+  const log = _getActivityLog();
+  const filtered =
+    filter === "all" ? log : log.filter((e) => e.type === filter);
+
+  // Remove old items (keep the empty placeholder)
+  list.querySelectorAll(".activity-item").forEach((el) => el.remove());
+
+  if (filtered.length === 0) {
+    if (empty) empty.style.display = "block";
+    return;
+  }
+  if (empty) empty.style.display = "none";
+
+  filtered.forEach((entry) => {
+    const timeAgo = _timeAgo(new Date(entry.time));
+    const item = document.createElement("div");
+    item.className = "activity-item";
+    item.innerHTML = `
+      <span class="activity-dot dot-${entry.type}"></span>
+      <div class="activity-body">
+        <div class="activity-title">${_escHtml(entry.title)}</div>
+        <div class="activity-meta">
+          <span class="activity-type-badge ${entry.type}">${entry.type}</span>
+          <span>${timeAgo}</span>
+        </div>
+      </div>
+    `;
+    list.appendChild(item);
+  });
+}
+
+function _timeAgo(date) {
+  const diff = Math.floor((Date.now() - date.getTime()) / 1000);
+  if (diff < 60) return "Just now";
+  if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
+  if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
+  return new Intl.DateTimeFormat("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  }).format(date);
+}
+
+function _escHtml(str) {
+  return String(str)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+
+/* ══════════════════════════════════════════════════════════
+   DATA EXPORT PANEL
+══════════════════════════════════════════════════════════ */
+const TXN_API_URL = "http://localhost:3000";
+
+let _exportFmt = "csv";
+
+function initDataExport() {
+  // Set default dates: last 30 days → today
+  const toDate = new Date();
+  const fromDate = new Date();
+  fromDate.setDate(fromDate.getDate() - 30);
+  const toEl = document.getElementById("export-date-to");
+  const fromEl = document.getElementById("export-date-from");
+  if (toEl) toEl.value = _toDateInput(toDate);
+  if (fromEl) fromEl.value = _toDateInput(fromDate);
+
+  // Format selector buttons
+  document.querySelectorAll(".export-fmt-btn").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      document
+        .querySelectorAll(".export-fmt-btn")
+        .forEach((b) => b.classList.remove("active"));
+      btn.classList.add("active");
+      _exportFmt = btn.dataset.fmt || "csv";
+    });
+  });
+
+  // Preview button
+  document
+    .getElementById("export-preview-btn")
+    ?.addEventListener("click", async () => {
+      const rows = await _getFilteredTransactions();
+      _renderExportPreview(rows);
+    });
+
+  // Download button
+  document
+    .getElementById("export-download-btn")
+    ?.addEventListener("click", async () => {
+      const rows = await _getFilteredTransactions();
+      if (rows.length === 0) {
+        showToast("No transactions match your filters.", "warning");
+        return;
+      }
+      if (_exportFmt === "csv") {
+        _downloadCSV(rows);
+      } else {
+        _downloadJSON(rows);
+      }
+      logActivity(
+        `Exported ${rows.length} transactions as ${_exportFmt.toUpperCase()}`,
+        "system",
+      );
+      showToast(
+        `${rows.length} transaction(s) exported as ${_exportFmt.toUpperCase()}.`,
+        "success",
+      );
+    });
+
+  // Close preview
+  document
+    .getElementById("export-preview-close")
+    ?.addEventListener("click", () => {
+      const wrap = document.getElementById("export-preview-wrap");
+      if (wrap) wrap.style.display = "none";
+    });
+
+  // Profile export
+  document
+    .getElementById("export-profile-btn")
+    ?.addEventListener("click", () => {
+      const profile = getProfile();
+      // Strip avatar data-URLs to keep file small
+      const safe = { ...profile };
+      if (safe.avatar && safe.avatar.startsWith("data:"))
+        safe.avatar = "[base64-omitted]";
+      _downloadBlob(
+        JSON.stringify(safe, null, 2),
+        "profile.json",
+        "application/json",
+      );
+      showToast("Profile data exported.", "success");
+    });
+
+  // Preferences export
+  document.getElementById("export-prefs-btn")?.addEventListener("click", () => {
+    const prefs = {
+      preferences: getPrefs(),
+      notifications: getNotifPrefs(),
+    };
+    _downloadBlob(
+      JSON.stringify(prefs, null, 2),
+      "preferences.json",
+      "application/json",
+    );
+    showToast("Preferences exported.", "success");
+  });
+}
+
+async function _getFilteredTransactions() {
+  const fromVal = document.getElementById("export-date-from")?.value || "";
+  const toVal = document.getElementById("export-date-to")?.value || "";
+  const category = document.getElementById("export-category")?.value || "all";
+  const statusVal = document.getElementById("export-status")?.value || "all";
+
+  let txns = [];
+  try {
+    const res = await fetch(`${TXN_API_URL}/transactions`);
+    if (res.ok) txns = await res.json();
+  } catch {
+    showToast("Server offline — no transactions to export.", "warning");
+    return [];
+  }
+
+  return txns.filter((t) => {
+    if (fromVal && t.date < fromVal) return false;
+    if (toVal && t.date > toVal) return false;
+    if (category !== "all" && t.category !== category) return false;
+    if (statusVal !== "all" && t.status !== statusVal) return false;
+    return true;
+  });
+}
+
+function _renderExportPreview(rows) {
+  const wrap = document.getElementById("export-preview-wrap");
+  const count = document.getElementById("export-preview-count");
+  const table = document.getElementById("export-preview-table");
+  if (!wrap || !table) return;
+
+  if (rows.length === 0) {
+    showToast("No transactions match your filters.", "warning");
+    wrap.style.display = "none";
+    return;
+  }
+
+  const cols = [
+    "reference",
+    "date",
+    "description",
+    "category",
+    "amount",
+    "status",
+  ];
+
+  // Build header
+  table.querySelector("thead").innerHTML =
+    `<tr>${cols.map((c) => `<th>${_escHtml(c)}</th>`).join("")}</tr>`;
+
+  // Build rows (max 10 preview)
+  const preview = rows.slice(0, 10);
+  table.querySelector("tbody").innerHTML = preview
+    .map(
+      (r) =>
+        `<tr>${cols.map((c) => `<td>${_escHtml(r[c] ?? "—")}</td>`).join("")}</tr>`,
+    )
+    .join("");
+
+  if (count) {
+    count.textContent =
+      rows.length > 10
+        ? `${rows.length} records (showing first 10)`
+        : `${rows.length} record${rows.length !== 1 ? "s" : ""}`;
+  }
+
+  wrap.style.display = "block";
+}
+
+function _downloadCSV(rows) {
+  const cols = [
+    "id",
+    "reference",
+    "date",
+    "description",
+    "category",
+    "amount",
+    "status",
+  ];
+  const header = cols.join(",");
+  const body = rows.map((r) =>
+    cols.map((c) => `"${String(r[c] ?? "").replace(/"/g, '""')}"`).join(","),
+  );
+  const csv = [header, ...body].join("\n");
+  _downloadBlob(csv, "transactions.csv", "text/csv");
+}
+
+function _downloadJSON(rows) {
+  _downloadBlob(
+    JSON.stringify(rows, null, 2),
+    "transactions.json",
+    "application/json",
+  );
+}
+
+function _downloadBlob(content, filename, type) {
+  const blob = new Blob([content], { type });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+function _toDateInput(date) {
+  return date.toISOString().split("T")[0];
 }

@@ -14,6 +14,17 @@
             window.location.replace('login.html');
         }
     </script>
+
+    <!-- Apply saved theme before first paint — prevents flash -->
+    <script>
+        (function () {
+            var t = localStorage.getItem('pos_theme') || 'dark';
+            var resolved = t === 'system'
+                ? (window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark')
+                : (t === 'light' ? 'light' : 'dark');
+            document.documentElement.setAttribute('data-theme', resolved);
+        })();
+    </script>
 </head>
 
 <body></body>

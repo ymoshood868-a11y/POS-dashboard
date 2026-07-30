@@ -31,6 +31,8 @@ document.addEventListener("DOMContentLoaded", async () => {
 /* ============================================================
    Data loader
    ============================================================ */
+let _chartInstance = null; // track chart so we can destroy & re-render
+
 async function loadDashboardData() {
   let transactions = [];
 
@@ -49,6 +51,12 @@ async function loadDashboardData() {
 
   renderSummaryCards(transactions);
   renderWelcomeBanner(transactions);
+
+  // Destroy old chart instance before re-rendering (avoids Chart.js overlap)
+  if (_chartInstance) {
+    _chartInstance.destroy();
+    _chartInstance = null;
+  }
   renderChart(transactions);
   renderTransactionsTable(getRecentTransactions(transactions, 8));
 }
@@ -221,7 +229,17 @@ function renderChart(transactions) {
   );
   if (subtitle) subtitle.textContent = "This week (Mon–Sun)";
 
-  new Chart(canvas, {
+  // Detect current theme for chart colors
+  const isLight =
+    document.documentElement.getAttribute("data-theme") === "light";
+  const gridColor = isLight ? "rgba(0,0,0,0.06)" : "rgba(255,255,255,0.04)";
+  const tickColor = isLight ? "#888888" : "#606060";
+  const tooltipBg = isLight ? "#ffffff" : "#1a1a1a";
+  const tooltipBorder = isLight ? "#e0e0e0" : "#2a2a2a";
+  const tooltipTitle = isLight ? "#111111" : "#f0f0f0";
+  const tooltipBody = isLight ? "#555555" : "#a0a0a0";
+
+  _chartInstance = new Chart(canvas, {
     type: "bar",
     data: {
       labels: dayNames,
@@ -253,11 +271,11 @@ function renderChart(transactions) {
       plugins: {
         legend: { display: false },
         tooltip: {
-          backgroundColor: "#1a1a1a",
-          borderColor: "#2a2a2a",
+          backgroundColor: tooltipBg,
+          borderColor: tooltipBorder,
           borderWidth: 1,
-          titleColor: "#f0f0f0",
-          bodyColor: "#a0a0a0",
+          titleColor: tooltipTitle,
+          bodyColor: tooltipBody,
           padding: 12,
           callbacks: {
             label: (ctx) =>
@@ -267,14 +285,14 @@ function renderChart(transactions) {
       },
       scales: {
         x: {
-          grid: { color: "rgba(255,255,255,0.04)" },
-          ticks: { color: "#606060", font: { family: "Poppins", size: 11 } },
+          grid: { color: gridColor },
+          ticks: { color: tickColor, font: { family: "Poppins", size: 11 } },
         },
         y: {
-          grid: { color: "rgba(255,255,255,0.04)" },
+          grid: { color: gridColor },
           beginAtZero: true,
           ticks: {
-            color: "#606060",
+            color: tickColor,
             font: { family: "Poppins", size: 11 },
             callback: (v) => "$" + v.toLocaleString(),
           },

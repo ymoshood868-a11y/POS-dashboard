@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "description": "POS Transaction Dashboard",
   "scripts": {
-    "server": "json-server --watch db.json --port 3000"
+    "start": "json-server --watch db.json --port 3000",
+    "server": "npm run start"
   },
   "dependencies": {
     "json-server": "^0.17.4"

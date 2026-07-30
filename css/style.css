@@ -13,7 +13,7 @@
   --color-gold-light: #e2c06b;
   --color-gold-dark: #a8872e;
 
-  /* Dark theme palette */
+  /* Dark theme palette (default) */
   --color-bg-primary: #0d0d0d;
   --color-bg-secondary: #141414;
   --color-bg-card: #1a1a1a;
@@ -30,6 +30,7 @@
   --color-danger: #e74c3c;
   --color-warning: #f39c12;
   --color-info: #2980b9;
+  --color-primary: #2980b9;
 
   /* Borders */
   --color-border: #2a2a2a;
@@ -64,6 +65,61 @@
   --transition-fast: all 0.2s ease;
   --transition-normal: all 0.3s ease;
   --transition-slow: all 0.4s ease;
+}
+
+/* ── Light theme overrides ─────────────────────────────── */
+[data-theme="light"] {
+  --color-bg-primary: #f4f5f7;
+  --color-bg-secondary: #ffffff;
+  --color-bg-card: #ffffff;
+  --color-bg-elevated: #f0f1f3;
+  --color-bg-input: #f8f9fa;
+
+  --color-text-primary: #111111;
+  --color-text-secondary: #555555;
+  --color-text-muted: #999999;
+
+  --color-border: #e0e0e0;
+  --color-border-gold: rgba(201, 168, 76, 0.35);
+
+  --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.08);
+  --shadow-hover: 0 8px 32px rgba(0, 0, 0, 0.14);
+}
+
+/* Light-mode scrollbar */
+[data-theme="light"] ::-webkit-scrollbar-track {
+  background: #f0f1f3;
+}
+[data-theme="light"] ::-webkit-scrollbar-thumb {
+  background: #d0d0d0;
+}
+
+/* Light-mode skeleton shimmer */
+[data-theme="light"] .skeleton {
+  background: linear-gradient(90deg, #ececec 25%, #d8d8d8 50%, #ececec 75%);
+  background-size: 200% 100%;
+}
+
+/* Light-mode sidebar overlay */
+[data-theme="light"] .sidebar-overlay {
+  background: rgba(0, 0, 0, 0.35);
+}
+
+/* Theme transition — smooth switch on all elements */
+body,
+.sidebar,
+.navbar,
+.settings-card,
+.summary-card,
+.table-wrapper,
+.chart-section,
+.modal-box,
+.user-dropdown,
+.dashboard-footer {
+  transition:
+    background-color 0.25s ease,
+    border-color 0.25s ease,
+    color 0.25s ease;
 }
 
 /* ---------- Reset & Base ---------- */
@@ -239,4 +295,31 @@ textarea {
     opacity: 1;
     transform: translateX(0);
   }
+}
+
+/* ── Compact mode ────────────────────────────────────────── */
+html.compact-mode {
+  --space-xs: 2px;
+  --space-sm: 5px;
+  --space-md: 10px;
+  --space-lg: 16px;
+  --space-xl: 22px;
+  --space-2xl: 32px;
+}
+html.compact-mode body {
+  font-size: 14px;
+}
+
+/* ── Large text mode ─────────────────────────────────────── */
+html.large-text body {
+  font-size: 18px;
+}
+
+/* ── Reduced motion ──────────────────────────────────────── */
+html.reduce-motion *,
+html.reduce-motion *::before,
+html.reduce-motion *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
 }

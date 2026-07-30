@@ -99,6 +99,28 @@
       "amount": 150,
       "status": "pending",
       "reference": "TXN-010"
+    },
+    {
+      "userId": "1",
+      "type": "credit",
+      "category": "expense",
+      "amount": 5000,
+      "date": "2026-07-28",
+      "description": "income",
+      "status": "pending",
+      "reference": "TXN-1459",
+      "id": "0H35P24-3as"
+    },
+    {
+      "userId": "1",
+      "type": "credit",
+      "category": "income",
+      "amount": 50000,
+      "date": "2026-07-28",
+      "description": "credit",
+      "status": "pending",
+      "reference": "TXN-6468",
+      "id": "JwWzXKzONI0"
     }
   ],
   "users": [
@@ -110,7 +132,7 @@
       "phone": "+2349117321160",
       "role": "admin",
       "department": "Operations",
-      "avatar": "",
+      "avatar": "https://i.pinimg.com/736x/8a/b1/9d/8ab19de9dda3f20098c6c9915ff16ace.jpg",
       "password": "admin123"
     },
     {
@@ -132,5 +154,6 @@
     "theme": "dark",
     "notifications": true,
     "language": "en"
-  }
+  },
+  "$schema": "./node_modules/json-server/schema.json"
 }

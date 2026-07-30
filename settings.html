@@ -16,6 +16,16 @@
     <link rel="stylesheet" href="css/layout.css">
     <link rel="stylesheet" href="css/responsive.css">
     <link rel="stylesheet" href="css/settings.css">
+    <!-- Apply saved theme before first paint — prevents flash -->
+    <script>
+        (function () {
+            var t = localStorage.getItem('pos_theme') || 'dark';
+            var resolved = t === 'system'
+                ? (window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark')
+                : (t === 'light' ? 'light' : 'dark');
+            document.documentElement.setAttribute('data-theme', resolved);
+        })();
+    </script>
 </head>
 
 <body>
@@ -65,18 +75,12 @@
                 </ul>
 
                 <div class="sidebar-divider"></div>
-                <p class="sidebar-section-title">Analytics</p>
+                <p class="sidebar-section-title">Reports</p>
                 <ul>
                     <li class="nav-item">
                         <a href="reports.html" class="nav-link" data-tooltip="Reports" data-page="reports.html">
                             <span class="nav-icon"><i class="fa-solid fa-chart-bar"></i></span>
                             <span class="nav-label">Reports</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="analytics.html" class="nav-link" data-tooltip="Analytics" data-page="analytics.html">
-                            <span class="nav-icon"><i class="fa-solid fa-chart-line"></i></span>
-                            <span class="nav-label">Analytics</span>
                         </a>
                     </li>
                 </ul>
@@ -94,36 +98,76 @@
                         </button>
 
                         <ul class="nav-submenu open" id="settings-submenu">
+
+                            <!-- Group 1: Account -->
+                            <li class="submenu-group-label">Account</li>
                             <li>
                                 <button class="nav-sublink active" data-tab="profile">
-                                    <i class="fa-solid fa-user"></i>
+                                    <span class="sublink-icon"><i class="fa-solid fa-circle-user"></i></span>
                                     <span>Profile</span>
                                 </button>
                             </li>
                             <li>
                                 <button class="nav-sublink" data-tab="edit-profile">
-                                    <i class="fa-solid fa-pen-to-square"></i>
+                                    <span class="sublink-icon"><i class="fa-solid fa-pen-to-square"></i></span>
                                     <span>Edit Profile</span>
                                 </button>
                             </li>
                             <li>
                                 <button class="nav-sublink" data-tab="security">
-                                    <i class="fa-solid fa-shield-halved"></i>
+                                    <span class="sublink-icon"><i class="fa-solid fa-lock"></i></span>
                                     <span>Security</span>
                                 </button>
                             </li>
+
+                            <!-- Submenu divider -->
+                            <li class="submenu-divider"></li>
+
+                            <!-- Group 2: Preferences -->
+                            <li class="submenu-group-label">Preferences</li>
                             <li>
                                 <button class="nav-sublink" data-tab="preferences">
-                                    <i class="fa-solid fa-sliders"></i>
+                                    <span class="sublink-icon"><i class="fa-solid fa-sliders"></i></span>
                                     <span>Preferences</span>
                                 </button>
                             </li>
                             <li>
+                                <button class="nav-sublink" data-tab="appearance">
+                                    <span class="sublink-icon"><i class="fa-solid fa-palette"></i></span>
+                                    <span>Appearance</span>
+                                </button>
+                            </li>
+                            <li>
+                                <button class="nav-sublink" data-tab="notifications">
+                                    <span class="sublink-icon"><i class="fa-solid fa-bell"></i></span>
+                                    <span>Notifications</span>
+                                </button>
+                            </li>
+
+                            <!-- Submenu divider -->
+                            <li class="submenu-divider"></li>
+
+                            <!-- Group 3: Data & Danger -->
+                            <li class="submenu-group-label">Data</li>
+                            <li>
+                                <button class="nav-sublink" data-tab="activity">
+                                    <span class="sublink-icon"><i class="fa-solid fa-clock-rotate-left"></i></span>
+                                    <span>Activity Log</span>
+                                </button>
+                            </li>
+                            <li>
+                                <button class="nav-sublink" data-tab="export">
+                                    <span class="sublink-icon"><i class="fa-solid fa-file-export"></i></span>
+                                    <span>Data Export</span>
+                                </button>
+                            </li>
+                            <li>
                                 <button class="nav-sublink nav-sublink-danger" data-tab="danger">
-                                    <i class="fa-solid fa-triangle-exclamation"></i>
+                                    <span class="sublink-icon"><i class="fa-solid fa-triangle-exclamation"></i></span>
                                     <span>Danger Zone</span>
                                 </button>
                             </li>
+
                         </ul>
                     </li>
 
@@ -514,6 +558,343 @@
                         </section>
 
                         <!-- ═══════════════════════════════════
+                         PANEL: Appearance (Dark / Light / System)
+                    ════════════════════════════════════ -->
+                        <section class="settings-panel" data-panel="appearance" role="tabpanel">
+
+                            <!-- Theme mode picker -->
+                            <div class="settings-card">
+                                <div class="settings-card-header">
+                                    <div>
+                                        <div class="settings-card-title">
+                                            <i class="fa-solid fa-circle-half-stroke"></i> Theme Mode
+                                        </div>
+                                        <div class="settings-card-subtitle">Choose how POSDash looks to you</div>
+                                    </div>
+                                </div>
+
+                                <div class="theme-picker" id="theme-picker" role="radiogroup" aria-label="Theme mode">
+
+                                    <!-- Dark -->
+                                    <div class="theme-option" data-theme-value="dark" role="radio" aria-checked="false"
+                                        tabindex="0">
+                                        <div class="theme-preview preview-dark">
+                                            <div class="tp-layout">
+                                                <div class="tp-sidebar">
+                                                    <div class="tp-sidebar-dot"></div>
+                                                    <div class="tp-sidebar-line"></div>
+                                                    <div class="tp-sidebar-line"></div>
+                                                    <div class="tp-sidebar-line"></div>
+                                                </div>
+                                                <div class="tp-main">
+                                                    <div class="tp-topbar"></div>
+                                                    <div class="tp-content">
+                                                        <div class="tp-card"></div>
+                                                        <div class="tp-card"></div>
+                                                        <div class="tp-card"></div>
+                                                        <div class="tp-card"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <span class="theme-option-label">Dark</span>
+                                        <span class="theme-option-desc">Easy on the eyes</span>
+                                    </div>
+
+                                    <!-- Light -->
+                                    <div class="theme-option" data-theme-value="light" role="radio" aria-checked="false"
+                                        tabindex="0">
+                                        <div class="theme-preview preview-light">
+                                            <div class="tp-layout">
+                                                <div class="tp-sidebar">
+                                                    <div class="tp-sidebar-dot"></div>
+                                                    <div class="tp-sidebar-line"></div>
+                                                    <div class="tp-sidebar-line"></div>
+                                                    <div class="tp-sidebar-line"></div>
+                                                </div>
+                                                <div class="tp-main">
+                                                    <div class="tp-topbar"></div>
+                                                    <div class="tp-content">
+                                                        <div class="tp-card"></div>
+                                                        <div class="tp-card"></div>
+                                                        <div class="tp-card"></div>
+                                                        <div class="tp-card"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <span class="theme-option-label">Light</span>
+                                        <span class="theme-option-desc">Clean and bright</span>
+                                    </div>
+
+                                    <!-- System -->
+                                    <div class="theme-option" data-theme-value="system" role="radio"
+                                        aria-checked="false" tabindex="0">
+                                        <div class="theme-preview preview-system"></div>
+                                        <span class="theme-option-label">System</span>
+                                        <span class="theme-option-desc">Follows your OS</span>
+                                    </div>
+
+                                </div>
+
+                                <!-- Accent colour swatches -->
+                                <div class="accent-row">
+                                    <span class="accent-label"><i class="fa-solid fa-droplet"
+                                            style="color:var(--color-gold);margin-right:6px"></i>Accent</span>
+                                    <div class="accent-swatches" id="accent-swatches">
+                                        <button class="accent-swatch active" data-accent="gold"
+                                            style="background:#c9a84c" title="Gold (default)"
+                                            aria-label="Gold accent"></button>
+                                        <button class="accent-swatch" data-accent="blue" style="background:#3b82f6"
+                                            title="Blue" aria-label="Blue accent"></button>
+                                        <button class="accent-swatch" data-accent="green" style="background:#22c55e"
+                                            title="Green" aria-label="Green accent"></button>
+                                        <button class="accent-swatch" data-accent="purple" style="background:#a855f7"
+                                            title="Purple" aria-label="Purple accent"></button>
+                                        <button class="accent-swatch" data-accent="red" style="background:#ef4444"
+                                            title="Red" aria-label="Red accent"></button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Font size / density -->
+                            <div class="settings-card">
+                                <div class="settings-card-header">
+                                    <div>
+                                        <div class="settings-card-title">
+                                            <i class="fa-solid fa-text-height"></i> Interface Density
+                                        </div>
+                                        <div class="settings-card-subtitle">Adjust spacing and font size</div>
+                                    </div>
+                                </div>
+
+                                <div class="pref-list">
+                                    <div class="pref-item">
+                                        <div class="pref-info">
+                                            <div class="pref-icon"><i class="fa-solid fa-compress"></i></div>
+                                            <div>
+                                                <div class="pref-name">Compact Mode</div>
+                                                <div class="pref-desc">Tighter spacing, smaller padding — fits more on
+                                                    screen</div>
+                                            </div>
+                                        </div>
+                                        <label class="toggle-switch" aria-label="Compact mode">
+                                            <input type="checkbox" id="appearance-compact">
+                                            <span class="toggle-slider"></span>
+                                        </label>
+                                    </div>
+                                    <div class="pref-item">
+                                        <div class="pref-info">
+                                            <div class="pref-icon"><i class="fa-solid fa-font"></i></div>
+                                            <div>
+                                                <div class="pref-name">Large Text</div>
+                                                <div class="pref-desc">Increases base font size for better readability
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <label class="toggle-switch" aria-label="Large text">
+                                            <input type="checkbox" id="appearance-large-text">
+                                            <span class="toggle-slider"></span>
+                                        </label>
+                                    </div>
+                                    <div class="pref-item">
+                                        <div class="pref-info">
+                                            <div class="pref-icon"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
+                                            <div>
+                                                <div class="pref-name">Reduced Motion</div>
+                                                <div class="pref-desc">Minimises animations and transitions</div>
+                                            </div>
+                                        </div>
+                                        <label class="toggle-switch" aria-label="Reduced motion">
+                                            <input type="checkbox" id="appearance-reduce-motion">
+                                            <span class="toggle-slider"></span>
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <div class="form-actions">
+                                    <button type="button" id="save-appearance-btn" class="btn btn-primary">
+                                        <i class="fa-solid fa-floppy-disk"></i> Save Appearance
+                                    </button>
+                                </div>
+                            </div>
+
+                        </section>
+
+                        <!-- ═══════════════════════════════════
+                         PANEL: Notifications
+                    ════════════════════════════════════ -->
+                        <section class="settings-panel" data-panel="notifications" role="tabpanel">
+
+                            <!-- Channel preferences -->
+                            <div class="settings-card">
+                                <div class="settings-card-header">
+                                    <div>
+                                        <div class="settings-card-title">
+                                            <i class="fa-solid fa-bell"></i> Notification Channels
+                                        </div>
+                                        <div class="settings-card-subtitle">Choose how you want to be reached</div>
+                                    </div>
+                                </div>
+                                <div class="pref-list">
+                                    <div class="pref-item">
+                                        <div class="pref-info">
+                                            <div class="pref-icon"><i class="fa-solid fa-envelope"></i></div>
+                                            <div>
+                                                <div class="pref-name">Email Notifications</div>
+                                                <div class="pref-desc">Receive updates and alerts via email</div>
+                                            </div>
+                                        </div>
+                                        <label class="toggle-switch" aria-label="Email notifications">
+                                            <input type="checkbox" id="notif-email">
+                                            <span class="toggle-slider"></span>
+                                        </label>
+                                    </div>
+                                    <div class="pref-item">
+                                        <div class="pref-info">
+                                            <div class="pref-icon"><i class="fa-solid fa-mobile-screen"></i></div>
+                                            <div>
+                                                <div class="pref-name">SMS Notifications</div>
+                                                <div class="pref-desc">Receive alerts via SMS to your phone</div>
+                                            </div>
+                                        </div>
+                                        <label class="toggle-switch" aria-label="SMS notifications">
+                                            <input type="checkbox" id="notif-sms">
+                                            <span class="toggle-slider"></span>
+                                        </label>
+                                    </div>
+                                    <div class="pref-item">
+                                        <div class="pref-info">
+                                            <div class="pref-icon"><i class="fa-solid fa-desktop"></i></div>
+                                            <div>
+                                                <div class="pref-name">Browser Notifications</div>
+                                                <div class="pref-desc">Show desktop push notifications in-browser</div>
+                                            </div>
+                                        </div>
+                                        <label class="toggle-switch" aria-label="Browser notifications">
+                                            <input type="checkbox" id="notif-browser">
+                                            <span class="toggle-slider"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Event triggers -->
+                            <div class="settings-card">
+                                <div class="settings-card-header">
+                                    <div>
+                                        <div class="settings-card-title">
+                                            <i class="fa-solid fa-sliders"></i> Notification Events
+                                        </div>
+                                        <div class="settings-card-subtitle">Pick which events trigger a notification
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="pref-list">
+                                    <div class="pref-item">
+                                        <div class="pref-info">
+                                            <div class="pref-icon"><i class="fa-solid fa-credit-card"></i></div>
+                                            <div>
+                                                <div class="pref-name">Transaction Alerts</div>
+                                                <div class="pref-desc">Get notified on every new transaction</div>
+                                            </div>
+                                        </div>
+                                        <label class="toggle-switch" aria-label="Transaction alerts">
+                                            <input type="checkbox" id="notif-transactions" checked>
+                                            <span class="toggle-slider"></span>
+                                        </label>
+                                    </div>
+                                    <div class="pref-item">
+                                        <div class="pref-info">
+                                            <div class="pref-icon"><i class="fa-solid fa-right-to-bracket"></i></div>
+                                            <div>
+                                                <div class="pref-name">Login Alerts</div>
+                                                <div class="pref-desc">Notify me when a new login is detected</div>
+                                            </div>
+                                        </div>
+                                        <label class="toggle-switch" aria-label="Login alerts">
+                                            <input type="checkbox" id="notif-login" checked>
+                                            <span class="toggle-slider"></span>
+                                        </label>
+                                    </div>
+                                    <div class="pref-item">
+                                        <div class="pref-info">
+                                            <div class="pref-icon"><i class="fa-solid fa-circle-exclamation"></i></div>
+                                            <div>
+                                                <div class="pref-name">Failed Transaction Alerts</div>
+                                                <div class="pref-desc">Alert me when a transaction fails</div>
+                                            </div>
+                                        </div>
+                                        <label class="toggle-switch" aria-label="Failed transaction alerts">
+                                            <input type="checkbox" id="notif-failed" checked>
+                                            <span class="toggle-slider"></span>
+                                        </label>
+                                    </div>
+                                    <div class="pref-item">
+                                        <div class="pref-info">
+                                            <div class="pref-icon"><i class="fa-solid fa-chart-bar"></i></div>
+                                            <div>
+                                                <div class="pref-name">Weekly Report Digest</div>
+                                                <div class="pref-desc">Receive a summary of activity every week</div>
+                                            </div>
+                                        </div>
+                                        <label class="toggle-switch" aria-label="Report digest">
+                                            <input type="checkbox" id="notif-digest">
+                                            <span class="toggle-slider"></span>
+                                        </label>
+                                    </div>
+                                    <div class="pref-item">
+                                        <div class="pref-info">
+                                            <div class="pref-icon"><i class="fa-solid fa-tag"></i></div>
+                                            <div>
+                                                <div class="pref-name">Promotional Updates</div>
+                                                <div class="pref-desc">Receive product news and feature announcements
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <label class="toggle-switch" aria-label="Promotional updates">
+                                            <input type="checkbox" id="notif-promo">
+                                            <span class="toggle-slider"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Quiet hours -->
+                            <div class="settings-card">
+                                <div class="settings-card-header">
+                                    <div>
+                                        <div class="settings-card-title">
+                                            <i class="fa-solid fa-moon"></i> Quiet Hours
+                                        </div>
+                                        <div class="settings-card-subtitle">Mute notifications during specific hours
+                                        </div>
+                                    </div>
+                                    <label class="toggle-switch" aria-label="Enable quiet hours">
+                                        <input type="checkbox" id="notif-quiet-enabled">
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+                                <div class="quiet-hours-grid" id="quiet-hours-body">
+                                    <div class="form-group">
+                                        <label for="quiet-from">From</label>
+                                        <input type="time" id="quiet-from" class="form-control" value="22:00">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="quiet-to">To</label>
+                                        <input type="time" id="quiet-to" class="form-control" value="08:00">
+                                    </div>
+                                </div>
+                                <div class="form-actions" style="margin-top:var(--space-lg)">
+                                    <button type="button" id="save-notifications-btn" class="btn btn-primary">
+                                        <i class="fa-solid fa-floppy-disk"></i> Save Notification Settings
+                                    </button>
+                                </div>
+                            </div>
+
+                        </section>
+
+                        <!-- ═══════════════════════════════════
                          PANEL: Preferences
                     ════════════════════════════════════ -->
                         <section class="settings-panel" data-panel="preferences" role="tabpanel">
@@ -620,6 +1001,177 @@
                                             <input type="checkbox" id="pref-compact-view">
                                             <span class="toggle-slider"></span>
                                         </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </section>
+
+                        <!-- ═══════════════════════════════════
+                         PANEL: Activity Log
+                    ════════════════════════════════════ -->
+                        <section class="settings-panel" data-panel="activity" role="tabpanel">
+
+                            <div class="settings-card">
+                                <div class="settings-card-header">
+                                    <div>
+                                        <div class="settings-card-title">
+                                            <i class="fa-solid fa-clock-rotate-left"></i> Activity Log
+                                        </div>
+                                        <div class="settings-card-subtitle">Recent account and session events</div>
+                                    </div>
+                                    <button id="clear-activity-btn" class="btn btn-secondary"
+                                        style="padding:6px 14px;font-size:.8rem;">
+                                        <i class="fa-solid fa-trash-can"></i> Clear Log
+                                    </button>
+                                </div>
+
+                                <!-- Filter bar -->
+                                <div class="activity-filter-bar">
+                                    <button class="activity-filter-btn active" data-filter="all">All</button>
+                                    <button class="activity-filter-btn" data-filter="login">Login</button>
+                                    <button class="activity-filter-btn" data-filter="profile">Profile</button>
+                                    <button class="activity-filter-btn" data-filter="transaction">Transaction</button>
+                                    <button class="activity-filter-btn" data-filter="security">Security</button>
+                                </div>
+
+                                <div class="activity-list" id="activity-list">
+                                    <!-- Populated by JS -->
+                                    <div class="activity-empty" id="activity-empty" style="display:none;">
+                                        <i class="fa-solid fa-inbox"></i>
+                                        <p>No activity recorded yet.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </section>
+
+                        <!-- ═══════════════════════════════════
+                         PANEL: Data Export
+                    ════════════════════════════════════ -->
+                        <section class="settings-panel" data-panel="export" role="tabpanel">
+
+                            <!-- Export transactions -->
+                            <div class="settings-card">
+                                <div class="settings-card-header">
+                                    <div>
+                                        <div class="settings-card-title">
+                                            <i class="fa-solid fa-file-export"></i> Export Transactions
+                                        </div>
+                                        <div class="settings-card-subtitle">Download your transaction history</div>
+                                    </div>
+                                </div>
+
+                                <div class="export-options-grid">
+                                    <div class="form-group">
+                                        <label for="export-date-from">From Date</label>
+                                        <input type="date" id="export-date-from" class="form-control">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="export-date-to">To Date</label>
+                                        <input type="date" id="export-date-to" class="form-control">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="export-category">Category</label>
+                                        <select id="export-category" class="form-control">
+                                            <option value="all">All Categories</option>
+                                            <option value="income">Income</option>
+                                            <option value="expense">Expense</option>
+                                            <option value="deposit">Deposit</option>
+                                            <option value="withdrawal">Withdrawal</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="export-status">Status</label>
+                                        <select id="export-status" class="form-control">
+                                            <option value="all">All Statuses</option>
+                                            <option value="completed">Completed</option>
+                                            <option value="pending">Pending</option>
+                                            <option value="failed">Failed</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="export-format-row">
+                                    <span class="export-format-label">Format</span>
+                                    <div class="export-format-btns">
+                                        <button class="export-fmt-btn active" data-fmt="csv">
+                                            <i class="fa-solid fa-file-csv"></i> CSV
+                                        </button>
+                                        <button class="export-fmt-btn" data-fmt="json">
+                                            <i class="fa-solid fa-file-code"></i> JSON
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div id="export-preview-wrap" class="export-preview-wrap" style="display:none;">
+                                    <div class="export-preview-header">
+                                        <span id="export-preview-count">0 records</span>
+                                        <button id="export-preview-close" class="modal-close"
+                                            aria-label="Close preview">&times;</button>
+                                    </div>
+                                    <div class="export-preview-table-wrap">
+                                        <table class="export-preview-table" id="export-preview-table">
+                                            <thead></thead>
+                                            <tbody></tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+                                <div class="form-actions">
+                                    <button type="button" id="export-preview-btn" class="btn btn-secondary">
+                                        <i class="fa-solid fa-eye"></i> Preview
+                                    </button>
+                                    <button type="button" id="export-download-btn" class="btn btn-primary">
+                                        <i class="fa-solid fa-download"></i> Download
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Export profile / settings -->
+                            <div class="settings-card">
+                                <div class="settings-card-header">
+                                    <div>
+                                        <div class="settings-card-title">
+                                            <i class="fa-solid fa-user-gear"></i> Export Account Data
+                                        </div>
+                                        <div class="settings-card-subtitle">Download a copy of your profile and
+                                            preferences</div>
+                                    </div>
+                                </div>
+
+                                <div class="security-list">
+                                    <div class="security-item">
+                                        <div class="security-info">
+                                            <div class="security-icon icon-gold">
+                                                <i class="fa-solid fa-id-card"></i>
+                                            </div>
+                                            <div>
+                                                <div class="security-name">Profile Data</div>
+                                                <div class="security-desc">Your name, email, phone, role, and department
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <button id="export-profile-btn" class="btn btn-secondary"
+                                            style="padding:6px 14px;font-size:.8rem;">
+                                            <i class="fa-solid fa-download"></i> Export JSON
+                                        </button>
+                                    </div>
+                                    <div class="security-item">
+                                        <div class="security-info">
+                                            <div class="security-icon icon-gold">
+                                                <i class="fa-solid fa-sliders"></i>
+                                            </div>
+                                            <div>
+                                                <div class="security-name">Preferences &amp; Settings</div>
+                                                <div class="security-desc">All saved notification and display
+                                                    preferences</div>
+                                            </div>
+                                        </div>
+                                        <button id="export-prefs-btn" class="btn btn-secondary"
+                                            style="padding:6px 14px;font-size:.8rem;">
+                                            <i class="fa-solid fa-download"></i> Export JSON
+                                        </button>
                                     </div>
                                 </div>
                             </div>

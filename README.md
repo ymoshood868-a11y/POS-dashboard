@@ -63,7 +63,7 @@ npm run server
 Email:    admin@posdash.com
 Password: admin123
 ```
-> In development mode, any valid email + password is accepted.
+> Login is validated against the JSON Server `/users` collection.
 
 ---
 

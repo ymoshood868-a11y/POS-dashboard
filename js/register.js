@@ -2,8 +2,8 @@
  * register.js — New account registration
  * POS Dashboard
  *
- * Calls POST /api/auth/register on the Express backend.
- * On success: saves JWT + session → redirects to dashboard.
+ * Uses JSON Server /users to create a new account.
+ * On success: saves session data and redirects to dashboard.
  */
 
 import { showToast } from "./utils.js";
@@ -93,20 +93,7 @@ async function handleRegister(e) {
   hideAlert();
 
   try {
-    // First check the server is reachable
-    const health = await fetch("http://localhost:5000/api/health").catch(
-      () => null,
-    );
-    if (!health || !health.ok) {
-      showAlert(
-        "Cannot reach server. Make sure you ran: cd server && npm start",
-        "error",
-      );
-      setLoading(false);
-      return;
-    }
-
-    // Register via Express backend
+    // Register via JSON Server
     const result = await registerUser(name, email, password);
 
     // Save session immediately — no need to login again after registering

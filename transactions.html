@@ -18,6 +18,17 @@
     <link rel="stylesheet" href="css/responsive.css" />
     <!-- Page-specific styles -->
     <link rel="stylesheet" href="css/new-transaction.css" />
+
+    <!-- Apply saved theme before first paint — prevents flash -->
+    <script>
+        (function () {
+            var t = localStorage.getItem('pos_theme') || 'dark';
+            var resolved = t === 'system'
+                ? (window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark')
+                : (t === 'light' ? 'light' : 'dark');
+            document.documentElement.setAttribute('data-theme', resolved);
+        })();
+    </script>
 </head>
 
 <body>
@@ -112,8 +123,8 @@
                                     <div class="input-wrapper">
                                         <i class="fa-solid fa-dollar-sign input-icon"></i>
                                         <input type="number" id="txn-amount" class="form-control has-icon"
-                                            placeholder="0.00" min="0.01" step="0.01" inputmode="decimal"
-                                            required aria-required="true" />
+                                            placeholder="0.00" min="0.01" step="0.01" inputmode="decimal" required
+                                            aria-required="true" />
                                     </div>
                                     <span class="field-hint">Numeric values only (e.g. 1500 or 99.99)</span>
                                 </div>
@@ -124,8 +135,8 @@
                                     </label>
                                     <div class="input-wrapper">
                                         <i class="fa-solid fa-calendar-days input-icon"></i>
-                                        <input type="date" id="txn-date" class="form-control has-icon"
-                                            required aria-required="true" />
+                                        <input type="date" id="txn-date" class="form-control has-icon" required
+                                            aria-required="true" />
                                     </div>
                                 </div>
 
@@ -139,8 +150,8 @@
                                 <div class="input-wrapper input-wrapper-textarea">
                                     <i class="fa-solid fa-file-lines input-icon input-icon-textarea"></i>
                                     <textarea id="txn-description" class="form-control has-icon" rows="3"
-                                        placeholder="Brief description of this transaction…"
-                                        maxlength="300" required aria-required="true"></textarea>
+                                        placeholder="Brief description of this transaction…" maxlength="300" required
+                                        aria-required="true"></textarea>
                                 </div>
                                 <span class="field-hint char-counter">
                                     <span id="char-count">0</span> / 300 characters
@@ -298,7 +309,8 @@
                                     <div class="txn-custom-select" id="dd-category" role="listbox"
                                         aria-label="Transaction category" aria-expanded="false" tabindex="0">
                                         <div class="txn-select-trigger">
-                                            <span class="txn-select-value" id="dd-category-value">Select category…</span>
+                                            <span class="txn-select-value" id="dd-category-value">Select
+                                                category…</span>
                                             <i class="fa-solid fa-chevron-down txn-select-arrow"></i>
                                         </div>
                                         <ul class="txn-select-dropdown" role="listbox">

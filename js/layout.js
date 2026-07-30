@@ -53,6 +53,7 @@ const Layout = {
     this._initUserDropdown();
     this._initClock();
     this._initResponsiveToggle();
+    this._applyAppearance();
     initLogout();
   },
 
@@ -218,6 +219,51 @@ const Layout = {
     };
     check();
     window.addEventListener("resize", check);
+  },
+
+  /* ----------------------------------------------------------
+     Appearance — apply stored accent colour and density flags
+     so every page reflects the user's saved preferences.
+  ---------------------------------------------------------- */
+  _applyAppearance() {
+    const ACCENT_MAP = {
+      gold: { gold: "#c9a84c", light: "#e2c06b", dark: "#a8872e" },
+      blue: { gold: "#3b82f6", light: "#60a5fa", dark: "#1d4ed8" },
+      green: { gold: "#22c55e", light: "#4ade80", dark: "#15803d" },
+      purple: { gold: "#a855f7", light: "#c084fc", dark: "#7e22ce" },
+      red: { gold: "#ef4444", light: "#f87171", dark: "#b91c1c" },
+    };
+    try {
+      const raw = localStorage.getItem("pos_appearance");
+      if (!raw) return;
+      const prefs = JSON.parse(raw);
+      // Accent
+      const colors = ACCENT_MAP[prefs.accent] || ACCENT_MAP.gold;
+      document.documentElement.style.setProperty("--color-gold", colors.gold);
+      document.documentElement.style.setProperty(
+        "--color-gold-light",
+        colors.light,
+      );
+      document.documentElement.style.setProperty(
+        "--color-gold-dark",
+        colors.dark,
+      );
+      // Density
+      document.documentElement.classList.toggle(
+        "compact-mode",
+        !!prefs.compact,
+      );
+      document.documentElement.classList.toggle(
+        "large-text",
+        !!prefs.largeText,
+      );
+      document.documentElement.classList.toggle(
+        "reduce-motion",
+        !!prefs.reduceMotion,
+      );
+    } catch {
+      // localStorage unavailable or corrupt — silently skip
+    }
   },
 };
 
