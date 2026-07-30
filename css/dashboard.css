@@ -226,3 +226,114 @@
 .footer-divider {
   color: var(--color-border);
 }
+
+/* ============================================================
+   DASHBOARD RESPONSIVE
+   ============================================================ */
+
+/* ── Tablet ≤ 991px ────────────────────────────────────── */
+@media (max-width: 991px) {
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+    gap: var(--space-lg);
+  }
+
+  .welcome-banner {
+    padding: var(--space-md) var(--space-lg);
+  }
+
+  .welcome-greeting {
+    font-size: 1.15rem;
+  }
+
+  .dashboard-grid-stacked .chart-section {
+    min-height: 280px;
+  }
+  .dashboard-grid-stacked .chart-canvas-wrapper {
+    min-height: 240px;
+  }
+}
+
+/* ── Mobile ≤ 767px ─────────────────────────────────────── */
+@media (max-width: 767px) {
+  .welcome-banner {
+    flex-direction: column;
+    gap: var(--space-md);
+    padding: var(--space-md);
+  }
+
+  .welcome-right {
+    text-align: left;
+    width: 100%;
+  }
+  .welcome-date-block {
+    text-align: left;
+  }
+
+  .time-value {
+    font-size: 1.2rem;
+  }
+
+  .welcome-stats {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-sm);
+  }
+
+  .quick-actions {
+    flex-direction: column;
+    gap: var(--space-sm);
+  }
+  .quick-action-btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .dashboard-grid {
+    gap: var(--space-md);
+    margin-top: var(--space-md);
+  }
+
+  .dashboard-grid-stacked .chart-section {
+    min-height: 240px;
+  }
+  .dashboard-grid-stacked .chart-canvas-wrapper {
+    min-height: 200px;
+  }
+}
+
+/* ── Small mobile ≤ 480px ───────────────────────────────── */
+@media (max-width: 480px) {
+  .welcome-banner {
+    padding: var(--space-sm) var(--space-md);
+  }
+  .welcome-greeting {
+    font-size: 1rem;
+  }
+  .time-value {
+    font-size: 1.1rem;
+  }
+
+  .dashboard-grid-stacked .chart-section {
+    min-height: 200px;
+  }
+  .dashboard-grid-stacked .chart-canvas-wrapper {
+    min-height: 180px;
+  }
+
+  /* Table: reduce padding on small screens */
+  .transactions-table thead th,
+  .transactions-table tbody td {
+    padding: 10px 12px;
+  }
+}
+
+/* ── Extra-small ≤ 360px ────────────────────────────────── */
+@media (max-width: 360px) {
+  .welcome-greeting {
+    font-size: 0.95rem;
+  }
+  .dashboard-grid-stacked .chart-canvas-wrapper {
+    min-height: 160px;
+  }
+}

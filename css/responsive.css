@@ -136,13 +136,22 @@ body {
   }
 
   /* ── Tables: horizontal scroll ──────────────────────── */
+  /* Override overflow:hidden from layout.css so the table can scroll */
   .table-wrapper {
-    overflow-x: auto;
+    overflow: auto !important;
     -webkit-overflow-scrolling: touch;
   }
   .data-table,
   .transactions-table {
     min-width: 560px;
+  }
+
+  /* ── Revenue chart: shrink min-height so it fits ─────── */
+  .chart-canvas-wrapper {
+    min-height: 220px;
+  }
+  .dashboard-grid-stacked .chart-canvas-wrapper {
+    min-height: 220px;
   }
 
   /* ── Reports ────────────────────────────────────────── */
