@@ -86,6 +86,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     await loadForEdit(editId);
   }
 
+  // Wire card pickers (Type, Category, Status)
+  initCardPickers();
+
   // Wire events
   form.addEventListener("submit", handleSubmit);
   fldDescription.addEventListener("input", updateCharCount);
@@ -105,6 +108,56 @@ document.addEventListener("DOMContentLoaded", async () => {
   updatePreview();
   updateCharCount();
 });
+
+/* ============================================================
+   CARD PICKERS
+   Visual card-based selectors that sync with hidden <select>s
+   ============================================================ */
+function initCardPickers() {
+  document.querySelectorAll(".txn-pick-card").forEach((card) => {
+    card.addEventListener("click", () => {
+      const value = card.dataset.pick;
+      const targetId = card.dataset.target;
+      const select = document.getElementById(targetId);
+      const picker = card.closest(".txn-card-picker");
+
+      // Deselect siblings
+      picker
+        ?.querySelectorAll(".txn-pick-card")
+        .forEach((c) => c.classList.remove("selected"));
+
+      // Select this card
+      card.classList.add("selected");
+
+      // Sync the hidden native select
+      if (select) {
+        select.value = value;
+        select.dispatchEvent(new Event("change", { bubbles: true }));
+      }
+
+      updatePreview();
+    });
+  });
+}
+
+/**
+ * Sync card pickers from native select values (used in edit mode pre-fill).
+ */
+function syncCardPickersFromSelects() {
+  [
+    { selectId: "txn-type", pickerId: "picker-type" },
+    { selectId: "txn-category", pickerId: "picker-category" },
+    { selectId: "txn-status", pickerId: "picker-status" },
+  ].forEach(({ selectId, pickerId }) => {
+    const select = document.getElementById(selectId);
+    const picker = document.getElementById(pickerId);
+    if (!select || !picker || !select.value) return;
+
+    picker.querySelectorAll(".txn-pick-card").forEach((c) => {
+      c.classList.toggle("selected", c.dataset.pick === select.value);
+    });
+  });
+}
 
 /* ============================================================
    CUSTOM DROPDOWN SELECTS (sidebar panel)
@@ -269,6 +322,8 @@ async function loadForEdit(id) {
     if (txn.description) fldDescription.value = txn.description;
     if (txn.status) fldStatus.value = txn.status;
 
+    // Reflect values in card pickers
+    syncCardPickersFromSelects();
     updatePreview();
     updateCharCount();
   } catch (err) {
@@ -308,6 +363,10 @@ async function handleSubmit(e) {
       showToast("Transaction saved successfully!", "success");
       form.reset();
       fldDate.value = todayISO();
+      // Clear all card picker selections
+      document
+        .querySelectorAll(".txn-pick-card")
+        .forEach((c) => c.classList.remove("selected"));
       updatePreview();
       updateCharCount();
     }

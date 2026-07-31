@@ -78,36 +78,90 @@
                             <!-- Row 1: Type + Category -->
                             <div class="txn-form-grid">
 
+                                <!-- Transaction Type — card picker -->
                                 <div class="form-group" id="group-type">
-                                    <label for="txn-type">
-                                        Transaction Type <span class="required-star">*</span>
-                                    </label>
-                                    <div class="input-wrapper">
-                                        <i class="fa-solid fa-tag input-icon"></i>
-                                        <select id="txn-type" class="form-control has-icon" required
-                                            aria-required="true">
-                                            <option value="" disabled selected>Select type…</option>
-                                            <option value="credit">Credit</option>
-                                            <option value="debit">Debit</option>
-                                            <option value="transfer">Transfer</option>
-                                        </select>
+                                    <label>Transaction Type <span class="required-star">*</span></label>
+                                    <!-- Hidden native select for form submission -->
+                                    <select id="txn-type" required aria-required="true" class="d-none">
+                                        <option value="" disabled selected></option>
+                                        <option value="credit">Credit</option>
+                                        <option value="debit">Debit</option>
+                                        <option value="transfer">Transfer</option>
+                                    </select>
+                                    <!-- Visual card picker -->
+                                    <div class="txn-card-picker" id="picker-type" role="radiogroup"
+                                        aria-label="Transaction type">
+                                        <button type="button" class="txn-pick-card" data-pick="credit"
+                                            data-target="txn-type">
+                                            <span class="txn-pick-icon"
+                                                style="background:rgba(39,174,96,0.12);color:#27ae60">
+                                                <i class="fa-solid fa-arrow-up-right-dots"></i>
+                                            </span>
+                                            <span class="txn-pick-label">Credit</span>
+                                        </button>
+                                        <button type="button" class="txn-pick-card" data-pick="debit"
+                                            data-target="txn-type">
+                                            <span class="txn-pick-icon"
+                                                style="background:rgba(231,76,60,0.12);color:#e74c3c">
+                                                <i class="fa-solid fa-arrow-down-right"></i>
+                                            </span>
+                                            <span class="txn-pick-label">Debit</span>
+                                        </button>
+                                        <button type="button" class="txn-pick-card" data-pick="transfer"
+                                            data-target="txn-type">
+                                            <span class="txn-pick-icon"
+                                                style="background:rgba(41,128,185,0.12);color:#2980b9">
+                                                <i class="fa-solid fa-right-left"></i>
+                                            </span>
+                                            <span class="txn-pick-label">Transfer</span>
+                                        </button>
                                     </div>
                                 </div>
 
+                                <!-- Category — card picker -->
                                 <div class="form-group" id="group-category">
-                                    <label for="txn-category">
-                                        Category <span class="required-star">*</span>
-                                    </label>
-                                    <div class="input-wrapper">
-                                        <i class="fa-solid fa-layer-group input-icon"></i>
-                                        <select id="txn-category" class="form-control has-icon" required
-                                            aria-required="true">
-                                            <option value="" disabled selected>Select category…</option>
-                                            <option value="income">Income</option>
-                                            <option value="expense">Expense</option>
-                                            <option value="deposit">Deposit</option>
-                                            <option value="withdrawal">Withdrawal</option>
-                                        </select>
+                                    <label>Category <span class="required-star">*</span></label>
+                                    <select id="txn-category" required aria-required="true" class="d-none">
+                                        <option value="" disabled selected></option>
+                                        <option value="income">Income</option>
+                                        <option value="expense">Expense</option>
+                                        <option value="deposit">Deposit</option>
+                                        <option value="withdrawal">Withdrawal</option>
+                                    </select>
+                                    <div class="txn-card-picker" id="picker-category" role="radiogroup"
+                                        aria-label="Transaction category">
+                                        <button type="button" class="txn-pick-card" data-pick="income"
+                                            data-target="txn-category">
+                                            <span class="txn-pick-icon"
+                                                style="background:rgba(39,174,96,0.12);color:#27ae60">
+                                                <i class="fa-solid fa-arrow-trend-up"></i>
+                                            </span>
+                                            <span class="txn-pick-label">Income</span>
+                                        </button>
+                                        <button type="button" class="txn-pick-card" data-pick="expense"
+                                            data-target="txn-category">
+                                            <span class="txn-pick-icon"
+                                                style="background:rgba(231,76,60,0.12);color:#e74c3c">
+                                                <i class="fa-solid fa-arrow-trend-down"></i>
+                                            </span>
+                                            <span class="txn-pick-label">Expense</span>
+                                        </button>
+                                        <button type="button" class="txn-pick-card" data-pick="deposit"
+                                            data-target="txn-category">
+                                            <span class="txn-pick-icon"
+                                                style="background:rgba(201,168,76,0.12);color:var(--color-gold)">
+                                                <i class="fa-solid fa-piggy-bank"></i>
+                                            </span>
+                                            <span class="txn-pick-label">Deposit</span>
+                                        </button>
+                                        <button type="button" class="txn-pick-card" data-pick="withdrawal"
+                                            data-target="txn-category">
+                                            <span class="txn-pick-icon"
+                                                style="background:rgba(155,89,182,0.12);color:#9b59b6">
+                                                <i class="fa-solid fa-money-bill-wave"></i>
+                                            </span>
+                                            <span class="txn-pick-label">Withdrawal</span>
+                                        </button>
                                     </div>
                                 </div>
 
@@ -160,14 +214,38 @@
 
                             <!-- Row 4: Status (full width, only shown on edit) -->
                             <div class="form-group form-group-full txn-edit-only d-none" id="group-status">
-                                <label for="txn-status">Status</label>
-                                <div class="input-wrapper">
-                                    <i class="fa-solid fa-circle-half-stroke input-icon"></i>
-                                    <select id="txn-status" class="form-control has-icon">
-                                        <option value="pending">Pending</option>
-                                        <option value="completed">Completed</option>
-                                        <option value="failed">Failed</option>
-                                    </select>
+                                <label>Status</label>
+                                <select id="txn-status" class="d-none">
+                                    <option value="pending">Pending</option>
+                                    <option value="completed">Completed</option>
+                                    <option value="failed">Failed</option>
+                                </select>
+                                <div class="txn-card-picker" id="picker-status" role="radiogroup"
+                                    aria-label="Transaction status">
+                                    <button type="button" class="txn-pick-card" data-pick="pending"
+                                        data-target="txn-status">
+                                        <span class="txn-pick-icon"
+                                            style="background:rgba(243,156,18,0.12);color:#f39c12">
+                                            <i class="fa-solid fa-clock"></i>
+                                        </span>
+                                        <span class="txn-pick-label">Pending</span>
+                                    </button>
+                                    <button type="button" class="txn-pick-card" data-pick="completed"
+                                        data-target="txn-status">
+                                        <span class="txn-pick-icon"
+                                            style="background:rgba(39,174,96,0.12);color:#27ae60">
+                                            <i class="fa-solid fa-circle-check"></i>
+                                        </span>
+                                        <span class="txn-pick-label">Completed</span>
+                                    </button>
+                                    <button type="button" class="txn-pick-card" data-pick="failed"
+                                        data-target="txn-status">
+                                        <span class="txn-pick-icon"
+                                            style="background:rgba(231,76,60,0.12);color:#e74c3c">
+                                            <i class="fa-solid fa-circle-xmark"></i>
+                                        </span>
+                                        <span class="txn-pick-label">Failed</span>
+                                    </button>
                                 </div>
                             </div>
 
