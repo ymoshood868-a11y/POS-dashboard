@@ -79,7 +79,11 @@ async function handleLogin(e) {
     }
 
     showToast(`Welcome back, ${result.user.name}!`, "success", 1500);
-    setTimeout(() => window.location.replace("dashboard.html"), 800);
+
+    // Route to the correct dashboard based on role
+    const role = result.user.role || "agent";
+    const dest = role === "admin" ? "dashboard.html" : "agent-dashboard.html";
+    setTimeout(() => window.location.replace(dest), 800);
   } catch (err) {
     showAlert(err.message || "Invalid email or password.", "error");
     setLoading(false);

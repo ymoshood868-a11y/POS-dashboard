@@ -112,8 +112,7 @@ export function getCurrentUser() {
 }
 
 /**
- * Check if user is authenticated; redirect to login if not
- * @param {string} redirectTo — path to redirect if unauthenticated
+ * requireAuth — redirect if not logged in
  */
 export function requireAuth(redirectTo = "login.html") {
   const session = localStorage.getItem("pos_session");
@@ -123,13 +122,42 @@ export function requireAuth(redirectTo = "login.html") {
 }
 
 /**
- * Redirect logged-in users away from login page
- * @param {string} redirectTo — dashboard path
+ * requireRole — redirect if logged-in user doesn't have the required role.
+ * @param {'admin'|'agent'} role
+ * @param {string} redirectTo
+ */
+export function requireRole(role, redirectTo = "dashboard.html") {
+  const user = getCurrentUser();
+  if (!user || user.role !== role) {
+    window.location.replace(redirectTo);
+  }
+}
+
+/**
+ * isAdmin — returns true if the current user has role "admin"
+ */
+export function isAdmin() {
+  return getCurrentUser()?.role === "admin";
+}
+
+/**
+ * isAgent — returns true if the current user has role "agent"
+ */
+export function isAgent() {
+  return getCurrentUser()?.role === "agent";
+}
+
+/**
+ * Redirect logged-in users away from login/register pages
  */
 export function redirectIfLoggedIn(redirectTo = "dashboard.html") {
   const session = localStorage.getItem("pos_session");
   if (session === "active") {
-    window.location.replace(redirectTo);
+    // Send to the correct dashboard based on role
+    const user = getCurrentUser();
+    const dest =
+      user?.role === "admin" ? "dashboard.html" : "agent-dashboard.html";
+    window.location.replace(dest);
   }
 }
 

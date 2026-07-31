@@ -15,16 +15,26 @@ import {
   computeSummary,
   getRecentTransactions,
 } from "./api.js";
-import { formatCurrency, formatDate, showToast } from "./utils.js";
+import {
+  formatCurrency,
+  formatDate,
+  showToast,
+  getCurrentUser,
+} from "./utils.js";
 
 /* ============================================================
    Boot
    ============================================================ */
 document.addEventListener("DOMContentLoaded", async () => {
-  // Init shared layout (auth guard + sidebar + navbar + footer + user)
   await Layout.init({ pageTitle: "Dashboard", breadcrumb: "Overview" });
 
-  // Load dashboard-specific data
+  // Agents must not access the admin dashboard
+  const user = getCurrentUser();
+  if (user && user.role !== "admin") {
+    window.location.replace("agent-dashboard.html");
+    return;
+  }
+
   loadDashboardData();
 });
 

@@ -62,7 +62,7 @@ export async function registerUser(name, email, password) {
     email,
     password,
     phone: "",
-    role: "user",
+    role: "agent", // all self-registered users are agents
     department: "",
     avatar: "",
   };
@@ -108,8 +108,10 @@ export async function loginUser(email, password) {
 
 export async function getTransactions(params = {}) {
   const currentUser = getCurrentUser();
+  // Admins see all transactions; agents only see their own
+  const isAdminUser = currentUser?.role === "admin";
   const queryParams = {
-    ...(currentUser?.id ? { userId: currentUser.id } : {}),
+    ...(!isAdminUser && currentUser?.id ? { userId: currentUser.id } : {}),
     ...params,
   };
   const query = new URLSearchParams(queryParams).toString();

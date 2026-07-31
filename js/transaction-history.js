@@ -8,7 +8,13 @@
 
 import Layout from "./layout.js";
 import { getTransactions, deleteTransaction } from "./api.js";
-import { formatCurrency, formatDate, showToast, debounce } from "./utils.js";
+import {
+  formatCurrency,
+  formatDate,
+  showToast,
+  debounce,
+  isAdmin,
+} from "./utils.js";
 
 /* ── Config ───────────────────────────────────────────────── */
 const PAGE_SIZE = 10;
@@ -115,6 +121,7 @@ function renderTable() {
   const page = filtered.slice(start, start + PAGE_SIZE);
 
   const isPos = (cat) => ["income", "deposit"].includes(cat);
+  const admin = isAdmin();
 
   tbody.innerHTML = page
     .map(
@@ -135,9 +142,14 @@ function renderTable() {
           <a href="transaction-details.html?id=${t.id}" class="btn-view-detail">
             <i class="fa-solid fa-eye"></i> View
           </a>
+          ${
+            admin
+              ? `
           <button class="btn-delete-txn" data-id="${t.id}" data-ref="${t.reference || "#" + t.id}">
             <i class="fa-solid fa-trash"></i> Delete
-          </button>
+          </button>`
+              : ""
+          }
         </div>
       </td>
     </tr>`,

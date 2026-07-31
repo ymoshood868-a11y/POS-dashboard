@@ -27,13 +27,22 @@
         <p class="sidebar-section-title">Main</p>
         <ul>
             <li class="nav-item">
-                <a href="dashboard.html" class="nav-link" data-tooltip="Dashboard" data-page="dashboard.html">
+                <!-- Admin only: full dashboard -->
+                <a href="dashboard.html" class="nav-link" data-tooltip="Dashboard" data-page="dashboard.html"
+                    data-role="admin">
                     <span class="nav-icon"><i class="fa-solid fa-gauge-high"></i></span>
                     <span class="nav-label">Dashboard</span>
                 </a>
             </li>
             <li class="nav-item">
-                <!-- Module 2: New Transaction -->
+                <!-- Agent only: agent dashboard -->
+                <a href="agent-dashboard.html" class="nav-link" data-tooltip="My Dashboard"
+                    data-page="agent-dashboard.html" data-role="agent">
+                    <span class="nav-icon"><i class="fa-solid fa-gauge-high"></i></span>
+                    <span class="nav-label">My Dashboard</span>
+                </a>
+            </li>
+            <li class="nav-item">
                 <a href="new-transaction.html" class="nav-link" data-tooltip="New Transaction"
                     data-page="new-transaction.html">
                     <span class="nav-icon"><i class="fa-solid fa-plus-circle"></i></span>
@@ -41,7 +50,6 @@
                 </a>
             </li>
             <li class="nav-item">
-                <!-- Module 3: Transaction History -->
                 <a href="transaction-history.html" class="nav-link" data-tooltip="Transactions"
                     data-page="transaction-history.html">
                     <span class="nav-icon"><i class="fa-solid fa-list"></i></span>
@@ -51,11 +59,10 @@
             </li>
         </ul>
 
-        <div class="sidebar-divider"></div>
-        <p class="sidebar-section-title">Reports</p>
-        <ul>
+        <div class="sidebar-divider" data-role="admin"></div>
+        <p class="sidebar-section-title" data-role="admin">Reports</p>
+        <ul data-role="admin">
             <li class="nav-item">
-                <!-- Module 4: Reports -->
                 <a href="reports.html" class="nav-link" data-tooltip="Reports" data-page="reports.html">
                     <span class="nav-icon"><i class="fa-solid fa-chart-bar"></i></span>
                     <span class="nav-label">Reports</span>
@@ -67,7 +74,6 @@
         <p class="sidebar-section-title">System</p>
         <ul>
             <li class="nav-item">
-                <!-- Module 5: Settings -->
                 <a href="settings.html" class="nav-link" data-tooltip="Settings" data-page="settings.html">
                     <span class="nav-icon"><i class="fa-solid fa-gear"></i></span>
                     <span class="nav-label">Settings</span>

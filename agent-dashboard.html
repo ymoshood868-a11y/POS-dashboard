@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Agent Dashboard — POSDash</title>
+    <link rel="icon"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💳</text></svg>" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/layout.css" />
+    <link rel="stylesheet" href="css/dashboard.css" />
+    <link rel="stylesheet" href="css/responsive.css" />
+    <script>
+        (function () {
+            var t = localStorage.getItem('pos_theme') || 'dark';
+            var r = t === 'system' ? (window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark') : (t === 'light' ? 'light' : 'dark');
+            document.documentElement.setAttribute('data-theme', r);
+        })();
+    </script>
+    <style>
+        /* ── Agent Dashboard specific styles ─────────────────── */
+        .agent-hero {
+            background: linear-gradient(135deg, #141400 0%, #1a1500 50%, #201a00 100%);
+            border: 1px solid var(--color-border-gold);
+            border-radius: var(--radius-lg);
+            padding: var(--space-xl);
+            margin-bottom: var(--space-xl);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: var(--space-lg);
+        }
+
+        .agent-hero-left h2 {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--color-text-primary);
+            margin-bottom: var(--space-xs);
+        }
+
+        .agent-hero-left h2 span {
+            color: var(--color-gold);
+        }
+
+        .agent-hero-left p {
+            font-size: 0.875rem;
+            color: var(--color-text-secondary);
+        }
+
+        .agent-stats {
+            display: flex;
+            gap: var(--space-xl);
+            flex-wrap: wrap;
+        }
+
+        .agent-stat {
+            text-align: center;
+        }
+
+        .agent-stat-value {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--color-gold);
+            line-height: 1;
+        }
+
+        .agent-stat-label {
+            font-size: 0.72rem;
+            color: var(--color-text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            margin-top: 4px;
+        }
+
+        .agent-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--space-lg);
+            margin-bottom: var(--space-xl);
+        }
+
+        .agent-action-card {
+            background: var(--color-bg-card);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-lg);
+            padding: var(--space-xl);
+            display: flex;
+            align-items: center;
+            gap: var(--space-lg);
+            text-decoration: none;
+            color: var(--color-text-primary);
+            transition: var(--transition-fast);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .agent-action-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--color-gold-dark), var(--color-gold));
+        }
+
+        .agent-action-card:hover {
+            border-color: var(--color-border-gold);
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-hover);
+            color: var(--color-text-primary);
+        }
+
+        .agent-action-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: var(--radius-md);
+            background: rgba(201, 168, 76, 0.12);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            color: var(--color-gold);
+            flex-shrink: 0;
+        }
+
+        .agent-action-title {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .agent-action-desc {
+            font-size: 0.8rem;
+            color: var(--color-text-muted);
+        }
+
+        .recent-label {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--color-text-primary);
+            margin-bottom: var(--space-md);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .recent-label span {
+            color: var(--color-gold);
+        }
+
+        .agent-notice {
+            background: rgba(201, 168, 76, 0.08);
+            border: 1px solid var(--color-border-gold);
+            border-radius: var(--radius-md);
+            padding: var(--space-md) var(--space-lg);
+            font-size: 0.82rem;
+            color: var(--color-gold-light);
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+            margin-bottom: var(--space-lg);
+        }
+
+        @media (max-width: 767px) {
+            .agent-actions {
+                grid-template-columns: 1fr;
+            }
+
+            .agent-stats {
+                gap: var(--space-lg);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="sidebar-overlay" class="sidebar-overlay" aria-hidden="true"></div>
+
+    <div class="app-wrapper">
+        <div id="sidebar-placeholder"></div>
+
+        <div class="main-wrapper">
+            <div id="navbar-placeholder"></div>
+
+            <main class="page-content" aria-label="Agent Dashboard">
+
+                <!-- Hero welcome -->
+                <div class="agent-hero">
+                    <div class="agent-hero-left">
+                        <h2>Welcome back, <span id="agent-name">Agent</span> 👋</h2>
+                        <p id="agent-sub">Record your transactions and track your daily activity below.</p>
+                    </div>
+                    <div class="agent-stats">
+                        <div class="agent-stat">
+                            <div class="agent-stat-value" id="agent-txn-count">—</div>
+                            <div class="agent-stat-label">My Transactions</div>
+                        </div>
+                        <div class="agent-stat">
+                            <div class="agent-stat-value" id="agent-today-count">—</div>
+                            <div class="agent-stat-label">Today</div>
+                        </div>
+                        <div class="agent-stat">
+                            <div class="agent-stat-value" id="agent-total-income">—</div>
+                            <div class="agent-stat-label">Total Income</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Role notice -->
+                <div class="agent-notice">
+                    <i class="fa-solid fa-shield-halved"></i>
+                    You are logged in as an <strong>Agent</strong>. You can record new transactions and view your own
+                    history.
+                    Contact your Admin for account management.
+                </div>
+
+                <!-- Quick actions -->
+                <div class="agent-actions">
+                    <a href="new-transaction.html" class="agent-action-card">
+                        <div class="agent-action-icon"><i class="fa-solid fa-plus-circle"></i></div>
+                        <div>
+                            <div class="agent-action-title">Record Transaction</div>
+                            <div class="agent-action-desc">Log a new income, expense, deposit, or withdrawal</div>
+                        </div>
+                    </a>
+                    <a href="transaction-history.html" class="agent-action-card">
+                        <div class="agent-action-icon"><i class="fa-solid fa-clock-rotate-left"></i></div>
+                        <div>
+                            <div class="agent-action-title">My Transaction History</div>
+                            <div class="agent-action-desc">View, search, and filter all your recorded transactions</div>
+                        </div>
+                    </a>
+                </div>
+
+                <!-- Recent transactions -->
+                <div class="recent-label">
+                    <span>Recent <span>Transactions</span></span>
+                    <a href="transaction-history.html" class="btn-view-all" style="font-size:0.82rem">
+                        View All <i class="fa-solid fa-arrow-right"></i>
+                    </a>
+                </div>
+
+                <div id="agent-table-wrap">
+                    <div class="table-wrapper">
+                        <div class="table-scroll">
+                            <table class="transactions-table" aria-label="My recent transactions">
+                                <thead>
+                                    <tr>
+                                        <th>Ref #</th>
+                                        <th>Description</th>
+                                        <th>Category</th>
+                                        <th>Amount</th>
+                                        <th>Date</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="agent-tbody">
+                                    <tr>
+                                        <td colspan="6">
+                                            <div class="skeleton" style="height:14px;border-radius:4px;margin:4px 0">
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="6">
+                                            <div class="skeleton" style="height:14px;border-radius:4px;margin:4px 0">
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="6">
+                                            <div class="skeleton" style="height:14px;border-radius:4px;margin:4px 0">
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="agent-empty" class="table-empty-state d-none">
+                    <div class="empty-icon"><i class="fa-solid fa-inbox"></i></div>
+                    <p class="empty-title">No transactions yet</p>
+                    <p class="empty-sub">
+                        <a href="new-transaction.html" class="empty-link">
+                            <i class="fa-solid fa-plus"></i> Record your first transaction
+                        </a>
+                    </p>
+                </div>
+
+            </main>
+
+            <div id="footer-placeholder"></div>
+        </div>
+    </div>
+
+    <script type="module">
+        import Layout from './js/layout.js';
+        import { getTransactions, computeSummary } from './js/api.js';
+        import { formatCurrency, formatDate, getCurrentUser, isAgent } from './js/utils.js';
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            await Layout.init({ pageTitle: 'Agent Dashboard', breadcrumb: 'Overview' });
+
+            // If somehow an admin lands here, redirect to the full dashboard
+            if (!isAgent()) {
+                window.location.replace('dashboard.html');
+                return;
+            }
+
+            const user = getCurrentUser();
+            const firstName = user?.name?.split(' ')[0] || 'Agent';
+            const nameEl = document.getElementById('agent-name');
+            if (nameEl) nameEl.textContent = firstName;
+
+            let transactions = [];
+            try {
+                transactions = await getTransactions();
+            } catch {
+                // server offline
+            }
+
+            const today = new Date().toISOString().split('T')[0];
+            const todayTxns = transactions.filter(t => t.date?.startsWith(today));
+            const summary = computeSummary(transactions);
+
+            const el = id => document.getElementById(id);
+            if (el('agent-txn-count')) el('agent-txn-count').textContent = transactions.length;
+            if (el('agent-today-count')) el('agent-today-count').textContent = todayTxns.length;
+            if (el('agent-total-income')) el('agent-total-income').textContent = formatCurrency(summary.income + summary.deposits);
+
+            const tbody = document.getElementById('agent-tbody');
+            const empty = document.getElementById('agent-empty');
+            const recent = [...transactions].sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 8);
+
+            if (!recent.length) {
+                document.getElementById('agent-table-wrap').style.display = 'none';
+                empty?.classList.remove('d-none');
+                return;
+            }
+
+            const isPos = cat => ['income', 'deposit'].includes(cat);
+            const icons = { income: 'fa-arrow-trend-up', expense: 'fa-arrow-trend-down', deposit: 'fa-piggy-bank', withdrawal: 'fa-money-bill-transfer' };
+            const cap = s => s ? s.charAt(0).toUpperCase() + s.slice(1) : '';
+
+            tbody.innerHTML = recent.map(t => `
+        <tr>
+          <td><span class="txn-reference">${t.reference || '#' + t.id}</span></td>
+          <td><span class="txn-description" title="${t.description}">${t.description}</span></td>
+          <td><span class="category-badge ${t.category}"><i class="fa-solid ${icons[t.category] || 'fa-circle'}"></i> ${cap(t.category)}</span></td>
+          <td><span class="txn-amount ${isPos(t.category) ? 'positive' : 'negative'}">${isPos(t.category) ? '+' : '-'}${formatCurrency(t.amount)}</span></td>
+          <td>${formatDate(t.date)}</td>
+          <td><span class="status-badge ${t.status}">${cap(t.status)}</span></td>
+        </tr>`).join('');
+        });
+    </script>
+</body>
+
+</html>

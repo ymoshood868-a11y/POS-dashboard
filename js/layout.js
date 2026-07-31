@@ -24,6 +24,7 @@ import {
   getCurrentUser,
   getTodayString,
   getLiveTime,
+  isAdmin,
 } from "./utils.js";
 import { initLogout } from "./logout.js";
 
@@ -49,6 +50,7 @@ const Layout = {
     this._initUserProfile();
     this._initSidebar();
     this._setActiveNavLink();
+    this._applyRoleNav();
     this._initNavbarMeta(opts.pageTitle, opts.breadcrumb);
     this._initUserDropdown();
     this._initClock();
@@ -242,6 +244,34 @@ const Layout = {
       setInterval(() => {
         timeEl.textContent = getLiveTime();
       }, 1000);
+    }
+  },
+
+  /* ----------------------------------------------------------
+     Role-based navigation — shows/hides links based on role
+  ---------------------------------------------------------- */
+  _applyRoleNav() {
+    const user = getCurrentUser();
+    const role = user?.role || "agent";
+
+    // Hide elements marked with data-role that don't match
+    document.querySelectorAll("[data-role]").forEach((el) => {
+      if (el.dataset.role !== role) el.style.display = "none";
+    });
+
+    // For agents: also hide admin-only pages without data-role
+    if (role !== "admin") {
+      const adminOnlyPages = ["reports.html", "settings.html"];
+      adminOnlyPages.forEach((page) => {
+        document
+          .querySelectorAll(
+            `.nav-link[data-page="${page}"], .nav-link[href="${page}"]`,
+          )
+          .forEach((el) => {
+            const li = el.closest("li");
+            if (li) li.style.display = "none";
+          });
+      });
     }
   },
 
