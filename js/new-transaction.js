@@ -74,6 +74,13 @@ let isSaving = false; // duplicate-submit guard
 document.addEventListener("DOMContentLoaded", async () => {
   Layout.init({ pageTitle: "New Transaction", breadcrumb: "New Transaction" });
 
+  // Admins cannot record transactions — redirect to dashboard
+  const user = getCurrentUser();
+  if (user && user.role === "admin") {
+    window.location.replace("dashboard.html");
+    return;
+  }
+
   // Default date to today
   fldDate.value = todayISO();
 
