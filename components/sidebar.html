@@ -36,10 +36,10 @@
             </li>
             <li class="nav-item">
                 <!-- Agent only: agent dashboard -->
-                <a href="agent-dashboard.html" class="nav-link" data-tooltip="My Dashboard"
+                <a href="agent-dashboard.html" class="nav-link" data-tooltip="My Terminal"
                     data-page="agent-dashboard.html" data-role="agent">
                     <span class="nav-icon"><i class="fa-solid fa-gauge-high"></i></span>
-                    <span class="nav-label">My Dashboard</span>
+                    <span class="nav-label">My Terminal</span>
                 </a>
             </li>
             <li class="nav-item">
@@ -50,20 +50,21 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a href="transaction-history.html" class="nav-link" data-tooltip="Transactions"
+                <a href="transaction-history.html" class="nav-link" data-tooltip="My Sales"
                     data-page="transaction-history.html">
-                    <span class="nav-icon"><i class="fa-solid fa-list"></i></span>
-                    <span class="nav-label">Transactions</span>
+                    <span class="nav-icon"><i class="fa-solid fa-receipt"></i></span>
+                    <span class="nav-label">My Sales</span>
                     <span class="nav-badge" id="txn-count-badge">—</span>
                 </a>
             </li>
         </ul>
 
+        <!-- Admin only sections -->
         <div class="sidebar-divider" data-role="admin"></div>
-        <p class="sidebar-section-title" data-role="admin">Reports</p>
+        <p class="sidebar-section-title" data-role="admin">Management</p>
         <ul data-role="admin">
             <li class="nav-item">
-                <a href="reports.html" class="nav-link" data-tooltip="Reports" data-page="reports.html">
+                <a href="reports.html" class="nav-link" data-tooltip="Reports & Analytics" data-page="reports.html">
                     <span class="nav-icon"><i class="fa-solid fa-chart-bar"></i></span>
                     <span class="nav-label">Reports</span>
                 </a>
@@ -73,7 +74,8 @@
         <div class="sidebar-divider"></div>
         <p class="sidebar-section-title">System</p>
         <ul>
-            <li class="nav-item">
+            <!-- Settings — admin only -->
+            <li class="nav-item" data-role="admin">
                 <a href="settings.html" class="nav-link" data-tooltip="Settings" data-page="settings.html">
                     <span class="nav-icon"><i class="fa-solid fa-gear"></i></span>
                     <span class="nav-label">Settings</span>

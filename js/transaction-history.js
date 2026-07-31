@@ -19,11 +19,13 @@ import {
 /* ── Config ───────────────────────────────────────────────── */
 const PAGE_SIZE = 10;
 
-/* ── State ────────────────────────────────────────────────── */
+/* ── State ────────────────────────────────────────────── */
 let allTransactions = []; // raw from server
 let filtered = []; // after search + filters
 let currentPage = 1;
 let pendingDeleteId = null;
+let pendingOverrideId = null;
+let pendingOverrideRef = null;
 
 /* ── DOM refs ─────────────────────────────────────────────── */
 const tbody = document.getElementById("txn-tbody");
@@ -47,11 +49,12 @@ const btnConfirmDel = document.getElementById("btn-confirm-delete");
 document.addEventListener("DOMContentLoaded", async () => {
   await Layout.init({
     pageTitle: "Transactions",
-    breadcrumb: "Transaction History",
+    breadcrumb: isAdmin() ? "All Transactions" : "My Sales",
   });
   await loadTransactions();
   initControls();
   initDeleteModal();
+  initOverrideModal();
 });
 
 /* ── Fetch all transactions ───────────────────────────────── */
@@ -145,10 +148,18 @@ function renderTable() {
           ${
             admin
               ? `
+          <button class="btn-override-txn" data-id="${t.id}" data-ref="${t.reference || "#" + t.id}" data-status="${t.status}"
+            style="background:rgba(41,128,185,0.08);border:1px solid rgba(41,128,185,0.3);border-radius:var(--radius-sm);padding:5px 10px;font-size:0.75rem;font-weight:500;color:#2980b9;font-family:'Poppins',sans-serif;cursor:pointer;display:inline-flex;align-items:center;gap:4px;transition:all 0.2s ease;white-space:nowrap">
+            <i class="fa-solid fa-stamp"></i> Override
+          </button>
           <button class="btn-delete-txn" data-id="${t.id}" data-ref="${t.reference || "#" + t.id}">
             <i class="fa-solid fa-trash"></i> Delete
           </button>`
-              : ""
+              : `
+          <button class="btn-refund-txn" data-id="${t.id}" data-ref="${t.reference || "#" + t.id}" data-status="${t.status}"
+            style="background:rgba(243,156,18,0.08);border:1px solid rgba(243,156,18,0.3);border-radius:var(--radius-sm);padding:5px 10px;font-size:0.75rem;font-weight:500;color:#f39c12;font-family:'Poppins',sans-serif;cursor:pointer;display:inline-flex;align-items:center;gap:4px;transition:all 0.2s ease;white-space:nowrap;${t.status === "refunded" || t.status === "failed" ? "opacity:0.4;cursor:not-allowed" : ""}">
+            <i class="fa-solid fa-rotate-left"></i> Refund
+          </button>`
           }
         </div>
       </td>
@@ -156,12 +167,57 @@ function renderTable() {
     )
     .join("");
 
-  // Wire delete buttons
+  // Wire delete buttons (admin only)
   tbody.querySelectorAll(".btn-delete-txn").forEach((btn) => {
     btn.addEventListener("click", () => {
-      pendingDeleteId = parseInt(btn.dataset.id);
+      pendingDeleteId = btn.dataset.id;
       if (deleteModalRef) deleteModalRef.textContent = btn.dataset.ref;
       deleteModal?.classList.remove("d-none");
+    });
+  });
+
+  // Wire override buttons (admin only)
+  tbody.querySelectorAll(".btn-override-txn").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      pendingOverrideId = btn.dataset.id;
+      pendingOverrideRef = btn.dataset.ref;
+      const modal = document.getElementById("override-modal");
+      const refEl = document.getElementById("override-modal-ref");
+      if (refEl) refEl.textContent = btn.dataset.ref;
+      // Pre-select current status
+      const sel = document.getElementById("override-status-select");
+      if (sel) sel.value = btn.dataset.status || "pending";
+      modal?.classList.remove("d-none");
+    });
+  });
+
+  // Wire refund buttons (agent only — limited action)
+  tbody.querySelectorAll(".btn-refund-txn").forEach((btn) => {
+    if (btn.dataset.status === "refunded" || btn.dataset.status === "failed")
+      return;
+    btn.addEventListener("click", async () => {
+      if (
+        !confirm(
+          `Request refund for ${btn.dataset.ref}? This will mark it as "pending refund" for admin review.`,
+        )
+      )
+        return;
+      btn.disabled = true;
+      try {
+        const { updateTransaction } = await import("./api.js");
+        await updateTransaction(btn.dataset.id, {
+          status: "pending",
+          refundRequested: true,
+        });
+        showToast(
+          `Refund requested for ${btn.dataset.ref}. Awaiting admin approval.`,
+          "info",
+        );
+        await loadTransactions();
+      } catch {
+        showToast("Failed to request refund.", "error");
+        btn.disabled = false;
+      }
     });
   });
 }
@@ -283,6 +339,47 @@ function initDeleteModal() {
 function closeModal() {
   deleteModal?.classList.add("d-none");
   pendingDeleteId = null;
+}
+
+/* ── Override modal (admin) ───────────────────────────────── */
+function initOverrideModal() {
+  const modal = document.getElementById("override-modal");
+  const cancel = document.getElementById("btn-cancel-override");
+  const confirm = document.getElementById("btn-confirm-override");
+  if (!modal) return;
+
+  cancel?.addEventListener("click", () => modal.classList.add("d-none"));
+  modal.addEventListener("click", (e) => {
+    if (e.target === modal) modal.classList.add("d-none");
+  });
+
+  confirm?.addEventListener("click", async () => {
+    if (!pendingOverrideId) return;
+    const sel = document.getElementById("override-status-select");
+    const newStatus = sel?.value;
+    if (!newStatus) return;
+
+    confirm.disabled = true;
+    confirm.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saving…';
+
+    try {
+      const { updateTransaction } = await import("./api.js");
+      await updateTransaction(pendingOverrideId, { status: newStatus });
+      showToast(
+        `${pendingOverrideRef} status set to "${newStatus}".`,
+        "success",
+      );
+      modal.classList.add("d-none");
+      await loadTransactions();
+    } catch {
+      showToast("Failed to override status.", "error");
+    } finally {
+      confirm.disabled = false;
+      confirm.innerHTML = '<i class="fa-solid fa-stamp"></i> Apply Override';
+      pendingOverrideId = null;
+      pendingOverrideRef = null;
+    }
+  });
 }
 
 /* ── Helpers ──────────────────────────────────────────────── */

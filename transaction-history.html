@@ -75,8 +75,7 @@
                             <option value="failed">Failed</option>
                         </select>
 
-                        <input type="date" id="filter-date-from" class="txn-filter-date" aria-label="From date"
-                            title="From date" />
+
 
                         <input type="date" id="filter-date-to" class="txn-filter-date" aria-label="To date"
                             title="To date" />
@@ -192,6 +191,41 @@
     </div>
 
     <script type="module" src="js/transaction-history.js"></script>
+
+    <!-- Override Status modal (admin only) -->
+    <div class="confirm-modal-overlay d-none" id="override-modal" role="dialog" aria-modal="true">
+        <div class="confirm-modal" style="max-width:460px">
+            <div class="confirm-modal-icon" style="color:var(--color-primary)">
+                <i class="fa-solid fa-stamp"></i>
+            </div>
+            <h3>Override Transaction Status</h3>
+            <p>
+                Set a new status for
+                <strong id="override-modal-ref">TXN-000</strong>.
+                This action is logged and cannot be undone.
+            </p>
+            <div style="margin-bottom:var(--space-xl)">
+                <label
+                    style="display:block;font-size:0.82rem;font-weight:500;color:var(--color-text-secondary);margin-bottom:var(--space-sm)">
+                    New Status
+                </label>
+                <select id="override-status-select" class="form-control" style="width:100%">
+                    <option value="pending">Pending</option>
+                    <option value="completed">Completed</option>
+                    <option value="failed">Failed</option>
+                    <option value="refunded">Refunded (Approved)</option>
+                </select>
+            </div>
+            <div class="confirm-modal-actions">
+                <button class="btn btn-secondary" id="btn-cancel-override">
+                    <i class="fa-solid fa-xmark"></i> Cancel
+                </button>
+                <button class="btn btn-primary" id="btn-confirm-override">
+                    <i class="fa-solid fa-stamp"></i> Apply Override
+                </button>
+            </div>
+        </div>
+    </div>
 
 </body>
 

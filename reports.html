@@ -330,6 +330,15 @@
 
   <script type="module" src="js/reports.js"></script>
 
+  <!-- Admin-only guard -->
+  <script type="module">
+    import { getCurrentUser } from './js/utils.js';
+    const user = getCurrentUser();
+    if (user && user.role !== 'admin') {
+      window.location.replace('agent-dashboard.html');
+    }
+  </script>
+
 </body>
 
 </html>

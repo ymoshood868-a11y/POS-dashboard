@@ -254,24 +254,23 @@ const Layout = {
     const user = getCurrentUser();
     const role = user?.role || "agent";
 
-    // Hide elements marked with data-role that don't match
+    // Hide every element tagged with data-role that doesn't match
     document.querySelectorAll("[data-role]").forEach((el) => {
-      if (el.dataset.role !== role) el.style.display = "none";
+      if (el.dataset.role !== role) {
+        el.style.display = "none";
+      }
     });
 
-    // For agents: also hide admin-only pages without data-role
+    // For agents: also hide settings (tagged on the <li> in sidebar)
+    // and ensure the admin-only pages are unreachable via URL guard
     if (role !== "admin") {
-      const adminOnlyPages = ["reports.html", "settings.html"];
-      adminOnlyPages.forEach((page) => {
-        document
-          .querySelectorAll(
-            `.nav-link[data-page="${page}"], .nav-link[href="${page}"]`,
-          )
-          .forEach((el) => {
-            const li = el.closest("li");
-            if (li) li.style.display = "none";
-          });
-      });
+      // Any nav link pointing to settings gets hidden
+      document
+        .querySelectorAll('.nav-link[data-page="settings.html"]')
+        .forEach((el) => {
+          const li = el.closest("li");
+          if (li) li.style.display = "none";
+        });
     }
   },
 

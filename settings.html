@@ -1325,8 +1325,16 @@
     <script type="module">
         import Layout from './js/layout.js';
         import { logout } from './js/logout.js';
+        import { getCurrentUser } from './js/utils.js';
 
         document.addEventListener('DOMContentLoaded', async () => {
+            // Guard — agents cannot access settings
+            const user = getCurrentUser();
+            if (user && user.role !== 'admin') {
+                window.location.replace('agent-dashboard.html');
+                return;
+            }
+
             // Init shared layout
             await Layout.init({ pageTitle: 'Settings', breadcrumb: 'System' });
 

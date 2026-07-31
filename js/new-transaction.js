@@ -17,7 +17,13 @@ import {
   updateTransaction,
   getTransactionById,
 } from "./api.js";
-import { showToast, formatCurrency, formatDate } from "./utils.js";
+import {
+  showToast,
+  formatCurrency,
+  formatDate,
+  getCurrentUser,
+  isAgent,
+} from "./utils.js";
 
 /* ============================================================
    CONSTANTS
@@ -223,6 +229,14 @@ async function loadForEdit(id) {
     const txn = await getTransactionById(id);
     if (!txn) throw new Error("Transaction not found.");
 
+    // Agents can only edit their own transactions
+    const user = getCurrentUser();
+    if (isAgent() && txn.userId !== user?.id) {
+      showAlert("You can only edit your own transactions.", "error");
+      setTimeout(() => window.location.replace("agent-dashboard.html"), 1500);
+      return;
+    }
+
     // Update page chrome
     if (pageTitle) pageTitle.innerHTML = "Edit <span>Transaction</span>";
     if (pageSubtitle)
@@ -298,9 +312,11 @@ async function handleSubmit(e) {
       updateCharCount();
     }
 
-    // Brief delay then redirect to transactions list
+    // Brief delay then redirect to correct page
     setTimeout(() => {
-      window.location.href = "transaction-history.html";
+      window.location.href = isAgent()
+        ? "agent-dashboard.html"
+        : "transaction-history.html";
     }, 1200);
   } catch (err) {
     console.error("[TxnForm] Save error:", err);
