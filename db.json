@@ -2,7 +2,7 @@
   "transactions": [
     {
       "id": "1",
-      "userId": "1",
+      "userId": "GXWDnsBhZ34",
       "date": "2025-07-01",
       "description": "Product Sale - Electronics",
       "category": "income",
@@ -12,7 +12,7 @@
     },
     {
       "id": "2",
-      "userId": "1",
+      "userId": "GXWDnsBhZ34",
       "date": "2025-07-02",
       "description": "Office Supplies Purchase",
       "category": "expense",
@@ -22,7 +22,7 @@
     },
     {
       "id": "3",
-      "userId": "1",
+      "userId": "GXWDnsBhZ34",
       "date": "2025-07-03",
       "description": "Customer Deposit",
       "category": "deposit",
@@ -32,7 +32,7 @@
     },
     {
       "id": "4",
-      "userId": "1",
+      "userId": "GXWDnsBhZ34",
       "date": "2025-07-04",
       "description": "Cash Withdrawal",
       "category": "withdrawal",
@@ -42,7 +42,7 @@
     },
     {
       "id": "5",
-      "userId": "1",
+      "userId": "GXWDnsBhZ34",
       "date": "2025-07-05",
       "description": "Product Sale - Clothing",
       "category": "income",
@@ -52,7 +52,7 @@
     },
     {
       "id": "6",
-      "userId": "1",
+      "userId": "GXWDnsBhZ34",
       "date": "2025-07-06",
       "description": "Utility Bill Payment",
       "category": "expense",
@@ -62,7 +62,7 @@
     },
     {
       "id": "7",
-      "userId": "1",
+      "userId": "GXWDnsBhZ34",
       "date": "2025-07-07",
       "description": "Vendor Deposit",
       "category": "deposit",
@@ -72,7 +72,7 @@
     },
     {
       "id": "8",
-      "userId": "1",
+      "userId": "GXWDnsBhZ34",
       "date": "2025-07-08",
       "description": "ATM Withdrawal",
       "category": "withdrawal",
@@ -82,7 +82,7 @@
     },
     {
       "id": "9",
-      "userId": "1",
+      "userId": "GXWDnsBhZ34",
       "date": "2025-07-09",
       "description": "Product Sale - Groceries",
       "category": "income",
@@ -92,7 +92,7 @@
     },
     {
       "id": "10",
-      "userId": "1",
+      "userId": "GXWDnsBhZ34",
       "date": "2025-07-10",
       "description": "Equipment Maintenance",
       "category": "expense",
@@ -101,7 +101,7 @@
       "reference": "TXN-010"
     },
     {
-      "userId": "1",
+      "userId": "GXWDnsBhZ34",
       "type": "credit",
       "category": "expense",
       "amount": 5000,
@@ -112,7 +112,7 @@
       "id": "0H35P24-3as"
     },
     {
-      "userId": "1",
+      "userId": "GXWDnsBhZ34",
       "type": "credit",
       "category": "income",
       "amount": 50000,

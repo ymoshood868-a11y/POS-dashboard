@@ -35,7 +35,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     return;
   }
 
-  loadDashboardData();
+  // Initial load
+  await loadDashboardData();
+
+  // Auto-refresh every 30 seconds so admin sees live changes from agents
+  setInterval(loadDashboardData, 30000);
 });
 
 /* ============================================================

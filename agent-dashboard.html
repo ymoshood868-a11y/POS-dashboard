@@ -322,6 +322,12 @@
             const nameEl = document.getElementById('agent-name');
             if (nameEl) nameEl.textContent = firstName;
 
+            // Load + auto-refresh every 30 s so agent sees admin overrides live
+            await loadAgentData();
+            setInterval(loadAgentData, 30000);
+        });
+
+        async function loadAgentData() {
             let transactions = [];
             try {
                 transactions = await getTransactions();
@@ -348,6 +354,9 @@
                 return;
             }
 
+            document.getElementById('agent-table-wrap').style.display = '';
+            empty?.classList.add('d-none');
+
             const isPos = cat => ['income', 'deposit'].includes(cat);
             const icons = { income: 'fa-arrow-trend-up', expense: 'fa-arrow-trend-down', deposit: 'fa-piggy-bank', withdrawal: 'fa-money-bill-transfer' };
             const cap = s => s ? s.charAt(0).toUpperCase() + s.slice(1) : '';
@@ -361,7 +370,7 @@
           <td>${formatDate(t.date)}</td>
           <td><span class="status-badge ${t.status}">${cap(t.status)}</span></td>
         </tr>`).join('');
-        });
+        }
     </script>
 </body>
 
