@@ -71,7 +71,7 @@
                             <span class="nav-label">Dashboard</span>
                         </a>
                     </li>
-                    <li class="nav-item">
+                    <li class="nav-item" style="display:none">
                         <a href="new-transaction.html" class="nav-link" data-tooltip="New Transaction">
                             <span class="nav-icon"><i class="fa-solid fa-plus-circle"></i></span>
                             <span class="nav-label">New Transaction</span>
@@ -238,14 +238,8 @@
                     </div>
                 </div>
 
-                <!-- ==========================================
-           QUICK ACTIONS
-           ========================================== -->
+                <!-- Quick Actions — agents only, admin manages not records -->
                 <div class="quick-actions" aria-label="Quick actions">
-                    <a href="new-transaction.html" class="quick-action-btn">
-                        <i class="fa-solid fa-plus"></i>
-                        <span>New Transaction</span>
-                    </a>
                     <a href="transaction-history.html" class="quick-action-btn">
                         <i class="fa-solid fa-receipt"></i>
                         <span>View Transactions</span>
@@ -441,13 +435,7 @@
                         <div id="table-empty" class="table-empty-state d-none">
                             <div class="empty-icon"><i class="fa-solid fa-inbox"></i></div>
                             <p class="empty-title">No transactions found</p>
-                            <p class="empty-sub">
-                                Click
-                                <a href="new-transaction.html" class="empty-link">
-                                    <i class="fa-solid fa-plus"></i> New Transaction
-                                </a>
-                                to add your first transaction.
-                            </p>
+                            <p class="empty-sub">No transactions have been recorded by agents yet.</p>
                         </div>
 
                     </section><!-- /recent transactions -->
